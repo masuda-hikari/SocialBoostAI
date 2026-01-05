@@ -1,0 +1,71 @@
+# SocialBoostAI 設定ファイル例
+# このファイルをconfig.yamlにコピーして使用してください
+
+# アプリケーション設定
+app:
+  name: "SocialBoostAI"
+  version: "0.1.0"
+  debug: true
+  log_level: "INFO"
+
+# 分析設定
+analysis:
+  # デフォルトの分析期間（日数）
+  default_days: 7
+  # 最適時間帯を何件返すか
+  top_hours_count: 3
+  # 信頼性のある分析に必要な最低投稿数
+  min_posts_per_hour: 2
+  # トップ投稿を何件表示するか
+  top_posts_count: 5
+
+# AI設定
+ai:
+  # OpenAI APIモデル
+  model: "gpt-4"
+  # 生成時の温度（0.0-1.0）
+  temperature: 0.8
+  # コンテンツアイデアの提案数
+  content_ideas_count: 3
+  # ハッシュタグの提案数
+  hashtag_count: 5
+
+# レポート設定
+report:
+  # レポート出力ディレクトリ
+  output_dir: "./reports"
+  # HTMLテンプレートパス（カスタムテンプレート使用時）
+  # template_path: "./templates/report.html"
+
+# プラットフォーム別設定
+platforms:
+  twitter:
+    enabled: true
+    # 一度に取得するツイート数
+    max_tweets: 100
+    # レート制限待機
+    wait_on_rate_limit: true
+
+  instagram:
+    enabled: false
+    # 一度に取得する投稿数
+    max_posts: 50
+
+# サブスクリプションプラン設定
+subscription:
+  plans:
+    free:
+      max_days: 7
+      max_platforms: 1
+      ai_enabled: false
+      reports_per_month: 1
+    pro:
+      max_days: 90
+      max_platforms: 1
+      ai_enabled: true
+      reports_per_month: 4
+    business:
+      max_days: 365
+      max_platforms: 3
+      ai_enabled: true
+      reports_per_month: -1  # 無制限
