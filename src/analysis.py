@@ -9,10 +9,20 @@ from typing import Optional
 
 from .models import (
     AnalysisResult,
+    ContentPattern,
     EngagementMetrics,
+    HashtagAnalysis,
     HourlyEngagement,
+    KeywordAnalysis,
     PostRecommendation,
     Tweet,
+)
+from .content_analysis import (
+    analyze_content_patterns,
+    analyze_hashtags,
+    analyze_keywords,
+    get_effective_hashtag_recommendations,
+    get_high_engagement_keywords,
 )
 
 logger = logging.getLogger(__name__)
@@ -187,12 +197,22 @@ def analyze_tweets(
     top_posts = get_top_performing_posts(tweets)
     best_hours = find_best_posting_hours(hourly_breakdown)
 
+    # v0.2: コンテンツ分析
+    hashtag_results = analyze_hashtags(tweets)
+    keyword_results = analyze_keywords(tweets)
+    pattern_results = analyze_content_patterns(tweets)
+
+    # ハッシュタグレコメンデーションを生成
+    effective_hashtags = get_effective_hashtag_recommendations(hashtag_results)
+
     # 基本的なレコメンデーション生成
     recommendations = PostRecommendation(
         best_hours=best_hours,
-        suggested_hashtags=[],  # AI機能で後で実装
+        suggested_hashtags=effective_hashtags,
         content_ideas=[],  # AI機能で後で実装
-        reasoning=_generate_recommendation_reasoning(metrics, best_hours),
+        reasoning=_generate_recommendation_reasoning(
+            metrics, best_hours, hashtag_results, pattern_results
+        ),
     )
 
     logger.info(f"{len(tweets)}件のツイートを分析しました")
@@ -205,18 +225,25 @@ def analyze_tweets(
         hourly_breakdown=hourly_breakdown,
         top_performing_posts=top_posts,
         recommendations=recommendations,
+        hashtag_analysis=hashtag_results,
+        keyword_analysis=keyword_results,
+        content_patterns=pattern_results,
     )
 
 
 def _generate_recommendation_reasoning(
     metrics: EngagementMetrics,
     best_hours: list[int],
+    hashtag_analysis: list[HashtagAnalysis] = [],
+    content_patterns: list[ContentPattern] = [],
 ) -> str:
     """レコメンデーションの理由を生成
 
     Args:
         metrics: エンゲージメント指標
         best_hours: 最適な投稿時間
+        hashtag_analysis: ハッシュタグ分析結果
+        content_patterns: コンテンツパターン分析結果
 
     Returns:
         str: 理由の説明文
@@ -224,8 +251,33 @@ def _generate_recommendation_reasoning(
     hour_strs = [f"{h}時" for h in best_hours]
     hours_text = "、".join(hour_strs)
 
-    return (
-        f"分析の結果、{hours_text}の投稿が最もエンゲージメントが高い傾向にあります。"
-        f"平均いいね数は{metrics.avg_likes_per_post}、"
-        f"平均リツイート数は{metrics.avg_retweets_per_post}です。"
-    )
+    reasoning_parts = [
+        f"分析の結果、{hours_text}の投稿が最もエンゲージメントが高い傾向にあります。",
+        f"平均いいね数は{metrics.avg_likes_per_post}、",
+        f"平均リツイート数は{metrics.avg_retweets_per_post}です。",
+    ]
+
+    # ハッシュタグ分析結果を追加
+    if hashtag_analysis:
+        top_hashtags = [h.hashtag for h in hashtag_analysis[:3]]
+        if top_hashtags:
+            reasoning_parts.append(
+                f"効果的なハッシュタグ: #{', #'.join(top_hashtags)}。"
+            )
+
+    # コンテンツパターン分析結果を追加
+    if content_patterns:
+        best_pattern = content_patterns[0]
+        pattern_names = {
+            "question": "質問形式",
+            "tip": "Tips/ノウハウ",
+            "announcement": "お知らせ",
+            "engagement_bait": "エンゲージメント促進",
+        }
+        pattern_name = pattern_names.get(best_pattern.pattern_type, best_pattern.pattern_type)
+        reasoning_parts.append(
+            f"最も効果的なコンテンツ形式は「{pattern_name}」"
+            f"（平均エンゲージメント: {best_pattern.avg_engagement}）です。"
+        )
+
+    return "".join(reasoning_parts)

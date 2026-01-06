@@ -51,6 +51,35 @@ class PostRecommendation(BaseModel):
     reasoning: str
 
 
+class HashtagAnalysis(BaseModel):
+    """ハッシュタグ分析結果"""
+
+    hashtag: str
+    usage_count: int = 0
+    total_likes: int = 0
+    total_retweets: int = 0
+    avg_engagement: float = 0.0
+    effectiveness_score: float = Field(ge=0.0, default=0.0)
+
+
+class KeywordAnalysis(BaseModel):
+    """キーワード分析結果"""
+
+    keyword: str
+    frequency: int = 0
+    avg_engagement: float = 0.0
+    correlation_score: float = Field(ge=-1.0, le=1.0, default=0.0)
+
+
+class ContentPattern(BaseModel):
+    """コンテンツパターン分析"""
+
+    pattern_type: str  # "question", "tip", "announcement", "engagement_bait"
+    count: int = 0
+    avg_engagement: float = 0.0
+    example_posts: list[str] = []
+
+
 class AnalysisResult(BaseModel):
     """分析結果"""
 
@@ -61,6 +90,10 @@ class AnalysisResult(BaseModel):
     hourly_breakdown: list[HourlyEngagement]
     top_performing_posts: list[Tweet]
     recommendations: Optional[PostRecommendation] = None
+    # v0.2追加: コンテンツ分析
+    hashtag_analysis: list[HashtagAnalysis] = []
+    keyword_analysis: list[KeywordAnalysis] = []
+    content_patterns: list[ContentPattern] = []
 
 
 class UserAccount(BaseModel):
