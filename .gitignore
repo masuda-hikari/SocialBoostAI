@@ -1,72 +1,67 @@
+# 環境変数・認証情報
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials/
+secrets/
+
+# 言語別ビルド成果物
+# Node.js
+node_modules/
+dist/
+build/
+.npm/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
+.eggs/
 *.egg
-
-# 仮想環境
+.venv/
 venv/
 ENV/
-env/
-.venv/
+.mypy_cache/
+.pytest_cache/
 
-# IDE
+# Rust
+target/
+Cargo.lock
+*.rs.bk
+
+# IDE・エディタ
+.vscode/settings.json
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
+.DS_Store
+Thumbs.db
 
-# 環境変数
-.env
-.env.local
-.env.*.local
-
-# データベース
-*.db
-*.sqlite
-*.sqlite3
-
-# レポート出力
-reports/*.html
-reports/*.pdf
-
-# ログ
-*.log
-logs/
-
-# テスト
-.pytest_cache/
+# テスト・カバレッジ
+coverage/
 .coverage
 htmlcov/
 .tox/
 .nox/
 
-# mypy
-.mypy_cache/
+# 一時ファイル
+*.tmp
+*.temp
+*.bak
+*.backup
+tmp/
+temp/
 
-# OS
-.DS_Store
-Thumbs.db
-
-# シークレット
-*.pem
-*.key
-credentials.json
-secrets.json
+# OS固有
+Desktop.ini
+.Spotlight-V100
+.Trashes
