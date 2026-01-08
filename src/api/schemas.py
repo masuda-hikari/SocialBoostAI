@@ -410,3 +410,102 @@ class TikTokAnalysisDetail(BaseModel):
     duet_performance: Optional[float] = None
     stitch_performance: Optional[float] = None
     created_at: datetime
+
+
+# =============================================================================
+# YouTube分析関連（v1.4）
+# =============================================================================
+
+
+class YouTubeAnalysisRequest(BaseModel):
+    """YouTube分析リクエスト"""
+
+    period_days: int = Field(default=7, ge=1, le=90)
+
+
+class YouTubeAnalysisSummary(BaseModel):
+    """YouTube分析サマリー"""
+
+    total_videos: int
+    total_shorts: int = 0
+    total_views: int = 0
+    total_likes: int = 0
+    total_comments: int = 0
+    engagement_rate: float = 0.0
+    view_to_like_ratio: float = 0.0
+    avg_views_per_video: float = 0.0
+    best_hour: Optional[int] = None
+    best_duration_range: Optional[str] = None
+    top_tags: list[str] = []
+
+
+class YouTubeAnalysisResponse(BaseModel):
+    """YouTube分析レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "youtube"
+    period_start: datetime
+    period_end: datetime
+    summary: YouTubeAnalysisSummary
+    created_at: datetime
+
+
+class YouTubeTagInfo(BaseModel):
+    """YouTubeタグ情報"""
+
+    tag: str
+    usage_count: int = 0
+    total_views: int = 0
+    avg_engagement: float = 0.0
+    effectiveness_score: float = 0.0
+
+
+class YouTubeCategoryInfo(BaseModel):
+    """YouTubeカテゴリ情報"""
+
+    category_id: str
+    category_name: str
+    video_count: int = 0
+    total_views: int = 0
+    avg_engagement: float = 0.0
+
+
+class YouTubeContentPattern(BaseModel):
+    """YouTubeコンテンツパターン"""
+
+    pattern_type: str
+    count: int
+    avg_engagement: float
+
+
+class YouTubeShortsVsVideoComparison(BaseModel):
+    """Shorts vs 通常動画比較"""
+
+    shorts_count: int = 0
+    shorts_avg_views: float = 0.0
+    shorts_avg_engagement: float = 0.0
+    regular_count: int = 0
+    regular_avg_views: float = 0.0
+    regular_avg_engagement: float = 0.0
+    views_ratio: float = 0.0
+    engagement_ratio: float = 0.0
+
+
+class YouTubeAnalysisDetail(BaseModel):
+    """YouTube分析詳細レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "youtube"
+    period_start: datetime
+    period_end: datetime
+    summary: YouTubeAnalysisSummary
+    hourly_breakdown: list[dict] = []
+    content_patterns: list[YouTubeContentPattern] = []
+    tag_analysis: list[YouTubeTagInfo] = []
+    category_analysis: list[YouTubeCategoryInfo] = []
+    recommendations: Optional[dict] = None
+    avg_video_duration: float = 0.0
+    shorts_vs_video: Optional[YouTubeShortsVsVideoComparison] = None
+    created_at: datetime

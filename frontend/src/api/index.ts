@@ -6,5 +6,6 @@ export * from './analysis';
 export * from './billing';
 export * from './instagram';
 export * from './tiktok';
+export * from './youtube';
 export * from './comparison';
 export { default as apiClient } from './client';

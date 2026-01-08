@@ -11,6 +11,7 @@ from .instagram_analysis import router as instagram_analysis_router
 from .reports import router as report_router
 from .tiktok_analysis import router as tiktok_analysis_router
 from .users import router as user_router
+from .youtube_analysis import router as youtube_analysis_router
 
 __all__ = [
     "health_router",
@@ -18,6 +19,7 @@ __all__ = [
     "analysis_router",
     "instagram_analysis_router",
     "tiktok_analysis_router",
+    "youtube_analysis_router",
     "cross_platform_router",
     "report_router",
     "user_router",

@@ -304,3 +304,87 @@ export interface TikTokAnalysis {
 export interface TikTokAnalysisRequest {
   period_days?: number;
 }
+
+// =============================================================================
+// YouTube分析関連（v1.4）
+// =============================================================================
+
+export interface YouTubeAnalysisSummary {
+  total_videos: number;
+  total_shorts: number;
+  total_views: number;
+  total_likes: number;
+  total_comments: number;
+  engagement_rate: number;
+  view_to_like_ratio: number;
+  avg_views_per_video: number;
+  best_hour: number | null;
+  best_duration_range: string | null;
+  top_tags: string[];
+}
+
+export interface YouTubeTagInfo {
+  tag: string;
+  usage_count: number;
+  total_views: number;
+  avg_engagement: number;
+  effectiveness_score: number;
+}
+
+export interface YouTubeCategoryInfo {
+  category_id: string;
+  category_name: string;
+  video_count: number;
+  total_views: number;
+  avg_engagement: number;
+}
+
+export interface YouTubeContentPattern {
+  pattern_type: string;
+  count: number;
+  avg_engagement: number;
+}
+
+export interface YouTubeShortsVsVideo {
+  shorts_count: number;
+  shorts_avg_views: number;
+  shorts_avg_engagement: number;
+  regular_count: number;
+  regular_avg_views: number;
+  regular_avg_engagement: number;
+  views_ratio: number;
+  engagement_ratio: number;
+}
+
+export interface YouTubeAnalysis {
+  id: string;
+  user_id: string;
+  platform: 'youtube';
+  period_start: string;
+  period_end: string;
+  summary: YouTubeAnalysisSummary;
+  created_at: string;
+  // 詳細情報（詳細取得時のみ）
+  hourly_breakdown?: Array<{
+    hour: number;
+    avg_likes: number;
+    avg_views: number;
+    post_count: number;
+  }>;
+  content_patterns?: YouTubeContentPattern[];
+  tag_analysis?: YouTubeTagInfo[];
+  category_analysis?: YouTubeCategoryInfo[];
+  recommendations?: {
+    best_hours: number[];
+    suggested_hashtags: string[];
+    best_duration: string;
+    shorts_recommendation: string;
+    reasoning: string;
+  };
+  avg_video_duration?: number;
+  shorts_vs_video?: YouTubeShortsVsVideo | null;
+}
+
+export interface YouTubeAnalysisRequest {
+  period_days?: number;
+}

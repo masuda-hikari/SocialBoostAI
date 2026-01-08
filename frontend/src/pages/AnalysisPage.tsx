@@ -1,5 +1,5 @@
 /**
- * 分析ページ（Twitter + Instagram + TikTok対応）
+ * 分析ページ（Twitter + Instagram + TikTok + YouTube対応）
  */
 import { useEffect, useState } from 'react';
 import {
@@ -12,9 +12,12 @@ import {
   getTikTokAnalyses,
   createTikTokAnalysis,
   deleteTikTokAnalysis,
+  getYouTubeAnalyses,
+  createYouTubeAnalysis,
+  deleteYouTubeAnalysis,
 } from '../api';
 import { useAuthStore } from '../stores/authStore';
-import type { Analysis, InstagramAnalysis, TikTokAnalysis } from '../types';
+import type { Analysis, InstagramAnalysis, TikTokAnalysis, YouTubeAnalysis } from '../types';
 import {
   BarChart3,
   Plus,
@@ -34,13 +37,15 @@ import {
   Eye,
   Share2,
   Music,
+  Youtube,
+  Tag,
 } from 'lucide-react';
 
 // 統合分析型
-type UnifiedAnalysis = Analysis | InstagramAnalysis | TikTokAnalysis;
+type UnifiedAnalysis = Analysis | InstagramAnalysis | TikTokAnalysis | YouTubeAnalysis;
 
 // プラットフォームタブ
-type PlatformTab = 'twitter' | 'instagram' | 'tiktok';
+type PlatformTab = 'twitter' | 'instagram' | 'tiktok' | 'youtube';
 
 // プラットフォーム判定
 const isInstagramAnalysis = (analysis: UnifiedAnalysis): analysis is InstagramAnalysis => {
@@ -51,10 +56,14 @@ const isTikTokAnalysis = (analysis: UnifiedAnalysis): analysis is TikTokAnalysis
   return analysis.platform === 'tiktok';
 };
 
+const isYouTubeAnalysis = (analysis: UnifiedAnalysis): analysis is YouTubeAnalysis => {
+  return analysis.platform === 'youtube';
+};
+
 // プラン別機能利用可能判定
 const canUsePlatform = (role: string, platform: PlatformTab): boolean => {
   if (platform === 'twitter') return true;
-  // Instagram, TikTokはProプラン以上
+  // Instagram, TikTok, YouTubeはProプラン以上
   return ['pro', 'business', 'enterprise'].includes(role);
 };
 
@@ -89,6 +98,13 @@ export default function AnalysisPage() {
       } else if (activeTab === 'tiktok') {
         if (canUsePlatform(user?.role || 'free', 'tiktok')) {
           const response = await getTikTokAnalyses(1, 20);
+          setAnalyses(response.items);
+        } else {
+          setAnalyses([]);
+        }
+      } else if (activeTab === 'youtube') {
+        if (canUsePlatform(user?.role || 'free', 'youtube')) {
+          const response = await getYouTubeAnalyses(1, 20);
           setAnalyses(response.items);
         } else {
           setAnalyses([]);
@@ -132,6 +148,12 @@ export default function AnalysisPage() {
         });
         setAnalyses([newAnalysis, ...analyses]);
         setSelectedAnalysis(newAnalysis);
+      } else if (activeTab === 'youtube') {
+        const newAnalysis = await createYouTubeAnalysis({
+          period_days: periodDays,
+        });
+        setAnalyses([newAnalysis, ...analyses]);
+        setSelectedAnalysis(newAnalysis);
       }
       setShowForm(false);
     } catch (error) {
@@ -153,6 +175,8 @@ export default function AnalysisPage() {
         await deleteInstagramAnalysis(id);
       } else if (activeTab === 'tiktok') {
         await deleteTikTokAnalysis(id);
+      } else if (activeTab === 'youtube') {
+        await deleteYouTubeAnalysis(id);
       }
       setAnalyses(analyses.filter((a) => a.id !== id));
       if (selectedAnalysis?.id === id) {
@@ -543,6 +567,159 @@ export default function AnalysisPage() {
     </div>
   );
 
+  // YouTube分析詳細表示
+  const renderYouTubeDetail = (analysis: YouTubeAnalysis) => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="card">
+          <div className="text-center">
+            <Play className="mx-auto text-red-600 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.total_videos}
+            </p>
+            <p className="text-xs text-gray-500">総動画数</p>
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-center">
+            <Film className="mx-auto text-red-500 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.total_shorts}
+            </p>
+            <p className="text-xs text-gray-500">Shorts</p>
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-center">
+            <Eye className="mx-auto text-blue-500 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.total_views.toLocaleString()}
+            </p>
+            <p className="text-xs text-gray-500">総視聴数</p>
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-center">
+            <Heart className="mx-auto text-red-500 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.total_likes.toLocaleString()}
+            </p>
+            <p className="text-xs text-gray-500">総いいね</p>
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-center">
+            <MessageCircle className="mx-auto text-green-500 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.total_comments.toLocaleString()}
+            </p>
+            <p className="text-xs text-gray-500">総コメント</p>
+          </div>
+        </div>
+        <div className="card">
+          <div className="text-center">
+            <BarChart3 className="mx-auto text-yellow-500 mb-2" size={24} />
+            <p className="text-2xl font-bold text-gray-900">
+              {analysis.summary.engagement_rate.toFixed(2)}%
+            </p>
+            <p className="text-xs text-gray-500">ER</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="card">
+        <h3 className="text-lg font-medium text-gray-900 mb-4">分析詳細</h3>
+        <div className="space-y-4">
+          <div className="flex items-center p-4 bg-gradient-to-r from-red-50 to-gray-50 rounded-lg">
+            <Clock className="text-red-600 mr-4" size={24} />
+            <div>
+              <p className="font-medium text-gray-900">最適投稿時間</p>
+              <p className="text-sm text-gray-600">
+                {analysis.summary.best_hour !== null
+                  ? `${analysis.summary.best_hour}:00 〜 ${analysis.summary.best_hour + 1}:00`
+                  : 'データ不足'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center p-4 bg-gradient-to-r from-red-50 to-gray-50 rounded-lg">
+            <Film className="text-red-600 mr-4" size={24} />
+            <div>
+              <p className="font-medium text-gray-900">最適動画長</p>
+              <p className="text-sm text-gray-600">
+                {analysis.summary.best_duration_range || 'データ不足'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center p-4 bg-gradient-to-r from-red-50 to-gray-50 rounded-lg">
+            <Eye className="text-red-600 mr-4" size={24} />
+            <div>
+              <p className="font-medium text-gray-900">いいね率</p>
+              <p className="text-sm text-gray-600">
+                {analysis.summary.view_to_like_ratio.toFixed(2)}% (いいね/視聴)
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-gradient-to-r from-red-50 to-gray-50 rounded-lg">
+            <div className="flex items-center mb-3">
+              <Tag className="text-red-600 mr-2" size={20} />
+              <p className="font-medium text-gray-900">トップタグ</p>
+            </div>
+            {analysis.summary.top_tags.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {analysis.summary.top_tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-gradient-to-r from-red-100 to-gray-100 text-red-700 rounded-full text-sm"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">タグデータなし</p>
+            )}
+          </div>
+
+          {/* Shorts vs 通常動画比較 */}
+          {analysis.shorts_vs_video && (
+            <div className="p-4 bg-gradient-to-r from-red-50 to-gray-50 rounded-lg">
+              <div className="flex items-center mb-3">
+                <Film className="text-red-600 mr-2" size={20} />
+                <p className="font-medium text-gray-900">Shorts vs 通常動画</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-3 bg-white rounded-lg">
+                  <p className="text-sm text-gray-600">Shorts</p>
+                  <p className="text-lg font-bold">{analysis.shorts_vs_video.shorts_count}本</p>
+                  <p className="text-xs text-gray-500">
+                    平均視聴: {analysis.shorts_vs_video.shorts_avg_views.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-3 bg-white rounded-lg">
+                  <p className="text-sm text-gray-600">通常動画</p>
+                  <p className="text-lg font-bold">{analysis.shorts_vs_video.regular_count}本</p>
+                  <p className="text-xs text-gray-500">
+                    平均視聴: {analysis.shorts_vs_video.regular_avg_views.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="text-sm text-gray-500 border-t pt-4">
+            <p>分析ID: {analysis.id}</p>
+            <p>
+              作成日: {new Date(analysis.created_at).toLocaleString('ja-JP')}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   // プラットフォームアイコン取得
   const getPlatformIcon = (platform: PlatformTab) => {
     switch (platform) {
@@ -552,6 +729,8 @@ export default function AnalysisPage() {
         return <Instagram size={20} className="mr-2" />;
       case 'tiktok':
         return <Play size={20} className="mr-2" />;
+      case 'youtube':
+        return <Youtube size={20} className="mr-2" />;
     }
   };
 
@@ -568,6 +747,8 @@ export default function AnalysisPage() {
         return `${baseStyle} border-pink-500 text-pink-600`;
       case 'tiktok':
         return `${baseStyle} border-black text-black`;
+      case 'youtube':
+        return `${baseStyle} border-red-500 text-red-600`;
     }
   };
 
@@ -625,18 +806,31 @@ export default function AnalysisPage() {
             <Lock size={14} className="ml-1 text-gray-400" />
           )}
         </button>
+        <button
+          onClick={() => setActiveTab('youtube')}
+          className={getTabStyle('youtube', activeTab === 'youtube')}
+        >
+          {getPlatformIcon('youtube')}
+          YouTube
+          {!canUsePlatform(user?.role || 'free', 'youtube') && (
+            <Lock size={14} className="ml-1 text-gray-400" />
+          )}
+        </button>
       </div>
 
       {/* プラン未対応表示 */}
       {!canUsePlatform(user?.role || 'free', activeTab) ? (
-        renderUpgradePrompt(activeTab === 'instagram' ? 'Instagram' : 'TikTok')
+        renderUpgradePrompt(
+          activeTab === 'instagram' ? 'Instagram' :
+          activeTab === 'tiktok' ? 'TikTok' : 'YouTube'
+        )
       ) : (
         <>
           {/* 新規分析フォーム */}
           {showForm && (
             <div className="card">
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                新規{activeTab === 'twitter' ? 'Twitter' : activeTab === 'instagram' ? 'Instagram' : 'TikTok'}分析を作成
+                新規{activeTab === 'twitter' ? 'Twitter' : activeTab === 'instagram' ? 'Instagram' : activeTab === 'tiktok' ? 'TikTok' : 'YouTube'}分析を作成
               </h3>
               <form onSubmit={handleCreate} className="space-y-4">
                 <div>
@@ -676,7 +870,7 @@ export default function AnalysisPage() {
             <div className="lg:col-span-1">
               <div className="card">
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {activeTab === 'twitter' ? 'Twitter' : activeTab === 'instagram' ? 'Instagram' : 'TikTok'}分析履歴
+                  {activeTab === 'twitter' ? 'Twitter' : activeTab === 'instagram' ? 'Instagram' : activeTab === 'tiktok' ? 'TikTok' : 'YouTube'}分析履歴
                 </h3>
                 {analyses.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
@@ -695,7 +889,9 @@ export default function AnalysisPage() {
                               ? 'bg-blue-100 border-blue-300'
                               : activeTab === 'instagram'
                               ? 'bg-pink-100 border-pink-300'
-                              : 'bg-gray-200 border-gray-400'
+                              : activeTab === 'tiktok'
+                              ? 'bg-gray-200 border-gray-400'
+                              : 'bg-red-100 border-red-300'
                             : 'bg-gray-50 hover:bg-gray-100'
                         } border`}
                       >
@@ -706,8 +902,10 @@ export default function AnalysisPage() {
                                 <Twitter size={14} className="mr-1 text-blue-500" />
                               ) : activeTab === 'instagram' ? (
                                 <Instagram size={14} className="mr-1 text-pink-500" />
-                              ) : (
+                              ) : activeTab === 'tiktok' ? (
                                 <Play size={14} className="mr-1 text-black" />
+                              ) : (
+                                <Youtube size={14} className="mr-1 text-red-500" />
                               )}
                               {analysis.platform}
                             </p>
@@ -736,7 +934,9 @@ export default function AnalysisPage() {
             {/* 分析詳細 */}
             <div className="lg:col-span-2">
               {selectedAnalysis ? (
-                isTikTokAnalysis(selectedAnalysis) ? (
+                isYouTubeAnalysis(selectedAnalysis) ? (
+                  renderYouTubeDetail(selectedAnalysis)
+                ) : isTikTokAnalysis(selectedAnalysis) ? (
                   renderTikTokDetail(selectedAnalysis)
                 ) : isInstagramAnalysis(selectedAnalysis) ? (
                   renderInstagramDetail(selectedAnalysis)
@@ -750,8 +950,10 @@ export default function AnalysisPage() {
                       <Twitter size={64} className="mx-auto mb-4 opacity-50" />
                     ) : activeTab === 'instagram' ? (
                       <Instagram size={64} className="mx-auto mb-4 opacity-50" />
-                    ) : (
+                    ) : activeTab === 'tiktok' ? (
                       <Play size={64} className="mx-auto mb-4 opacity-50" />
+                    ) : (
+                      <Youtube size={64} className="mx-auto mb-4 opacity-50" />
                     )}
                     <p className="text-lg">分析を選択してください</p>
                     <p className="text-sm mt-2">
