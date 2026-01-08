@@ -1,15 +1,15 @@
-﻿﻿﻿﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
 最終更新: 2026-01-08
 
 ## 現在の状況
 
-- 状態: 開発中（v0.8 React フロントエンド完了）
-- 進捗: フロントエンドダッシュボード実装完了、MVP完成
+- 状態: 開発中（v0.9 デプロイ基盤完了）
+- 進捗: MVP完成、デプロイ準備完了
 
 ## 実装状況
 
-### 完了（v0.1-v0.8）
+### 完了（v0.1-v0.9）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -46,12 +46,16 @@
 - [x] **v0.8: 分析ページ**
 - [x] **v0.8: 課金ページ（Stripe連携）**
 - [x] **v0.8: 設定ページ**
+- [x] **v0.9: Docker Compose構成（本番/開発）**
+- [x] **v0.9: Dockerfile（バックエンド/フロントエンド）**
+- [x] **v0.9: Nginx設定**
+- [x] **v0.9: デプロイガイド（DEPLOY.md）**
 - [x] テスト181件全合格
 
-### 未実装（v0.9以降）
+### 未実装（v1.0以降）
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
+- [ ] 本番デプロイ（VPS/クラウド）
 - [ ] Instagram対応
-- [ ] デプロイ設定（Docker/本番環境）
 
 ## テスト状態
 
@@ -60,35 +64,45 @@ Backend: 181 passed, 1 warning
 Frontend: Build成功、ESLint合格
 ```
 
-## v0.8 新機能詳細
+## v0.9 新機能詳細
 
-### Reactフロントエンド
-- `frontend/`: Vite + React + TypeScript + TailwindCSS
-- Zustand認証ストア
-- React Query統合
-- Axios APIクライアント
+### デプロイ基盤
+- `Dockerfile.backend`: Python FastAPI用
+- `Dockerfile.frontend`: Vite React用（マルチステージビルド）
+- `docker-compose.yml`: 本番環境構成
+- `docker-compose.dev.yml`: 開発環境構成
+- `nginx.conf`: フロントエンド用Nginx設定
+- `.env.production.example`: 本番環境変数テンプレート
+- `DEPLOY.md`: デプロイガイド
 
-### ページ構成
-| ページ | パス | 機能 |
-|-------|------|------|
-| ログイン | /login | 認証 |
-| 登録 | /register | 新規アカウント |
-| ダッシュボード | /dashboard | 統計概要 |
-| 分析 | /analysis | 分析実行/履歴 |
-| レポート | /reports | レポート生成 |
-| 課金 | /billing | プラン選択/Checkout |
-| 設定 | /settings | プロフィール/通知 |
+### 構成
+```
+┌─────────────────────────────────────────────────────┐
+│                    Traefik (オプション)              │
+└────────────────┬──────────────────┬────────────────┘
+        ┌────────▼────────┐ ┌──────▼──────┐
+        │   Frontend      │ │   Backend   │
+        │   (Nginx)       │ │   (FastAPI) │
+        └─────────────────┘ └──────┬──────┘
+                    ┌──────────────┼──────────────┐
+             ┌──────▼──────┐ ┌────▼────┐
+             │  PostgreSQL │ │  Redis  │
+             └─────────────┘ └─────────┘
+```
 
 ## 次のアクション
 
-1. **優先度1**: Stripeダッシュボード設定
+1. **優先度1（直接収益）**: Stripeダッシュボード設定
    - 本番用Product/Price作成
    - Webhook Endpoint設定
-   - 環境変数設定（STRIPE_SECRET_KEY, STRIPE_PRICE_PRO等）
-2. **優先度2**: デプロイ準備
-   - Docker Compose設定
-   - 本番環境設定
-3. **優先度3**: v0.9 Instagram対応
+   - 環境変数設定
+
+2. **優先度2（収益準備）**: 本番デプロイ
+   - VPS/クラウド選定
+   - ドメイン取得・SSL設定
+   - 初期ユーザー獲得
+
+3. **優先度3（収益基盤）**: v1.0 Instagram対応
 
 ## 技術的課題
 
@@ -96,7 +110,7 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
+- 2026-01-08: v0.9 デプロイ基盤構築（Docker Compose）
 - 2026-01-08: v0.8 Reactフロントエンド完了
-- 2026-01-08: 認証/ダッシュボード/分析/課金/設定UI実装
 - 2026-01-08: v0.7 Stripe課金機能完了
 - 2026-01-08: v0.6 データベース永続化完了（SQLAlchemy/Alembic）

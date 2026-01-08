@@ -1,4 +1,4 @@
-﻿﻿﻿﻿# SocialBoostAI - タスク管理
+# SocialBoostAI - タスク管理
 
 ## 待機中タスク
 
@@ -7,17 +7,29 @@
 - [ ] Webhook Endpoint設定・環境変数設定
 
 ### 優先度2: 収益準備
-- [ ] デプロイ準備（Docker Compose）
-- [ ] OAuth2ソーシャルログイン
+- [ ] 本番デプロイ（VPS/クラウド選定）
+- [ ] ドメイン取得・SSL設定
+- [ ] 初期ユーザー獲得施策
 
 ### 優先度3: 収益基盤
-- [ ] v0.9 Instagram対応
+- [ ] v1.0 Instagram対応
 - [ ] クロスプラットフォーム比較
 
 ## 進行中タスク
 （現在なし）
 
 ## 完了タスク
+
+### 2026-01-08（v0.9）
+- [x] v0.9 デプロイ基盤構築
+  - [x] Dockerfile.backend（Python FastAPI用）
+  - [x] Dockerfile.frontend（Vite React用、マルチステージ）
+  - [x] docker-compose.yml（本番環境：PostgreSQL/Redis/Traefik）
+  - [x] docker-compose.dev.yml（開発環境：ホットリロード）
+  - [x] nginx.conf（フロントエンド用）
+  - [x] .env.production.example（本番環境変数テンプレート）
+  - [x] .dockerignore
+  - [x] DEPLOY.md（デプロイガイド）
 
 ### 2026-01-08（v0.8）
 - [x] v0.8 Reactフロントエンド
