@@ -2,47 +2,29 @@
 レポートエンドポイント
 """
 
-import secrets
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
-from ..routers.auth import get_current_user
+from ..dependencies import CurrentUser, DbSession
+from ..repositories import ReportRepository
 from ..schemas import (
     ErrorResponse,
     PaginatedResponse,
     ReportRequest,
     ReportResponse,
     ReportType,
-    UserRole,
 )
 
 router = APIRouter()
 
-# 仮のインメモリストレージ（本番ではDBを使用）
-_reports_db: dict[str, dict] = {}
-
 # プラン別制限
 PLAN_REPORT_LIMITS = {
-    UserRole.FREE: {"reports_per_month": 1, "types": [ReportType.WEEKLY]},
-    UserRole.PRO: {
-        "reports_per_month": 4,
-        "types": [ReportType.WEEKLY, ReportType.MONTHLY],
-    },
-    UserRole.BUSINESS: {
-        "reports_per_month": -1,
-        "types": [ReportType.WEEKLY, ReportType.MONTHLY, ReportType.CUSTOM],
-    },
-    UserRole.ENTERPRISE: {
-        "reports_per_month": -1,
-        "types": [ReportType.WEEKLY, ReportType.MONTHLY, ReportType.CUSTOM],
-    },
+    "free": {"reports_per_month": 1, "types": ["weekly"]},
+    "pro": {"reports_per_month": 4, "types": ["weekly", "monthly"]},
+    "business": {"reports_per_month": -1, "types": ["weekly", "monthly", "custom"]},
+    "enterprise": {"reports_per_month": -1, "types": ["weekly", "monthly", "custom"]},
 }
-
-
-def _generate_report_id() -> str:
-    """レポートID生成"""
-    return f"report_{secrets.token_hex(8)}"
 
 
 @router.post(
@@ -53,21 +35,21 @@ def _generate_report_id() -> str:
 )
 async def create_report(
     request: ReportRequest,
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> ReportResponse:
     """レポート生成"""
-    user_role = current_user["role"]
-    limits = PLAN_REPORT_LIMITS[user_role]
+    limits = PLAN_REPORT_LIMITS.get(current_user.role, PLAN_REPORT_LIMITS["free"])
 
     # レポートタイプ制限チェック
-    if request.report_type not in limits["types"]:
+    if request.report_type.value not in limits["types"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"現在のプラン（{user_role.value}）では{request.report_type.value}レポートを利用できません",
+            detail=f"現在のプラン（{current_user.role}）では{request.report_type.value}レポートを利用できません",
         )
 
     now = datetime.now(timezone.utc)
-    report_id = _generate_report_id()
+    report_repo = ReportRepository(db)
 
     # 期間設定
     if request.report_type == ReportType.WEEKLY:
@@ -81,30 +63,29 @@ async def create_report(
         period_start = request.start_date or (now - timedelta(days=7))
         period_end = request.end_date or now
 
-    # レポート生成（本番では実際のレポート生成処理）
-    # ここではモックデータを返す
-    report = {
-        "id": report_id,
-        "user_id": current_user["id"],
-        "report_type": request.report_type,
-        "platform": request.platform,
-        "period_start": period_start,
-        "period_end": period_end,
-        "html_url": f"/reports/{report_id}/html",
-        "created_at": now,
-    }
-
-    _reports_db[report_id] = report
-
-    return ReportResponse(
-        id=report_id,
-        user_id=current_user["id"],
-        report_type=request.report_type,
+    # レポート作成
+    report = report_repo.create(
+        user_id=current_user.id,
+        report_type=request.report_type.value,
         platform=request.platform,
         period_start=period_start,
         period_end=period_end,
-        html_url=f"/api/v1/reports/{report_id}/html",
-        created_at=now,
+        html_url=None,  # 後で生成
+    )
+
+    # HTML URLを設定
+    html_url = f"/api/v1/reports/{report.id}/html"
+    report = report_repo.update_html_url(report, html_url)
+
+    return ReportResponse(
+        id=report.id,
+        user_id=report.user_id,
+        report_type=ReportType(report.report_type),
+        platform=report.platform,
+        period_start=report.period_start,
+        period_end=report.period_end,
+        html_url=report.html_url,
+        created_at=report.created_at,
     )
 
 
@@ -113,42 +94,44 @@ async def create_report(
     response_model=PaginatedResponse,
 )
 async def list_reports(
+    db: DbSession,
+    current_user: CurrentUser,
     page: int = Query(default=1, ge=1),
     per_page: int = Query(default=20, ge=1, le=100),
     report_type: ReportType | None = None,
-    current_user: dict = Depends(get_current_user),
 ) -> PaginatedResponse:
     """レポート一覧取得"""
-    user_reports = [
-        r for r in _reports_db.values() if r["user_id"] == current_user["id"]
-    ]
+    report_repo = ReportRepository(db)
 
-    # タイプフィルタ
-    if report_type:
-        user_reports = [r for r in user_reports if r["report_type"] == report_type]
-
-    # ソート（新しい順）
-    user_reports.sort(key=lambda x: x["created_at"], reverse=True)
+    # 総数取得
+    report_type_str = report_type.value if report_type else None
+    total = report_repo.count_by_user_id(
+        user_id=current_user.id,
+        report_type=report_type_str,
+    )
 
     # ページネーション
-    total = len(user_reports)
-    start = (page - 1) * per_page
-    end = start + per_page
-    items = user_reports[start:end]
+    offset = (page - 1) * per_page
+    reports = report_repo.get_by_user_id(
+        user_id=current_user.id,
+        report_type=report_type_str,
+        limit=per_page,
+        offset=offset,
+    )
 
     # ReportResponseに変換
     response_items = [
         ReportResponse(
-            id=r["id"],
-            user_id=r["user_id"],
-            report_type=r["report_type"],
-            platform=r["platform"],
-            period_start=r["period_start"],
-            period_end=r["period_end"],
-            html_url=r["html_url"],
-            created_at=r["created_at"],
+            id=r.id,
+            user_id=r.user_id,
+            report_type=ReportType(r.report_type),
+            platform=r.platform,
+            period_start=r.period_start,
+            period_end=r.period_end,
+            html_url=r.html_url,
+            created_at=r.created_at,
         )
-        for r in items
+        for r in reports
     ]
 
     return PaginatedResponse(
@@ -167,10 +150,12 @@ async def list_reports(
 )
 async def get_report(
     report_id: str,
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> ReportResponse:
     """レポート詳細取得"""
-    report = _reports_db.get(report_id)
+    report_repo = ReportRepository(db)
+    report = report_repo.get_by_id(report_id)
 
     if not report:
         raise HTTPException(
@@ -178,21 +163,21 @@ async def get_report(
             detail="レポートが見つかりません",
         )
 
-    if report["user_id"] != current_user["id"]:
+    if report.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="レポートが見つかりません",
         )
 
     return ReportResponse(
-        id=report["id"],
-        user_id=report["user_id"],
-        report_type=report["report_type"],
-        platform=report["platform"],
-        period_start=report["period_start"],
-        period_end=report["period_end"],
-        html_url=report["html_url"],
-        created_at=report["created_at"],
+        id=report.id,
+        user_id=report.user_id,
+        report_type=ReportType(report.report_type),
+        platform=report.platform,
+        period_start=report.period_start,
+        period_end=report.period_end,
+        html_url=report.html_url,
+        created_at=report.created_at,
     )
 
 
@@ -203,10 +188,12 @@ async def get_report(
 )
 async def delete_report(
     report_id: str,
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> None:
     """レポート削除"""
-    report = _reports_db.get(report_id)
+    report_repo = ReportRepository(db)
+    report = report_repo.get_by_id(report_id)
 
     if not report:
         raise HTTPException(
@@ -214,10 +201,10 @@ async def delete_report(
             detail="レポートが見つかりません",
         )
 
-    if report["user_id"] != current_user["id"]:
+    if report.user_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="レポートが見つかりません",
         )
 
-    del _reports_db[report_id]
+    report_repo.delete(report)

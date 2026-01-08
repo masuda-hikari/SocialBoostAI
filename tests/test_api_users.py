@@ -6,19 +6,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.api.main import app
-from src.api.routers.auth import _tokens_db, _users_db
 
 client = TestClient(app)
-
-
-@pytest.fixture(autouse=True)
-def clear_db():
-    """各テスト前にDBをクリア"""
-    _users_db.clear()
-    _tokens_db.clear()
-    yield
-    _users_db.clear()
-    _tokens_db.clear()
 
 
 @pytest.fixture
@@ -28,7 +17,7 @@ def auth_token():
     client.post(
         "/api/v1/auth/register",
         json={
-            "email": "test@example.com",
+            "email": "users@example.com",
             "password": "password123",
             "username": "testuser",
         },
@@ -37,7 +26,7 @@ def auth_token():
     login_response = client.post(
         "/api/v1/auth/login",
         json={
-            "email": "test@example.com",
+            "email": "users@example.com",
             "password": "password123",
         },
     )
@@ -55,7 +44,7 @@ class TestUserProfile:
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["email"] == "test@example.com"
+        assert data["email"] == "users@example.com"
         assert data["username"] == "testuser"
         assert data["role"] == "free"
 
@@ -122,7 +111,7 @@ class TestPasswordChange:
         login_response = client.post(
             "/api/v1/auth/login",
             json={
-                "email": "test@example.com",
+                "email": "users@example.com",
                 "password": "newpassword123",
             },
         )
@@ -173,7 +162,7 @@ class TestUserDelete:
         login_response = client.post(
             "/api/v1/auth/login",
             json={
-                "email": "test@example.com",
+                "email": "users@example.com",
                 "password": "password123",
             },
         )

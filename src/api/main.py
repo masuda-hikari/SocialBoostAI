@@ -2,10 +2,22 @@
 FastAPI メインアプリケーション
 """
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from . import routers
+from .db import init_db
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """アプリケーションライフサイクル管理"""
+    # 起動時: データベース初期化
+    init_db()
+    yield
+    # シャットダウン時: クリーンアップ処理（必要に応じて）
 
 
 def create_app() -> FastAPI:
@@ -13,9 +25,10 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="0.5.0",
+        version="0.6.0",  # DB対応でバージョンアップ
         docs_url="/docs",
         redoc_url="/redoc",
+        lifespan=lifespan,
     )
 
     # CORS設定

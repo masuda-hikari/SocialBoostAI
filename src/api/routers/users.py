@@ -2,12 +2,11 @@
 ユーザーエンドポイント
 """
 
-from datetime import datetime, timezone
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, EmailStr, Field
 
-from ..routers.auth import _hash_password, _users_db, get_current_user
+from ..dependencies import CurrentUser, DbSession, hash_password, verify_password
+from ..repositories import AnalysisRepository, ReportRepository, UserRepository
 from ..schemas import ErrorResponse, UserResponse, UserRole
 
 router = APIRouter()
@@ -38,21 +37,30 @@ class UserStatsResponse(BaseModel):
     api_calls_limit: int
 
 
+# API制限（プラン別）
+API_LIMITS = {
+    "free": 100,
+    "pro": 1000,
+    "business": 10000,
+    "enterprise": 100000,
+}
+
+
 @router.get(
     "/me",
     response_model=UserResponse,
 )
 async def get_current_user_profile(
-    current_user: dict = Depends(get_current_user),
+    current_user: CurrentUser,
 ) -> UserResponse:
     """現在のユーザープロフィール取得"""
     return UserResponse(
-        id=current_user["id"],
-        email=current_user["email"],
-        username=current_user["username"],
-        role=current_user["role"],
-        created_at=current_user["created_at"],
-        is_active=current_user["is_active"],
+        id=current_user.id,
+        email=current_user.email,
+        username=current_user.username,
+        role=UserRole(current_user.role),
+        created_at=current_user.created_at,
+        is_active=current_user.is_active,
     )
 
 
@@ -63,33 +71,35 @@ async def get_current_user_profile(
 )
 async def update_current_user(
     update_data: UserUpdateRequest,
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> UserResponse:
     """ユーザープロフィール更新"""
-    user_id = current_user["id"]
+    user_repo = UserRepository(db)
 
     # メール重複チェック
     if update_data.email:
-        for uid, user in _users_db.items():
-            if uid != user_id and user["email"] == update_data.email:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="このメールアドレスは既に使用されています",
-                )
-        _users_db[user_id]["email"] = update_data.email
+        existing_user = user_repo.get_by_email(update_data.email)
+        if existing_user and existing_user.id != current_user.id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="このメールアドレスは既に使用されています",
+            )
 
-    if update_data.username:
-        _users_db[user_id]["username"] = update_data.username
-
-    updated_user = _users_db[user_id]
+    # 更新
+    updated_user = user_repo.update(
+        user=current_user,
+        username=update_data.username,
+        email=update_data.email,
+    )
 
     return UserResponse(
-        id=updated_user["id"],
-        email=updated_user["email"],
-        username=updated_user["username"],
-        role=updated_user["role"],
-        created_at=updated_user["created_at"],
-        is_active=updated_user["is_active"],
+        id=updated_user.id,
+        email=updated_user.email,
+        username=updated_user.username,
+        role=UserRole(updated_user.role),
+        created_at=updated_user.created_at,
+        is_active=updated_user.is_active,
     )
 
 
@@ -100,22 +110,23 @@ async def update_current_user(
 )
 async def change_password(
     password_data: PasswordChangeRequest,
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> None:
     """パスワード変更"""
-    user_id = current_user["id"]
-
     # 現在のパスワード検証
-    if _users_db[user_id]["password_hash"] != _hash_password(
-        password_data.current_password
-    ):
+    if not verify_password(password_data.current_password, current_user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="現在のパスワードが正しくありません",
         )
 
     # 新しいパスワード設定
-    _users_db[user_id]["password_hash"] = _hash_password(password_data.new_password)
+    user_repo = UserRepository(db)
+    user_repo.update_password(
+        user=current_user,
+        password_hash=hash_password(password_data.new_password),
+    )
 
 
 @router.get(
@@ -123,24 +134,25 @@ async def change_password(
     response_model=UserStatsResponse,
 )
 async def get_user_stats(
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> UserStatsResponse:
     """ユーザー統計取得"""
-    # API制限（プラン別）
-    api_limits = {
-        UserRole.FREE: 100,
-        UserRole.PRO: 1000,
-        UserRole.BUSINESS: 10000,
-        UserRole.ENTERPRISE: 100000,
-    }
+    analysis_repo = AnalysisRepository(db)
+    report_repo = ReportRepository(db)
+
+    # 統計取得
+    total_analyses = analysis_repo.count_by_user_id(current_user.id)
+    total_reports = report_repo.count_by_user_id(current_user.id)
+    api_limit = API_LIMITS.get(current_user.role, API_LIMITS["free"])
 
     return UserStatsResponse(
-        user_id=current_user["id"],
-        role=current_user["role"],
-        total_analyses=0,  # 本番ではDBから取得
-        total_reports=0,  # 本番ではDBから取得
+        user_id=current_user.id,
+        role=UserRole(current_user.role),
+        total_analyses=total_analyses,
+        total_reports=total_reports,
         api_calls_today=0,  # 本番ではRedis等から取得
-        api_calls_limit=api_limits[current_user["role"]],
+        api_calls_limit=api_limit,
     )
 
 
@@ -149,13 +161,11 @@ async def get_user_stats(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def delete_current_user(
-    current_user: dict = Depends(get_current_user),
+    db: DbSession,
+    current_user: CurrentUser,
 ) -> None:
     """アカウント削除"""
-    user_id = current_user["id"]
+    user_repo = UserRepository(db)
 
-    # 論理削除（本番では関連データも処理）
-    _users_db[user_id]["is_active"] = False
-
-    # 物理削除する場合
-    # del _users_db[user_id]
+    # 論理削除
+    user_repo.deactivate(current_user)

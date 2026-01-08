@@ -1,15 +1,15 @@
-﻿﻿# SocialBoostAI - ステータス
+﻿# SocialBoostAI - ステータス
 
 最終更新: 2026-01-08
 
 ## 現在の状況
 
-- 状態: 開発中（v0.5 Web API基盤完了）
-- 進捗: Webダッシュボード基盤構築完了
+- 状態: 開発中（v0.6 データベース永続化完了）
+- 進捗: SQLAlchemy/Alembicによるデータベース基盤構築完了
 
 ## 実装状況
 
-### 完了（v0.1-v0.5）
+### 完了（v0.1-v0.6）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -33,71 +33,60 @@
 - [x] **v0.5: レポートAPI（CRUD）**
 - [x] **v0.5: ユーザーAPI（プロフィール/パスワード変更/統計）**
 - [x] **v0.5: プラン別制限（Free/Pro/Business/Enterprise）**
+- [x] **v0.6: SQLAlchemyデータベースモデル**
+- [x] **v0.6: Alembicマイグレーション基盤**
+- [x] **v0.6: リポジトリパターン（CRUD操作）**
+- [x] **v0.6: APIをDB接続に更新**
 - [x] テスト151件全合格
 
-### 未実装（v0.6以降）
-- [ ] Instagram対応
-- [ ] データベース永続化（SQLite/PostgreSQL）
+### 未実装（v0.7以降）
 - [ ] 課金機能（Stripe連携）
+- [ ] Instagram対応
 - [ ] フロントエンドダッシュボード（React）
 
 ## テスト状態
 
 ```
-151 passed, 1 warning in 0.71s
+151 passed, 1 warning in 1.05s
 ```
 
-## v0.5 新機能詳細
+## v0.6 新機能詳細
 
-### FastAPI Webダッシュボード基盤
-- `src/api/main.py`: FastAPIアプリケーション
-- `src/api/schemas.py`: APIスキーマ定義
-- `src/api/routers/`: エンドポイント実装
+### データベース永続化
+- `src/api/db/base.py`: SQLAlchemy設定・セッション管理
+- `src/api/db/models.py`: データベースモデル（User/Token/Analysis/Report）
+- `migrations/`: Alembicマイグレーション
 
-### APIエンドポイント
-| エンドポイント | 機能 |
-|---------------|------|
-| GET /health | ヘルスチェック |
-| POST /api/v1/auth/register | ユーザー登録 |
-| POST /api/v1/auth/login | ログイン |
-| POST /api/v1/auth/logout | ログアウト |
-| GET /api/v1/auth/me | 現在ユーザー取得 |
-| POST /api/v1/analysis/ | 分析作成 |
-| GET /api/v1/analysis/ | 分析一覧 |
-| GET /api/v1/analysis/{id} | 分析詳細 |
-| DELETE /api/v1/analysis/{id} | 分析削除 |
-| POST /api/v1/reports/ | レポート作成 |
-| GET /api/v1/reports/ | レポート一覧 |
-| GET /api/v1/reports/{id} | レポート詳細 |
-| DELETE /api/v1/reports/{id} | レポート削除 |
-| GET /api/v1/users/me | ユーザープロフィール |
-| PATCH /api/v1/users/me | プロフィール更新 |
-| POST /api/v1/users/me/password | パスワード変更 |
-| GET /api/v1/users/me/stats | ユーザー統計 |
-| DELETE /api/v1/users/me | アカウント削除 |
+### リポジトリパターン
+- `src/api/repositories/user_repository.py`: ユーザーCRUD
+- `src/api/repositories/token_repository.py`: トークンCRUD
+- `src/api/repositories/analysis_repository.py`: 分析CRUD
+- `src/api/repositories/report_repository.py`: レポートCRUD
 
-### プラン別制限
-| プラン | 分析期間 | API呼出/日 | レポート種別 |
-|--------|---------|-----------|-------------|
-| Free | 7日 | 100 | 週次のみ |
-| Pro | 90日 | 1000 | 週次/月次 |
-| Business | 365日 | 10000 | 全種類 |
-| Enterprise | 無制限 | 100000 | 全種類 |
+### 依存性注入
+- `src/api/dependencies.py`: 認証・DB接続の依存性注入
+
+### データベーステーブル
+| テーブル | 説明 |
+|---------|------|
+| users | ユーザー情報 |
+| tokens | 認証トークン |
+| analyses | 分析結果 |
+| reports | レポート |
 
 ## 次のアクション
 
-1. **優先度1**: データベース永続化（SQLAlchemy/Alembic）
-2. **優先度2**: 課金機能実装（Stripe連携）
-3. **優先度3**: v0.6 Instagram対応
+1. **優先度1**: 課金機能実装（Stripe連携）
+2. **優先度2**: v0.7 Instagram対応
+3. **優先度3**: フロントエンドダッシュボード（React）
 
 ## 技術的課題
 
 - datetime.utcnow() 非推奨警告 → datetime.now(UTC)へ移行推奨
-- 現在のAPIはインメモリストレージ（本番ではDB化必須）
 
 ## 最近の変更
 
+- 2026-01-08: v0.6 データベース永続化完了（SQLAlchemy/Alembic）
+- 2026-01-08: リポジトリパターン実装
+- 2026-01-08: API RouterをDB接続に更新
 - 2026-01-08: v0.5 Webダッシュボード基盤完了（FastAPI）
-- 2026-01-08: APIテスト41件追加（合計151件）
-- 2026-01-08: v0.4 レポート機能拡張完了（週次/月次サマリー、期間比較）
-- 2026-01-08: v0.3 AI機能強化完了
