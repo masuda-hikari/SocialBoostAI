@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="0.7.0",  # Stripe課金機能追加
+        version="1.0.0",  # Instagram分析機能追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -45,6 +45,11 @@ def create_app() -> FastAPI:
     app.include_router(routers.auth_router, prefix="/api/v1/auth", tags=["認証"])
     app.include_router(
         routers.analysis_router, prefix="/api/v1/analysis", tags=["分析"]
+    )
+    app.include_router(
+        routers.instagram_analysis_router,
+        prefix="/api/v1/instagram/analysis",
+        tags=["Instagram分析"],
     )
     app.include_router(
         routers.report_router, prefix="/api/v1/reports", tags=["レポート"]

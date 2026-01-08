@@ -208,3 +208,58 @@ class PaginatedResponse(BaseModel):
     page: int
     per_page: int
     pages: int
+
+
+# Instagram分析関連
+class InstagramAnalysisRequest(BaseModel):
+    """Instagram分析リクエスト"""
+
+    period_days: int = Field(default=7, ge=1, le=90)
+
+
+class InstagramAnalysisSummary(BaseModel):
+    """Instagram分析サマリー"""
+
+    total_posts: int
+    total_reels: int = 0
+    total_likes: int
+    total_comments: int
+    total_saves: int = 0
+    engagement_rate: float
+    best_hour: Optional[int] = None
+    top_hashtags: list[str] = []
+
+
+class InstagramAnalysisResponse(BaseModel):
+    """Instagram分析レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "instagram"
+    period_start: datetime
+    period_end: datetime
+    summary: InstagramAnalysisSummary
+    created_at: datetime
+
+
+class InstagramContentPattern(BaseModel):
+    """Instagramコンテンツパターン"""
+
+    pattern_type: str
+    count: int
+    avg_engagement: float
+
+
+class InstagramAnalysisDetail(BaseModel):
+    """Instagram分析詳細レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "instagram"
+    period_start: datetime
+    period_end: datetime
+    summary: InstagramAnalysisSummary
+    hourly_breakdown: list[dict] = []
+    content_patterns: list[InstagramContentPattern] = []
+    recommendations: Optional[dict] = None
+    created_at: datetime

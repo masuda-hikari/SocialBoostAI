@@ -157,3 +157,57 @@ class AnalysisRepository:
             ハッシュタグリスト
         """
         return json.loads(analysis.top_hashtags)
+
+    def get_by_user_id_and_platform(
+        self,
+        user_id: str,
+        platform: str,
+        limit: int = 20,
+        offset: int = 0,
+    ) -> list[Analysis]:
+        """
+        ユーザーIDとプラットフォームで分析一覧取得
+
+        Args:
+            user_id: ユーザーID
+            platform: プラットフォーム
+            limit: 取得件数
+            offset: オフセット
+
+        Returns:
+            分析リスト
+        """
+        stmt = (
+            select(Analysis)
+            .where(Analysis.user_id == user_id)
+            .where(Analysis.platform == platform)
+            .order_by(Analysis.created_at.desc())
+            .limit(limit)
+            .offset(offset)
+        )
+
+        return list(self.db.scalars(stmt).all())
+
+    def count_by_user_id_and_platform(
+        self,
+        user_id: str,
+        platform: str,
+    ) -> int:
+        """
+        ユーザーIDとプラットフォームで分析数取得
+
+        Args:
+            user_id: ユーザーID
+            platform: プラットフォーム
+
+        Returns:
+            分析数
+        """
+        stmt = (
+            select(func.count())
+            .select_from(Analysis)
+            .where(Analysis.user_id == user_id)
+            .where(Analysis.platform == platform)
+        )
+
+        return self.db.scalar(stmt) or 0

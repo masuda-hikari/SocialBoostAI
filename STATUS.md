@@ -4,8 +4,8 @@
 
 ## 現在の状況
 
-- 状態: **デプロイ準備完了 + v1.0基盤準備中**
-- 進捗: MVP完成、デプロイ準備完了、人間作業待ち、Instagram基盤実装完了
+- 状態: **v1.0 Instagram分析機能完了 + デプロイ準備完了**
+- 進捗: MVP完成、Instagram分析API実装完了、人間作業待ち
 
 ## 実装状況
 
@@ -54,32 +54,34 @@
 - [x] **v0.10: 利用規約ページ**
 - [x] **v0.10: プライバシーポリシーページ**
 - [x] **v0.10: 特定商取引法に基づく表記ページ**
-- [x] テスト202件全合格
 - [x] **デプロイチェックリスト作成**
 - [x] **マーケティングテンプレート作成**
 
-### v1.0基盤（進行中）
+### v1.0 Instagram対応（完了）
 - [x] **Instagramデータモデル**（InstagramPost/Reel/Story/Account）
 - [x] **Instagram APIクライアント**（Graph API対応）
 - [x] **統一投稿モデル**（UnifiedPost - クロスプラットフォーム対応）
 - [x] **クロスプラットフォーム指標モデル**（CrossPlatformMetrics）
-- [x] **Instagramテスト21件追加**
+- [x] **Instagram分析機能**（時間帯分析/ハッシュタグ分析/パターン分析）
+- [x] **Instagram分析API**（POST/GET/DELETE）
+- [x] **プラン別アクセス制御**（Proプラン以上でInstagram利用可能）
+- [x] **テスト237件全合格**（Instagram 35件追加）
 
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
 - [ ] 本番デプロイ実行
 
-### 未実装（v1.0予定）
-- [ ] Instagram分析機能（APIクライアントを使用）
-- [ ] Instagram分析API
+### 未実装（将来対応予定）
 - [ ] クロスプラットフォーム比較機能
 - [ ] フロントエンドInstagram対応
+- [ ] TikTok対応
+- [ ] YouTube対応
 
 ## テスト状態
 
 ```
-Backend: 202 passed（Instagram 21件追加）
+Backend: 237 passed（Instagram分析 35件追加）
 Frontend: Build成功、ESLint合格
 最終確認: 2026-01-08
 ```
@@ -126,15 +128,22 @@ Frontend: Build成功、ESLint合格
 4. **本番デプロイ**
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
+**★ AIが次回実行可能な作業 ★**
+- フロントエンドInstagram対応
+- クロスプラットフォーム比較機能
+- パフォーマンス最適化
+
 ## 技術的課題
 
 - ~~datetime.utcnow() 非推奨警告~~ → **解決済み**（datetime.now(UTC)へ移行完了）
 
 ## 最近の変更
 
-- 2026-01-08: **v1.0基盤: Instagram対応モデル・APIクライアント追加**
-- 2026-01-08: **v1.0基盤: UnifiedPost/CrossPlatformMetrics追加**
-- 2026-01-08: **テスト21件追加（計202件）**
+- 2026-01-08: **v1.0: Instagram分析機能実装完了**
+- 2026-01-08: **v1.0: Instagram分析API実装完了**
+- 2026-01-08: **テスト35件追加（計237件）**
+- 2026-01-08: v1.0基盤: Instagram対応モデル・APIクライアント追加
+- 2026-01-08: v1.0基盤: UnifiedPost/CrossPlatformMetrics追加
 - 2026-01-08: datetime.utcnow()警告修正（コード品質改善）
 - 2026-01-08: REVENUE_METRICS.md作成（Orchestrator要件対応）
 - 2026-01-08: デプロイチェックリスト作成
