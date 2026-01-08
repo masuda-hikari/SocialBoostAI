@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿# SocialBoostAI - タスク管理
+# SocialBoostAI - タスク管理
 
 ## 待機中タスク
 
@@ -12,10 +12,18 @@
 - [ ] 初期ユーザー獲得施策（SNS告知/ベータ募集）
 
 ### 優先度3: 収益基盤（AIが実行可能）
-- [ ] フロントエンドInstagram対応
 - [ ] クロスプラットフォーム比較機能
 
 ## 完了タスク
+
+### 2026-01-09（v1.1 フロントエンドInstagram対応）
+- [x] v1.1 フロントエンドInstagram対応
+  - [x] Instagram分析APIクライアント作成（frontend/src/api/instagram.ts）
+  - [x] Instagram型定義追加（InstagramAnalysis/InstagramAnalysisSummary等）
+  - [x] 分析ページ更新（Twitter/Instagramタブ切り替え）
+  - [x] プラン別UI制御（Freeプランはロック表示、アップグレード促進）
+  - [x] Instagram専用UIデザイン（ピンク/パープルグラデーション）
+  - [x] ビルド成功・ESLint合格
 
 ### 2026-01-08（v1.0 Instagram対応）
 - [x] v1.0 Instagram分析機能
@@ -123,4 +131,4 @@
 - [x] テストデータ修正（BOM/文字化け解消）
 
 ---
-最終更新: 2026-01-08
+最終更新: 2026-01-09

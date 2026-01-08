@@ -1,15 +1,15 @@
-﻿﻿﻿﻿﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
-最終更新: 2026-01-08
+最終更新: 2026-01-09
 
 ## 現在の状況
 
-- 状態: **v1.0 Instagram分析機能完了 + デプロイ準備完了**
-- 進捗: MVP完成、Instagram分析API実装完了、人間作業待ち
+- 状態: **v1.1 フロントエンドInstagram対応完了**
+- 進捗: MVP完成、Instagram分析UI実装完了、人間作業待ち
 
 ## 実装状況
 
-### 完了（v0.1-v0.10）
+### 完了（v0.1-v1.1）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -67,6 +67,14 @@
 - [x] **プラン別アクセス制御**（Proプラン以上でInstagram利用可能）
 - [x] **テスト237件全合格**（Instagram 35件追加）
 
+### v1.1 フロントエンドInstagram対応（完了）
+- [x] **Instagram分析APIクライアント**（frontend/src/api/instagram.ts）
+- [x] **Instagram型定義追加**（InstagramAnalysis/InstagramAnalysisSummary等）
+- [x] **分析ページ更新**（Twitter/Instagramタブ切り替え）
+- [x] **プラン別UI制御**（Freeプランはロック表示、アップグレード促進）
+- [x] **Instagram専用UIデザイン**（ピンク/パープルグラデーション）
+- [x] **ビルド成功・ESLint合格**
+
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
@@ -74,16 +82,15 @@
 
 ### 未実装（将来対応予定）
 - [ ] クロスプラットフォーム比較機能
-- [ ] フロントエンドInstagram対応
 - [ ] TikTok対応
 - [ ] YouTube対応
 
 ## テスト状態
 
 ```
-Backend: 237 passed（Instagram分析 35件追加）
+Backend: 237 passed
 Frontend: Build成功、ESLint合格
-最終確認: 2026-01-08
+最終確認: 2026-01-09
 ```
 
 ## 収益化までの残タスク
@@ -129,19 +136,22 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
-- フロントエンドInstagram対応
 - クロスプラットフォーム比較機能
 - パフォーマンス最適化
+- デプロイ後のバグ修正
 
 ## 技術的課題
 
-- ~~datetime.utcnow() 非推奨警告~~ → **解決済み**（datetime.now(UTC)へ移行完了）
+- なし（全件解決済み）
 
 ## 最近の変更
 
-- 2026-01-08: **v1.0: Instagram分析機能実装完了**
-- 2026-01-08: **v1.0: Instagram分析API実装完了**
-- 2026-01-08: **テスト35件追加（計237件）**
+- 2026-01-09: **v1.1: フロントエンドInstagram対応完了**
+- 2026-01-09: **分析ページ: Twitter/Instagramタブ切り替え機能追加**
+- 2026-01-09: **プラン別UI制御: Freeプランはロック表示**
+- 2026-01-08: v1.0: Instagram分析機能実装完了
+- 2026-01-08: v1.0: Instagram分析API実装完了
+- 2026-01-08: テスト35件追加（計237件）
 - 2026-01-08: v1.0基盤: Instagram対応モデル・APIクライアント追加
 - 2026-01-08: v1.0基盤: UnifiedPost/CrossPlatformMetrics追加
 - 2026-01-08: datetime.utcnow()警告修正（コード品質改善）

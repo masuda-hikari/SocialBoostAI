@@ -135,3 +135,47 @@ export interface UserStats {
   api_calls_today: number;
   api_calls_limit: number;
 }
+
+// Instagram分析関連
+export interface InstagramAnalysisSummary {
+  total_posts: number;
+  total_reels: number;
+  total_likes: number;
+  total_comments: number;
+  total_saves: number;
+  engagement_rate: number;
+  best_hour: number | null;
+  top_hashtags: string[];
+}
+
+export interface InstagramContentPattern {
+  pattern_type: string;
+  count: number;
+  avg_engagement: number;
+}
+
+export interface InstagramAnalysis {
+  id: string;
+  user_id: string;
+  platform: 'instagram';
+  period_start: string;
+  period_end: string;
+  summary: InstagramAnalysisSummary;
+  created_at: string;
+  // 詳細情報（詳細取得時のみ）
+  hourly_breakdown?: Array<{
+    hour: number;
+    avg_likes: number;
+    post_count: number;
+  }>;
+  content_patterns?: InstagramContentPattern[];
+  recommendations?: {
+    best_hours: number[];
+    suggested_hashtags: string[];
+    reasoning: string;
+  };
+}
+
+export interface InstagramAnalysisRequest {
+  period_days?: number;
+}
