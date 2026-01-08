@@ -4,7 +4,7 @@
 
 import logging
 import os
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Optional
 
 import tweepy
@@ -99,7 +99,7 @@ class TwitterClient:
             raise ValueError(f"ユーザー '{username}' が見つかりません")
 
         user_id = user.data.id
-        start_time = datetime.utcnow() - timedelta(days=days)
+        start_time = datetime.now(UTC) - timedelta(days=days)
 
         # ツイートを取得
         tweets_response = client.get_users_tweets(

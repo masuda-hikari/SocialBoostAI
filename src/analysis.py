@@ -4,7 +4,7 @@
 
 import logging
 from collections import defaultdict
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Optional
 
 from .content_analysis import (
@@ -174,7 +174,7 @@ def analyze_tweets(
         AnalysisResult: 分析結果
     """
     if not tweets:
-        now = datetime.utcnow()
+        now = datetime.now(UTC)
         return AnalysisResult(
             period_start=period_start or now,
             period_end=period_end or now,

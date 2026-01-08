@@ -116,10 +116,12 @@ Frontend: Build成功、ESLint合格
 
 ## 技術的課題
 
-- datetime.utcnow() 非推奨警告 → datetime.now(UTC)へ移行推奨（軽微）
+- ~~datetime.utcnow() 非推奨警告~~ → **解決済み**（datetime.now(UTC)へ移行完了）
 
 ## 最近の変更
 
+- 2026-01-08: datetime.utcnow()警告修正（コード品質改善）
+- 2026-01-08: REVENUE_METRICS.md作成（Orchestrator要件対応）
 - 2026-01-08: デプロイチェックリスト作成
 - 2026-01-08: マーケティングテンプレート作成
 - 2026-01-08: v0.10 マーケティングページ追加
