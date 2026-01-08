@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.2.0",  # クロスプラットフォーム比較機能追加
+        version="1.3.0",  # TikTok対応追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -50,6 +50,11 @@ def create_app() -> FastAPI:
         routers.instagram_analysis_router,
         prefix="/api/v1/instagram/analysis",
         tags=["Instagram分析"],
+    )
+    app.include_router(
+        routers.tiktok_analysis_router,
+        prefix="/api/v1/tiktok/analysis",
+        tags=["TikTok分析"],
     )
     app.include_router(
         routers.cross_platform_router,

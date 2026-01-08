@@ -239,3 +239,68 @@ export interface CrossPlatformComparisonRequest {
   instagram_analysis_id?: string;
   period_days?: number;
 }
+
+// =============================================================================
+// TikTok分析関連（v1.3）
+// =============================================================================
+
+export interface TikTokAnalysisSummary {
+  total_videos: number;
+  total_views: number;
+  total_likes: number;
+  total_comments: number;
+  total_shares: number;
+  engagement_rate: number;
+  view_to_like_ratio: number;
+  avg_views_per_video: number;
+  best_hour: number | null;
+  best_duration_range: string | null;
+  top_hashtags: string[];
+}
+
+export interface TikTokSoundInfo {
+  sound_id: string;
+  sound_name: string;
+  usage_count: number;
+  avg_engagement: number;
+  is_trending: boolean;
+}
+
+export interface TikTokContentPattern {
+  pattern_type: string;
+  count: number;
+  avg_engagement: number;
+}
+
+export interface TikTokAnalysis {
+  id: string;
+  user_id: string;
+  platform: 'tiktok';
+  period_start: string;
+  period_end: string;
+  summary: TikTokAnalysisSummary;
+  created_at: string;
+  // 詳細情報（詳細取得時のみ）
+  hourly_breakdown?: Array<{
+    hour: number;
+    avg_likes: number;
+    avg_views: number;
+    post_count: number;
+  }>;
+  content_patterns?: TikTokContentPattern[];
+  sound_analysis?: TikTokSoundInfo[];
+  recommendations?: {
+    best_hours: number[];
+    suggested_hashtags: string[];
+    best_duration: string;
+    trending_sounds: string[];
+    reasoning: string;
+  };
+  avg_video_duration?: number;
+  duet_performance?: number | null;
+  stitch_performance?: number | null;
+}
+
+export interface TikTokAnalysisRequest {
+  period_days?: number;
+}

@@ -336,6 +336,30 @@ class UnifiedPost(BaseModel):
             author_id=post.author_id,
         )
 
+    @classmethod
+    def from_tiktok_video(cls, video: "TikTokVideo") -> "UnifiedPost":
+        """TikTokVideoからUnifiedPostに変換"""
+        total_engagement = video.likes + video.comments + video.shares
+        engagement_rate = 0.0
+        if video.views and video.views > 0:
+            engagement_rate = (total_engagement / video.views) * 100
+
+        return cls(
+            id=video.id,
+            platform=PlatformType.TIKTOK,
+            content=video.description,
+            media_type="video",
+            created_at=video.create_time,
+            likes=video.likes,
+            comments=video.comments,
+            shares=video.shares,
+            impressions=video.impressions,
+            reach=video.reach,
+            engagement_rate=engagement_rate,
+            permalink=video.share_url,
+            author_id=video.author_id,
+        )
+
 
 class CrossPlatformMetrics(BaseModel):
     """クロスプラットフォーム統合指標"""
@@ -410,3 +434,105 @@ class CrossPlatformSummary(BaseModel):
     best_platform: Optional[str] = None
     key_insight: str = ""
     created_at: datetime
+
+
+# =============================================================================
+# v1.3: TikTok対応モデル
+# =============================================================================
+
+
+class TikTokVideo(BaseModel):
+    """TikTok動画データモデル"""
+
+    id: str
+    description: Optional[str] = None
+    create_time: datetime
+    duration: int = Field(ge=0, default=0)  # 秒
+    cover_image_url: Optional[str] = None
+    share_url: Optional[str] = None
+    # エンゲージメント指標
+    likes: int = Field(ge=0, default=0)
+    comments: int = Field(ge=0, default=0)
+    shares: int = Field(ge=0, default=0)
+    views: int = Field(ge=0, default=0)
+    # 追加指標（ビジネスアカウントのみ）
+    saves: Optional[int] = Field(ge=0, default=None)
+    reach: Optional[int] = Field(ge=0, default=None)
+    impressions: Optional[int] = Field(ge=0, default=None)
+    # サウンド情報
+    sound_id: Optional[str] = None
+    sound_name: Optional[str] = None
+    is_original_sound: bool = False
+    # ハッシュタグ・メンション
+    hashtags: list[str] = []
+    mentions: list[str] = []
+    # 動画タイプ
+    video_type: str = "video"  # "video", "duet", "stitch", "live"
+    author_id: Optional[str] = None
+
+
+class TikTokAccount(BaseModel):
+    """TikTokアカウント情報"""
+
+    id: str
+    username: str
+    display_name: Optional[str] = None
+    bio: Optional[str] = None
+    avatar_url: Optional[str] = None
+    followers_count: int = 0
+    following_count: int = 0
+    likes_count: int = 0  # プロフィールへの総いいね数
+    video_count: int = 0
+    is_verified: bool = False
+    is_business_account: bool = False
+    created_at: Optional[datetime] = None
+
+
+class TikTokEngagementMetrics(BaseModel):
+    """TikTokエンゲージメント指標"""
+
+    total_views: int = 0
+    total_likes: int = 0
+    total_comments: int = 0
+    total_shares: int = 0
+    total_saves: int = 0
+    engagement_rate: float = 0.0  # (likes + comments + shares) / views * 100
+    avg_views_per_video: float = 0.0
+    avg_likes_per_video: float = 0.0
+    avg_comments_per_video: float = 0.0
+    avg_shares_per_video: float = 0.0
+    view_to_like_ratio: float = 0.0  # いいね率 = likes / views * 100
+    completion_rate: Optional[float] = None  # 動画完走率（ビジネスのみ）
+
+
+class TikTokSoundAnalysis(BaseModel):
+    """TikTokサウンド分析"""
+
+    sound_id: str
+    sound_name: str
+    usage_count: int = 0
+    total_views: int = 0
+    total_likes: int = 0
+    avg_engagement: float = 0.0
+    is_trending: bool = False
+    effectiveness_score: float = 0.0
+
+
+class TikTokAnalysisResult(BaseModel):
+    """TikTok分析結果"""
+
+    period_start: datetime
+    period_end: datetime
+    total_videos: int
+    metrics: TikTokEngagementMetrics
+    hourly_breakdown: list[HourlyEngagement] = []
+    top_performing_videos: list[TikTokVideo] = []
+    recommendations: Optional[PostRecommendation] = None
+    hashtag_analysis: list[HashtagAnalysis] = []
+    sound_analysis: list[TikTokSoundAnalysis] = []
+    content_patterns: list[ContentPattern] = []
+    # TikTok固有の分析
+    avg_video_duration: float = 0.0
+    best_duration_range: Optional[str] = None  # "0-15s", "15-30s", "30-60s", "60s+"
+    duet_performance: Optional[float] = None  # デュエット動画の平均パフォーマンス
+    stitch_performance: Optional[float] = None  # スティッチ動画の平均パフォーマンス

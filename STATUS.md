@@ -1,15 +1,15 @@
-﻿﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
 最終更新: 2026-01-09
 
 ## 現在の状況
 
-- 状態: **v1.2 クロスプラットフォーム比較機能完了**
-- 進捗: MVP完成、Instagram対応完了、クロスプラットフォーム比較実装完了
+- 状態: **v1.3 TikTok対応完了**
+- 進捗: MVP完成、Instagram対応完了、クロスプラットフォーム比較実装完了、TikTok対応完了
 
 ## 実装状況
 
-### 完了（v0.1-v1.2）
+### 完了（v0.1-v1.3）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -88,19 +88,40 @@
 - [x] **テスト32件追加**（クロスプラットフォーム20件 + API12件）
 - [x] **フロントエンドビルド成功・ESLint合格**
 
+### v1.3 TikTok対応（完了）
+- [x] **TikTokデータモデル**（TikTokVideo/TikTokAccount/TikTokEngagementMetrics/TikTokSoundAnalysis/TikTokAnalysisResult）
+- [x] **TikTok APIクライアント**（tiktok_client.py - TikTok API for Business対応）
+- [x] **TikTok分析モジュール**（tiktok_analysis.py）
+  - 時間帯分析
+  - ハッシュタグ分析
+  - サウンド分析（トレンドサウンド検出）
+  - コンテンツパターン分析（tutorial/challenge/transformation/pov/storytime/duet_stitch）
+  - 動画長分析（最適な動画長の特定）
+  - 動画タイプ別パフォーマンス（duet/stitch）
+- [x] **TikTok分析API**（POST/GET/DELETE /api/v1/tiktok/analysis）
+- [x] **プラン別アクセス制御**（Proプラン以上でTikTok利用可能）
+- [x] **APIスキーマ追加**（TikTokAnalysisRequest/Response/Summary/Detail等）
+- [x] **フロントエンド対応**
+  - TikTok APIクライアント（frontend/src/api/tiktok.ts）
+  - TikTok型定義（TikTokAnalysis/TikTokAnalysisSummary/TikTokSoundInfo等）
+  - 分析ページ更新（Twitter/Instagram/TikTokタブ切り替え）
+  - TikTok専用UIデザイン（シアン/ブラックグラデーション）
+- [x] **テスト33件追加**（TikTok分析23件 + API10件）
+- [x] **テスト302件全合格**
+- [x] **フロントエンドビルド成功・ESLint合格**
+
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
 - [ ] 本番デプロイ実行
 
 ### 未実装（将来対応予定）
-- [ ] TikTok対応
-- [ ] YouTube対応
+- [ ] YouTube対応（v1.4）
 
 ## テスト状態
 
 ```
-Backend: 269件合格
+Backend: 302件合格
 Frontend: Build成功、ESLint合格
 最終確認: 2026-01-09
 ```
@@ -148,9 +169,9 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
+- YouTube対応（v1.4）
 - パフォーマンス最適化
 - デプロイ後のバグ修正
-- TikTok/YouTube対応（v1.3以降）
 
 ## 技術的課題
 
@@ -158,14 +179,12 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
-- 2026-01-09: **テスト用DBセットアップ修正（269件全合格）**
-- 2026-01-09: **v1.2: クロスプラットフォーム比較機能完了**
-- 2026-01-09: **比較モデル・API・UI実装**
-- 2026-01-09: **プラン別制御（Businessプラン以上で利用可能）**
-- 2026-01-09: **テスト32件追加**
+- 2026-01-09: **v1.3: TikTok対応完了**
+- 2026-01-09: **TikTokデータモデル/APIクライアント/分析モジュール追加**
+- 2026-01-09: **TikTok分析API実装（POST/GET/DELETE）**
+- 2026-01-09: **フロントエンドTikTok対応（タブ切り替え/UI追加）**
+- 2026-01-09: **テスト33件追加（計302件全合格）**
+- 2026-01-09: テスト用DBセットアップ修正（269件全合格）
+- 2026-01-09: v1.2: クロスプラットフォーム比較機能完了
 - 2026-01-09: v1.1: フロントエンドInstagram対応完了
-- 2026-01-09: 分析ページ: Twitter/Instagramタブ切り替え機能追加
 - 2026-01-08: v1.0: Instagram分析機能実装完了
-- 2026-01-08: v1.0: Instagram分析API実装完了
-- 2026-01-08: テスト35件追加（計237件）
-- 2026-01-08: v1.0基盤: Instagram対応モデル・APIクライアント追加

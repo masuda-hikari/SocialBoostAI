@@ -334,3 +334,79 @@ class CrossPlatformComparisonSummary(BaseModel):
     best_platform: Optional[str] = None
     key_insight: str = ""
     created_at: datetime
+
+
+# =============================================================================
+# TikTok分析関連（v1.3）
+# =============================================================================
+
+
+class TikTokAnalysisRequest(BaseModel):
+    """TikTok分析リクエスト"""
+
+    period_days: int = Field(default=7, ge=1, le=90)
+
+
+class TikTokAnalysisSummary(BaseModel):
+    """TikTok分析サマリー"""
+
+    total_videos: int
+    total_views: int = 0
+    total_likes: int = 0
+    total_comments: int = 0
+    total_shares: int = 0
+    engagement_rate: float = 0.0
+    view_to_like_ratio: float = 0.0
+    avg_views_per_video: float = 0.0
+    best_hour: Optional[int] = None
+    best_duration_range: Optional[str] = None
+    top_hashtags: list[str] = []
+
+
+class TikTokAnalysisResponse(BaseModel):
+    """TikTok分析レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "tiktok"
+    period_start: datetime
+    period_end: datetime
+    summary: TikTokAnalysisSummary
+    created_at: datetime
+
+
+class TikTokSoundInfo(BaseModel):
+    """TikTokサウンド情報"""
+
+    sound_id: str
+    sound_name: str
+    usage_count: int = 0
+    avg_engagement: float = 0.0
+    is_trending: bool = False
+
+
+class TikTokContentPattern(BaseModel):
+    """TikTokコンテンツパターン"""
+
+    pattern_type: str
+    count: int
+    avg_engagement: float
+
+
+class TikTokAnalysisDetail(BaseModel):
+    """TikTok分析詳細レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "tiktok"
+    period_start: datetime
+    period_end: datetime
+    summary: TikTokAnalysisSummary
+    hourly_breakdown: list[dict] = []
+    content_patterns: list[TikTokContentPattern] = []
+    sound_analysis: list[TikTokSoundInfo] = []
+    recommendations: Optional[dict] = None
+    avg_video_duration: float = 0.0
+    duet_performance: Optional[float] = None
+    stitch_performance: Optional[float] = None
+    created_at: datetime
