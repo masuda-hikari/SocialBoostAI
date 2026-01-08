@@ -2,7 +2,7 @@
 SocialBoostAI - AI駆動のソーシャルメディア成長アシスタント
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 __author__ = "SocialBoostAI Team"
 
 # v0.3 AI拡張機能
