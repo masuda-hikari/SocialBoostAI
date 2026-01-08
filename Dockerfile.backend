@@ -1,0 +1,47 @@
+# SocialBoostAI バックエンド Dockerfile
+# Python 3.11 ベース
+
+FROM python:3.11-slim
+
+# 環境変数設定
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app
+
+# 作業ディレクトリ
+WORKDIR /app
+
+# システム依存パッケージ
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 依存関係ファイルコピー
+COPY requirements.txt .
+COPY pyproject.toml .
+
+# Python依存関係インストール
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir uvicorn[standard] psycopg2-binary passlib[bcrypt] python-jose[cryptography] python-multipart
+
+# アプリケーションコード
+COPY src/ ./src/
+COPY alembic/ ./alembic/
+COPY alembic.ini .
+
+# 非rootユーザー作成
+RUN adduser --disabled-password --gecos '' appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# ポート
+EXPOSE 8000
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import httpx; httpx.get('http://localhost:8000/health')" || exit 1
+
+# 起動コマンド
+CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

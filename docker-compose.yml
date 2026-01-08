@@ -1,0 +1,116 @@
+# SocialBoostAI Docker Compose
+# 本番環境構成: バックエンド + フロントエンド + PostgreSQL + Redis
+
+services:
+  # PostgreSQL データベース
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-socialboost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-socialboost}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-socialboost}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - socialboost
+
+  # Redis（セッション/キャッシュ）
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - socialboost
+
+  # バックエンド API
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-socialboost}:${POSTGRES_PASSWORD:-changeme}@db:5432/${POSTGRES_DB:-socialboost}
+      REDIS_URL: redis://redis:6379/0
+      DEBUG: ${DEBUG:-false}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      SECRET_KEY: ${SECRET_KEY}
+      TWITTER_API_KEY: ${TWITTER_API_KEY}
+      TWITTER_API_SECRET: ${TWITTER_API_SECRET}
+      TWITTER_ACCESS_TOKEN: ${TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_TOKEN_SECRET: ${TWITTER_ACCESS_TOKEN_SECRET}
+      TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_PRICE_PRO: ${STRIPE_PRICE_PRO}
+      STRIPE_PRICE_BUSINESS: ${STRIPE_PRICE_BUSINESS}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - socialboost
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.${DOMAIN:-localhost}`)"
+      - "traefik.http.services.backend.loadbalancer.server.port=8000"
+
+  # フロントエンド
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    networks:
+      - socialboost
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`${DOMAIN:-localhost}`)"
+      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+
+  # Traefik リバースプロキシ（オプション）
+  traefik:
+    image: traefik:v3.0
+    restart: unless-stopped
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"  # Traefik Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - socialboost
+    profiles:
+      - with-traefik
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  socialboost:
+    driver: bridge

@@ -1,0 +1,55 @@
+# SocialBoostAI Docker Compose - 開発環境
+# ホットリロード対応、SQLite使用
+
+services:
+  # バックエンド API（開発モード）
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: sqlite:///./data/socialboost.db
+      DEBUG: "true"
+      LOG_LEVEL: DEBUG
+      SECRET_KEY: dev-secret-key-change-in-production
+      TWITTER_API_KEY: ${TWITTER_API_KEY:-}
+      TWITTER_API_SECRET: ${TWITTER_API_SECRET:-}
+      TWITTER_ACCESS_TOKEN: ${TWITTER_ACCESS_TOKEN:-}
+      TWITTER_ACCESS_TOKEN_SECRET: ${TWITTER_ACCESS_TOKEN_SECRET:-}
+      TWITTER_BEARER_TOKEN: ${TWITTER_BEARER_TOKEN:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_PRICE_PRO: ${STRIPE_PRICE_PRO:-}
+      STRIPE_PRICE_BUSINESS: ${STRIPE_PRICE_BUSINESS:-}
+    volumes:
+      - ./src:/app/src:ro
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - socialboost-dev
+
+  # フロントエンド（開発モード）
+  frontend:
+    image: node:20-alpine
+    working_dir: /app
+    environment:
+      VITE_API_URL: http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - socialboost-dev
+
+volumes:
+  frontend_node_modules:
+
+networks:
+  socialboost-dev:
+    driver: bridge

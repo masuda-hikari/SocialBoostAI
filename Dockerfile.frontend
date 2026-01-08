@@ -1,0 +1,41 @@
+# SocialBoostAI フロントエンド Dockerfile
+# マルチステージビルド
+
+# ビルドステージ
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# 依存関係ファイル
+COPY frontend/package.json frontend/package-lock.json* ./
+
+# 依存関係インストール
+RUN npm ci
+
+# ソースコード
+COPY frontend/ .
+
+# 環境変数（ビルド時）
+ARG VITE_API_URL=http://localhost:8000
+ENV VITE_API_URL=$VITE_API_URL
+
+# ビルド
+RUN npm run build
+
+# 本番ステージ
+FROM nginx:alpine
+
+# nginx設定
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# ビルド成果物
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# ポート
+EXPOSE 80
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost/ || exit 1
+
+CMD ["nginx", "-g", "daemon off;"]
