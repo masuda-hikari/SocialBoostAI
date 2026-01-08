@@ -3,21 +3,36 @@
 ## 待機中タスク
 
 ### 優先度1: 直接収益
-- [ ] 課金機能実装（Stripe連携）
-- [ ] サブスクリプションプラン管理
+- [ ] Stripeダッシュボード設定（本番用Product/Price作成）
+- [ ] Webhook Endpoint設定・環境変数設定
 
 ### 優先度2: 収益準備
 - [ ] フロントエンドダッシュボード（React）
 - [ ] OAuth2ソーシャルログイン
 
 ### 優先度3: 収益基盤
-- [ ] v0.7 Instagram対応
+- [ ] v0.8 Instagram対応
 - [ ] クロスプラットフォーム比較
 
 ## 進行中タスク
 （現在なし）
 
 ## 完了タスク
+
+### 2026-01-08（v0.7）
+- [x] v0.7 Stripe課金機能
+  - [x] Stripe APIクライアント作成
+  - [x] 課金サービス（ビジネスロジック）実装
+  - [x] サブスクリプションDBモデル追加
+  - [x] Alembicマイグレーション追加
+  - [x] 課金API Router実装
+  - [x] プラン一覧/詳細API
+  - [x] Checkout Session API
+  - [x] Customer Portal API
+  - [x] サブスクリプションキャンセルAPI
+  - [x] Webhook処理（checkout/update/delete/payment_failed）
+  - [x] プラン制限取得API
+- [x] 課金テスト30件追加（合計181件）
 
 ### 2026-01-08（v0.6）
 - [x] v0.6 データベース永続化

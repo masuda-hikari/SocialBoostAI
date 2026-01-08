@@ -50,6 +50,9 @@ class User(Base):
         nullable=False,
     )
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    stripe_customer_id: Mapped[str | None] = mapped_column(
+        String(255), unique=True, nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=_now_utc,
@@ -75,6 +78,11 @@ class User(Base):
     )
     tokens: Mapped[list["Token"]] = relationship(
         "Token",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    subscriptions: Mapped[list["Subscription"]] = relationship(
+        "Subscription",
         back_populates="user",
         cascade="all, delete-orphan",
     )
@@ -190,3 +198,61 @@ class Report(Base):
 
     # リレーション
     user: Mapped["User"] = relationship("User", back_populates="reports")
+
+
+class Subscription(Base):
+    """サブスクリプションテーブル"""
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("sub_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    stripe_subscription_id: Mapped[str] = mapped_column(
+        String(255), unique=True, nullable=False
+    )
+    stripe_customer_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    plan: Mapped[str] = mapped_column(
+        String(20),
+        nullable=False,
+    )  # free, pro, business, enterprise
+    status: Mapped[str] = mapped_column(
+        String(20),
+        default="active",
+        nullable=False,
+    )  # active, canceled, past_due, trialing
+    current_period_start: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    current_period_end: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    cancel_at_period_end: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    canceled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        onupdate=_now_utc,
+        nullable=False,
+    )
+
+    # リレーション
+    user: Mapped["User"] = relationship("User", back_populates="subscriptions")

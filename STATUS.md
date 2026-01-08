@@ -4,12 +4,12 @@
 
 ## 現在の状況
 
-- 状態: 開発中（v0.6 データベース永続化完了）
-- 進捗: SQLAlchemy/Alembicによるデータベース基盤構築完了
+- 状態: 開発中（v0.7 Stripe課金機能完了）
+- 進捗: Stripe連携による課金機能基盤構築完了
 
 ## 実装状況
 
-### 完了（v0.1-v0.6）
+### 完了（v0.1-v0.7）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -37,48 +37,63 @@
 - [x] **v0.6: Alembicマイグレーション基盤**
 - [x] **v0.6: リポジトリパターン（CRUD操作）**
 - [x] **v0.6: APIをDB接続に更新**
-- [x] テスト151件全合格
+- [x] **v0.7: Stripe課金基盤**
+- [x] **v0.7: サブスクリプションDBモデル**
+- [x] **v0.7: 課金API（Checkout/Portal/Webhook）**
+- [x] テスト181件全合格
 
-### 未実装（v0.7以降）
-- [ ] 課金機能（Stripe連携）
+### 未実装（v0.8以降）
 - [ ] Instagram対応
 - [ ] フロントエンドダッシュボード（React）
+- [ ] Stripeダッシュボード設定（本番用Price ID設定）
 
 ## テスト状態
 
 ```
-151 passed, 1 warning in 1.05s
+181 passed, 1 warning in 0.99s
 ```
 
-## v0.6 新機能詳細
+## v0.7 新機能詳細
 
-### データベース永続化
-- `src/api/db/base.py`: SQLAlchemy設定・セッション管理
-- `src/api/db/models.py`: データベースモデル（User/Token/Analysis/Report）
-- `migrations/`: Alembicマイグレーション
+### Stripe課金機能
+- `src/api/billing/stripe_client.py`: Stripe APIラッパー
+- `src/api/billing/service.py`: 課金ビジネスロジック
+- `src/api/routers/billing.py`: 課金API Router
 
-### リポジトリパターン
-- `src/api/repositories/user_repository.py`: ユーザーCRUD
-- `src/api/repositories/token_repository.py`: トークンCRUD
-- `src/api/repositories/analysis_repository.py`: 分析CRUD
-- `src/api/repositories/report_repository.py`: レポートCRUD
+### 課金API エンドポイント
+| エンドポイント | 説明 |
+|--------------|------|
+| GET /api/v1/billing/plans | プラン一覧取得 |
+| GET /api/v1/billing/plans/{tier} | プラン詳細取得 |
+| GET /api/v1/billing/subscription | 現在のサブスクリプション取得 |
+| POST /api/v1/billing/checkout | Checkout Session作成 |
+| POST /api/v1/billing/portal | Customer Portal Session作成 |
+| POST /api/v1/billing/cancel | サブスクリプションキャンセル |
+| POST /api/v1/billing/webhook | Stripe Webhook |
+| GET /api/v1/billing/limits | 現在のプラン制限取得 |
 
-### 依存性注入
-- `src/api/dependencies.py`: 認証・DB接続の依存性注入
+### サブスクリプション管理
+- checkout.session.completed: 新規サブスクリプション処理
+- customer.subscription.updated: サブスクリプション更新処理
+- customer.subscription.deleted: キャンセル処理
+- invoice.payment_failed: 支払い失敗処理
 
-### データベーステーブル
-| テーブル | 説明 |
-|---------|------|
-| users | ユーザー情報 |
-| tokens | 認証トークン |
-| analyses | 分析結果 |
-| reports | レポート |
+### プラン価格
+| プラン | 月額 | API呼出/日 | レポート/月 |
+|--------|------|-----------|------------|
+| Free | ¥0 | 100 | 1 |
+| Pro | ¥1,980 | 1,000 | 4 |
+| Business | ¥4,980 | 10,000 | 無制限 |
+| Enterprise | 要見積 | 無制限 | 無制限 |
 
 ## 次のアクション
 
-1. **優先度1**: 課金機能実装（Stripe連携）
-2. **優先度2**: v0.7 Instagram対応
-3. **優先度3**: フロントエンドダッシュボード（React）
+1. **優先度1**: Stripeダッシュボード設定
+   - 本番用Product/Price作成
+   - Webhook Endpoint設定
+   - 環境変数設定（STRIPE_SECRET_KEY, STRIPE_PRICE_PRO等）
+2. **優先度2**: フロントエンドダッシュボード（React）
+3. **優先度3**: v0.8 Instagram対応
 
 ## 技術的課題
 
@@ -86,7 +101,7 @@
 
 ## 最近の変更
 
+- 2026-01-08: v0.7 Stripe課金機能完了
+- 2026-01-08: 課金API実装（Checkout/Portal/Webhook）
+- 2026-01-08: サブスクリプションDBモデル追加
 - 2026-01-08: v0.6 データベース永続化完了（SQLAlchemy/Alembic）
-- 2026-01-08: リポジトリパターン実装
-- 2026-01-08: API RouterをDB接続に更新
-- 2026-01-08: v0.5 Webダッシュボード基盤完了（FastAPI）

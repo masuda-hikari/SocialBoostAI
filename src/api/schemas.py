@@ -124,6 +124,74 @@ class ErrorResponse(BaseModel):
     code: str
 
 
+# 課金関連
+class PlanTier(str, Enum):
+    """プランティア"""
+
+    FREE = "free"
+    PRO = "pro"
+    BUSINESS = "business"
+    ENTERPRISE = "enterprise"
+
+
+class PlanInfo(BaseModel):
+    """プラン情報"""
+
+    tier: PlanTier
+    name: str
+    price_monthly: int  # 月額（円）
+    api_calls_per_day: int
+    reports_per_month: int  # -1 = 無制限
+    platforms: int  # -1 = 無制限
+    history_days: int  # -1 = 無制限
+
+
+class SubscriptionResponse(BaseModel):
+    """サブスクリプションレスポンス"""
+
+    id: str
+    user_id: str
+    plan: PlanTier
+    status: str
+    current_period_start: datetime
+    current_period_end: datetime
+    cancel_at_period_end: bool
+    canceled_at: Optional[datetime] = None
+    created_at: datetime
+
+
+class CheckoutSessionRequest(BaseModel):
+    """Checkout Session作成リクエスト"""
+
+    plan: PlanTier
+    success_url: str
+    cancel_url: str
+
+
+class CheckoutSessionResponse(BaseModel):
+    """Checkout Session作成レスポンス"""
+
+    checkout_url: str
+
+
+class PortalSessionRequest(BaseModel):
+    """Customer Portal Session作成リクエスト"""
+
+    return_url: str
+
+
+class PortalSessionResponse(BaseModel):
+    """Customer Portal Session作成レスポンス"""
+
+    portal_url: str
+
+
+class CancelSubscriptionRequest(BaseModel):
+    """サブスクリプションキャンセルリクエスト"""
+
+    at_period_end: bool = True
+
+
 # ページネーション
 class PaginationParams(BaseModel):
     """ページネーションパラメータ"""
