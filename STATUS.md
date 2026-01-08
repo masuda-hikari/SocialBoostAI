@@ -4,8 +4,8 @@
 
 ## 現在の状況
 
-- 状態: **デプロイ準備完了**（v0.10 マーケティングページ完了）
-- 進捗: MVP完成、デプロイ準備完了、人間作業待ち
+- 状態: **デプロイ準備完了 + v1.0基盤準備中**
+- 進捗: MVP完成、デプロイ準備完了、人間作業待ち、Instagram基盤実装完了
 
 ## 実装状況
 
@@ -54,20 +54,32 @@
 - [x] **v0.10: 利用規約ページ**
 - [x] **v0.10: プライバシーポリシーページ**
 - [x] **v0.10: 特定商取引法に基づく表記ページ**
-- [x] テスト181件全合格
+- [x] テスト202件全合格
 - [x] **デプロイチェックリスト作成**
 - [x] **マーケティングテンプレート作成**
+
+### v1.0基盤（進行中）
+- [x] **Instagramデータモデル**（InstagramPost/Reel/Story/Account）
+- [x] **Instagram APIクライアント**（Graph API対応）
+- [x] **統一投稿モデル**（UnifiedPost - クロスプラットフォーム対応）
+- [x] **クロスプラットフォーム指標モデル**（CrossPlatformMetrics）
+- [x] **Instagramテスト21件追加**
 
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
 - [ ] 本番デプロイ実行
-- [ ] Instagram対応（v1.0以降）
+
+### 未実装（v1.0予定）
+- [ ] Instagram分析機能（APIクライアントを使用）
+- [ ] Instagram分析API
+- [ ] クロスプラットフォーム比較機能
+- [ ] フロントエンドInstagram対応
 
 ## テスト状態
 
 ```
-Backend: 181 passed, 1 warning
+Backend: 202 passed（Instagram 21件追加）
 Frontend: Build成功、ESLint合格
 最終確認: 2026-01-08
 ```
@@ -120,6 +132,9 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
+- 2026-01-08: **v1.0基盤: Instagram対応モデル・APIクライアント追加**
+- 2026-01-08: **v1.0基盤: UnifiedPost/CrossPlatformMetrics追加**
+- 2026-01-08: **テスト21件追加（計202件）**
 - 2026-01-08: datetime.utcnow()警告修正（コード品質改善）
 - 2026-01-08: REVENUE_METRICS.md作成（Orchestrator要件対応）
 - 2026-01-08: デプロイチェックリスト作成
