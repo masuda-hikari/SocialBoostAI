@@ -7,6 +7,13 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Optional
 
+from .content_analysis import (
+    analyze_content_patterns,
+    analyze_hashtags,
+    analyze_keywords,
+    get_effective_hashtag_recommendations,
+    get_high_engagement_keywords,
+)
 from .models import (
     AnalysisResult,
     ContentPattern,
@@ -16,13 +23,6 @@ from .models import (
     KeywordAnalysis,
     PostRecommendation,
     Tweet,
-)
-from .content_analysis import (
-    analyze_content_patterns,
-    analyze_hashtags,
-    analyze_keywords,
-    get_effective_hashtag_recommendations,
-    get_high_engagement_keywords,
 )
 
 logger = logging.getLogger(__name__)
@@ -132,9 +132,7 @@ def find_best_posting_hours(
         valid_hours = hourly_engagement
 
     # エンゲージメントでソート
-    sorted_hours = sorted(
-        valid_hours, key=lambda h: h.total_engagement, reverse=True
-    )
+    sorted_hours = sorted(valid_hours, key=lambda h: h.total_engagement, reverse=True)
 
     return [h.hour for h in sorted_hours[:top_n]]
 
@@ -274,7 +272,9 @@ def _generate_recommendation_reasoning(
             "announcement": "お知らせ",
             "engagement_bait": "エンゲージメント促進",
         }
-        pattern_name = pattern_names.get(best_pattern.pattern_type, best_pattern.pattern_type)
+        pattern_name = pattern_names.get(
+            best_pattern.pattern_type, best_pattern.pattern_type
+        )
         reasoning_parts.append(
             f"最も効果的なコンテンツ形式は「{pattern_name}」"
             f"（平均エンゲージメント: {best_pattern.avg_engagement}）です。"

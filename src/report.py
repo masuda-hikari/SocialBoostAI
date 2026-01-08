@@ -302,10 +302,8 @@ def generate_console_report(
 
     for i, post in enumerate(result.top_performing_posts[:3], 1):
         text_preview = post.text[:60].replace("\n", " ")
-        lines.append(f"  {i}. \"{text_preview}...\"")
-        lines.append(
-            f"     ❤️{post.likes} 🔁{post.retweets} 💬{post.replies}"
-        )
+        lines.append(f'  {i}. "{text_preview}..."')
+        lines.append(f"     ❤️{post.likes} 🔁{post.retweets} 💬{post.replies}")
         lines.append("")
 
     lines.extend(
