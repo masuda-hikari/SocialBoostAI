@@ -22,7 +22,7 @@ from src.models import Tweet
 def sample_tweets() -> list[Tweet]:
     """サンプルツイートをロード"""
     sample_path = Path(__file__).parent / "sample_data" / "tweets.json"
-    with open(sample_path, "r", encoding="utf-8") as f:
+    with open(sample_path, "r", encoding="utf-8-sig") as f:
         data = json.load(f)
     return [Tweet(**tweet) for tweet in data]
 
