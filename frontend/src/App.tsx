@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import {
+  LandingPage,
   LoginPage,
   RegisterPage,
   DashboardPage,
@@ -13,6 +14,9 @@ import {
   ReportsPage,
   BillingPage,
   SettingsPage,
+  TermsPage,
+  PrivacyPage,
+  TokushohoPage,
 } from './pages';
 
 // React Query クライアント
@@ -30,9 +34,15 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <Routes>
-          {/* 公開ルート */}
+          {/* 公開ルート - ランディング */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* 法的ページ（公開） */}
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/legal/tokushoho" element={<TokushohoPage />} />
 
           {/* 保護されたルート */}
           <Route
@@ -49,9 +59,8 @@ function App() {
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
 
-          {/* デフォルトリダイレクト */}
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          {/* 404リダイレクト */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </QueryClientProvider>
