@@ -263,3 +263,74 @@ class InstagramAnalysisDetail(BaseModel):
     content_patterns: list[InstagramContentPattern] = []
     recommendations: Optional[dict] = None
     created_at: datetime
+
+
+# =============================================================================
+# クロスプラットフォーム比較関連（v1.2）
+# =============================================================================
+
+
+class CrossPlatformComparisonRequest(BaseModel):
+    """クロスプラットフォーム比較リクエスト"""
+
+    twitter_analysis_id: Optional[str] = None
+    instagram_analysis_id: Optional[str] = None
+    period_days: int = Field(default=7, ge=1, le=90)
+
+
+class PlatformPerformanceSummary(BaseModel):
+    """プラットフォーム別パフォーマンスサマリー"""
+
+    platform: str
+    total_posts: int
+    total_engagement: int
+    avg_engagement_rate: float
+    avg_likes_per_post: float
+    avg_comments_per_post: float
+    avg_shares_per_post: float
+    best_hour: Optional[int] = None
+    top_hashtags: list[str] = []
+
+
+class ComparisonItemResponse(BaseModel):
+    """比較項目レスポンス"""
+
+    metric_name: str
+    twitter_value: Optional[float] = None
+    instagram_value: Optional[float] = None
+    difference_percent: Optional[float] = None
+    winner: Optional[str] = None
+    insight: str = ""
+
+
+class CrossPlatformComparisonResponse(BaseModel):
+    """クロスプラットフォーム比較レスポンス"""
+
+    id: str
+    user_id: str
+    period_start: datetime
+    period_end: datetime
+    platforms_analyzed: list[str]
+    twitter_performance: Optional[PlatformPerformanceSummary] = None
+    instagram_performance: Optional[PlatformPerformanceSummary] = None
+    comparison_items: list[ComparisonItemResponse] = []
+    overall_winner: Optional[str] = None
+    cross_platform_insights: list[str] = []
+    strategic_recommendations: list[str] = []
+    synergy_opportunities: list[str] = []
+    created_at: datetime
+
+
+class CrossPlatformComparisonSummary(BaseModel):
+    """クロスプラットフォーム比較サマリー（一覧用）"""
+
+    id: str
+    user_id: str
+    period_start: datetime
+    period_end: datetime
+    platforms: list[str]
+    total_posts: int
+    total_engagement: int
+    best_platform: Optional[str] = None
+    key_insight: str = ""
+    created_at: datetime

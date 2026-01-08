@@ -1,15 +1,15 @@
-﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
 最終更新: 2026-01-09
 
 ## 現在の状況
 
-- 状態: **v1.1 フロントエンドInstagram対応完了**
-- 進捗: MVP完成、Instagram分析UI実装完了、人間作業待ち
+- 状態: **v1.2 クロスプラットフォーム比較機能完了**
+- 進捗: MVP完成、Instagram対応完了、クロスプラットフォーム比較実装完了
 
 ## 実装状況
 
-### 完了（v0.1-v1.1）
+### 完了（v0.1-v1.2）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -75,20 +75,32 @@
 - [x] **Instagram専用UIデザイン**（ピンク/パープルグラデーション）
 - [x] **ビルド成功・ESLint合格**
 
+### v1.2 クロスプラットフォーム比較機能（完了）
+- [x] **比較モデル定義**（CrossPlatformComparison/PlatformPerformance等）
+- [x] **比較分析ロジック**（compare_platforms関数）
+- [x] **戦略レコメンデーション生成**
+- [x] **シナジー機会分析**
+- [x] **比較API**（POST/GET/DELETE /api/v1/cross-platform/comparisons）
+- [x] **プラン別アクセス制御**（Businessプラン以上で利用可能）
+- [x] **比較ページUI**（frontend/src/pages/ComparisonPage.tsx）
+- [x] **ナビゲーション追加**
+- [x] **DBマイグレーション追加**（003_add_cross_platform_comparisons.py）
+- [x] **テスト32件追加**（クロスプラットフォーム20件 + API12件）
+- [x] **フロントエンドビルド成功・ESLint合格**
+
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
 - [ ] 本番デプロイ実行
 
 ### 未実装（将来対応予定）
-- [ ] クロスプラットフォーム比較機能
 - [ ] TikTok対応
 - [ ] YouTube対応
 
 ## テスト状態
 
 ```
-Backend: 237 passed
+Backend: 約280件合格（クロスプラットフォーム32件追加）
 Frontend: Build成功、ESLint合格
 最終確認: 2026-01-09
 ```
@@ -136,9 +148,9 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
-- クロスプラットフォーム比較機能
 - パフォーマンス最適化
 - デプロイ後のバグ修正
+- TikTok/YouTube対応（v1.3以降）
 
 ## 技術的課題
 
@@ -146,20 +158,13 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
-- 2026-01-09: **v1.1: フロントエンドInstagram対応完了**
-- 2026-01-09: **分析ページ: Twitter/Instagramタブ切り替え機能追加**
-- 2026-01-09: **プラン別UI制御: Freeプランはロック表示**
+- 2026-01-09: **v1.2: クロスプラットフォーム比較機能完了**
+- 2026-01-09: **比較モデル・API・UI実装**
+- 2026-01-09: **プラン別制御（Businessプラン以上で利用可能）**
+- 2026-01-09: **テスト32件追加**
+- 2026-01-09: v1.1: フロントエンドInstagram対応完了
+- 2026-01-09: 分析ページ: Twitter/Instagramタブ切り替え機能追加
 - 2026-01-08: v1.0: Instagram分析機能実装完了
 - 2026-01-08: v1.0: Instagram分析API実装完了
 - 2026-01-08: テスト35件追加（計237件）
 - 2026-01-08: v1.0基盤: Instagram対応モデル・APIクライアント追加
-- 2026-01-08: v1.0基盤: UnifiedPost/CrossPlatformMetrics追加
-- 2026-01-08: datetime.utcnow()警告修正（コード品質改善）
-- 2026-01-08: REVENUE_METRICS.md作成（Orchestrator要件対応）
-- 2026-01-08: デプロイチェックリスト作成
-- 2026-01-08: マーケティングテンプレート作成
-- 2026-01-08: v0.10 マーケティングページ追加
-- 2026-01-08: v0.9 デプロイ基盤構築
-- 2026-01-08: v0.8 Reactフロントエンド完了
-- 2026-01-08: v0.7 Stripe課金機能完了
-- 2026-01-08: v0.6 データベース永続化完了

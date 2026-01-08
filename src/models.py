@@ -349,3 +349,64 @@ class CrossPlatformMetrics(BaseModel):
     platform_breakdown: dict[str, dict] = {}  # platform -> metrics
     best_performing_platform: Optional[str] = None
     recommendations: list[str] = []
+
+
+# =============================================================================
+# v1.2: クロスプラットフォーム比較モデル
+# =============================================================================
+
+
+class PlatformPerformance(BaseModel):
+    """プラットフォーム別パフォーマンス"""
+
+    platform: str
+    total_posts: int = 0
+    total_engagement: int = 0
+    avg_engagement_rate: float = 0.0
+    avg_likes_per_post: float = 0.0
+    avg_comments_per_post: float = 0.0
+    avg_shares_per_post: float = 0.0
+    best_hour: Optional[int] = None
+    top_hashtags: list[str] = []
+    content_insights: list[str] = []
+
+
+class PlatformComparisonItem(BaseModel):
+    """プラットフォーム間比較項目"""
+
+    metric_name: str
+    twitter_value: Optional[float] = None
+    instagram_value: Optional[float] = None
+    difference_percent: Optional[float] = None  # Instagram - Twitter比
+    winner: Optional[str] = None  # "twitter", "instagram", "tie"
+    insight: str = ""
+
+
+class CrossPlatformComparison(BaseModel):
+    """クロスプラットフォーム比較結果"""
+
+    period_start: datetime
+    period_end: datetime
+    platforms_analyzed: list[str]
+    twitter_performance: Optional[PlatformPerformance] = None
+    instagram_performance: Optional[PlatformPerformance] = None
+    comparison_items: list[PlatformComparisonItem] = []
+    overall_winner: Optional[str] = None  # 総合的に優れているプラットフォーム
+    cross_platform_insights: list[str] = []
+    strategic_recommendations: list[str] = []
+    synergy_opportunities: list[str] = []  # プラットフォーム間連携の機会
+
+
+class CrossPlatformSummary(BaseModel):
+    """クロスプラットフォーム比較サマリー（API用）"""
+
+    comparison_id: str
+    user_id: str
+    period_start: datetime
+    period_end: datetime
+    platforms: list[str]
+    total_posts: int
+    total_engagement: int
+    best_platform: Optional[str] = None
+    key_insight: str = ""
+    created_at: datetime

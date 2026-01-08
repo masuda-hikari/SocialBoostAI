@@ -256,3 +256,64 @@ class Subscription(Base):
 
     # リレーション
     user: Mapped["User"] = relationship("User", back_populates="subscriptions")
+
+
+class CrossPlatformComparison(Base):
+    """クロスプラットフォーム比較テーブル"""
+
+    __tablename__ = "cross_platform_comparisons"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("comparison_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    period_start: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    period_end: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    platforms_analyzed: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    twitter_analysis_id: Mapped[str | None] = mapped_column(
+        String(32), nullable=True
+    )
+    instagram_analysis_id: Mapped[str | None] = mapped_column(
+        String(32), nullable=True
+    )
+    # パフォーマンスデータ（JSON形式）
+    twitter_performance: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )  # JSON
+    instagram_performance: Mapped[str | None] = mapped_column(
+        Text, nullable=True
+    )  # JSON
+    comparison_items: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    overall_winner: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )  # twitter, instagram, tie
+    cross_platform_insights: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    strategic_recommendations: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    synergy_opportunities: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )

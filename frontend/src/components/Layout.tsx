@@ -6,6 +6,7 @@ import { useAuthStore } from '../stores/authStore';
 import {
   LayoutDashboard,
   BarChart3,
+  GitCompare,
   FileText,
   CreditCard,
   Settings,
@@ -28,6 +29,7 @@ export default function Layout() {
   const navItems = [
     { path: '/dashboard', label: 'ダッシュボード', icon: LayoutDashboard },
     { path: '/analysis', label: '分析', icon: BarChart3 },
+    { path: '/comparison', label: 'プラットフォーム比較', icon: GitCompare },
     { path: '/reports', label: 'レポート', icon: FileText },
     { path: '/billing', label: '課金', icon: CreditCard },
     { path: '/settings', label: '設定', icon: Settings },

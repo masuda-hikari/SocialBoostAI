@@ -179,3 +179,63 @@ export interface InstagramAnalysis {
 export interface InstagramAnalysisRequest {
   period_days?: number;
 }
+
+// =============================================================================
+// クロスプラットフォーム比較関連（v1.2）
+// =============================================================================
+
+export interface PlatformPerformanceSummary {
+  platform: string;
+  total_posts: number;
+  total_engagement: number;
+  avg_engagement_rate: number;
+  avg_likes_per_post: number;
+  avg_comments_per_post: number;
+  avg_shares_per_post: number;
+  best_hour: number | null;
+  top_hashtags: string[];
+}
+
+export interface ComparisonItem {
+  metric_name: string;
+  twitter_value: number | null;
+  instagram_value: number | null;
+  difference_percent: number | null;
+  winner: 'twitter' | 'instagram' | 'tie' | null;
+  insight: string;
+}
+
+export interface CrossPlatformComparison {
+  id: string;
+  user_id: string;
+  period_start: string;
+  period_end: string;
+  platforms_analyzed: string[];
+  twitter_performance: PlatformPerformanceSummary | null;
+  instagram_performance: PlatformPerformanceSummary | null;
+  comparison_items: ComparisonItem[];
+  overall_winner: 'twitter' | 'instagram' | 'tie' | null;
+  cross_platform_insights: string[];
+  strategic_recommendations: string[];
+  synergy_opportunities: string[];
+  created_at: string;
+}
+
+export interface CrossPlatformComparisonSummary {
+  id: string;
+  user_id: string;
+  period_start: string;
+  period_end: string;
+  platforms: string[];
+  total_posts: number;
+  total_engagement: number;
+  best_platform: string | null;
+  key_insight: string;
+  created_at: string;
+}
+
+export interface CrossPlatformComparisonRequest {
+  twitter_analysis_id?: string;
+  instagram_analysis_id?: string;
+  period_days?: number;
+}

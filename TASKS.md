@@ -1,4 +1,4 @@
-﻿# SocialBoostAI - タスク管理
+# SocialBoostAI - タスク管理
 
 ## 待機中タスク
 
@@ -12,9 +12,28 @@
 - [ ] 初期ユーザー獲得施策（SNS告知/ベータ募集）
 
 ### 優先度3: 収益基盤（AIが実行可能）
-- [ ] クロスプラットフォーム比較機能
+- [ ] パフォーマンス最適化
+- [ ] TikTok対応（v1.3）
+- [ ] YouTube対応（v1.4）
 
 ## 完了タスク
+
+### 2026-01-09（v1.2 クロスプラットフォーム比較機能）
+- [x] v1.2 クロスプラットフォーム比較機能
+  - [x] 比較モデル定義（CrossPlatformComparison/PlatformPerformance等）
+  - [x] 比較分析モジュール作成（src/cross_platform.py）
+  - [x] 戦略レコメンデーション生成
+  - [x] シナジー機会分析
+  - [x] 比較API（POST/GET/DELETE）
+  - [x] リポジトリパターン（comparison_repository.py）
+  - [x] DBマイグレーション（003_add_cross_platform_comparisons.py）
+  - [x] プラン別アクセス制御（Businessプラン以上）
+  - [x] フロントエンド比較ページ（ComparisonPage.tsx）
+  - [x] APIクライアント（comparison.ts）
+  - [x] 型定義追加
+  - [x] ナビゲーション追加
+  - [x] テスト32件追加
+  - [x] フロントエンドビルド成功・ESLint合格
 
 ### 2026-01-09（v1.1 フロントエンドInstagram対応）
 - [x] v1.1 フロントエンドInstagram対応
