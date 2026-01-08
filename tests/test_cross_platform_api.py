@@ -2,27 +2,58 @@
 クロスプラットフォーム比較API テスト
 """
 
+import os
+
+# 環境変数を設定してテスト用DBを使用（インポート前に設定）
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+
+from datetime import datetime, timezone
+
 import pytest
-from datetime import datetime, timezone, timedelta
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
-from src.api.main import app
-from src.api.db.base import get_db, Base, engine
-from src.api.db.models import User, Analysis
+from src.api.db.base import Base, get_db
+from src.api.db.models import CrossPlatformComparison, User  # noqa: F401
 from src.api.dependencies import get_current_user
+from src.api.main import app
+
+# テスト用のSQLiteデータベース（独自エンジン）
+_test_engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+
+_TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_test_engine)
 
 
-# テスト用データベースセットアップ
-@pytest.fixture(scope="function")
-def test_db():
-    """テスト用データベース"""
-    Base.metadata.create_all(bind=engine)
+def _override_get_db():
+    """テスト用データベースセッション"""
+    db = _TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@pytest.fixture(autouse=True)
+def setup_test_db():
+    """各テスト関数の前にデータベースをセットアップ"""
+    # 依存性をオーバーライド
+    app.dependency_overrides[get_db] = _override_get_db
+    # テーブル作成
+    Base.metadata.create_all(bind=_test_engine)
     yield
-    Base.metadata.drop_all(bind=engine)
+    # テーブル削除
+    Base.metadata.drop_all(bind=_test_engine)
+    # オーバーライドをクリア（get_current_userのオーバーライドは個別テストで管理）
 
 
 @pytest.fixture
-def client(test_db):
+def client():
     """テストクライアント"""
     return TestClient(app)
 
@@ -69,7 +100,7 @@ def override_current_user_pro():
 class TestComparisonPlanRestrictions:
     """プラン制限テスト"""
 
-    def test_Freeユーザーは比較作成不可(self, client: TestClient, test_db):
+    def test_Freeユーザーは比較作成不可(self, client: TestClient):
         """Freeユーザーは比較を作成できない"""
         app.dependency_overrides[get_current_user] = override_current_user_free
 
@@ -83,7 +114,7 @@ class TestComparisonPlanRestrictions:
 
         app.dependency_overrides.clear()
 
-    def test_Proユーザーは比較作成不可(self, client: TestClient, test_db):
+    def test_Proユーザーは比較作成不可(self, client: TestClient):
         """Proユーザーは比較を作成できない"""
         app.dependency_overrides[get_current_user] = override_current_user_pro
 
@@ -97,7 +128,7 @@ class TestComparisonPlanRestrictions:
 
         app.dependency_overrides.clear()
 
-    def test_Businessユーザーは比較作成可能(self, client: TestClient, test_db):
+    def test_Businessユーザーは比較作成可能(self, client: TestClient):
         """Businessユーザーは比較を作成できる（ただしデータなしでエラー）"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -121,7 +152,7 @@ class TestComparisonPlanRestrictions:
 class TestComparisonListAPI:
     """比較一覧APIテスト"""
 
-    def test_一覧取得_Freeユーザー(self, client: TestClient, test_db):
+    def test_一覧取得_Freeユーザー(self, client: TestClient):
         """Freeユーザーは一覧取得不可"""
         app.dependency_overrides[get_current_user] = override_current_user_free
 
@@ -131,7 +162,7 @@ class TestComparisonListAPI:
 
         app.dependency_overrides.clear()
 
-    def test_一覧取得_Businessユーザー(self, client: TestClient, test_db):
+    def test_一覧取得_Businessユーザー(self, client: TestClient):
         """Businessユーザーは一覧取得可能"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -145,7 +176,7 @@ class TestComparisonListAPI:
 
         app.dependency_overrides.clear()
 
-    def test_一覧取得_ページネーション(self, client: TestClient, test_db):
+    def test_一覧取得_ページネーション(self, client: TestClient):
         """ページネーションパラメータ"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -170,7 +201,7 @@ class TestComparisonListAPI:
 class TestComparisonDetailAPI:
     """比較詳細APIテスト"""
 
-    def test_存在しない比較取得(self, client: TestClient, test_db):
+    def test_存在しない比較取得(self, client: TestClient):
         """存在しない比較は404"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -189,7 +220,7 @@ class TestComparisonDetailAPI:
 class TestComparisonDeleteAPI:
     """比較削除APIテスト"""
 
-    def test_存在しない比較削除(self, client: TestClient, test_db):
+    def test_存在しない比較削除(self, client: TestClient):
         """存在しない比較の削除は404"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -199,7 +230,7 @@ class TestComparisonDeleteAPI:
 
         app.dependency_overrides.clear()
 
-    def test_Freeユーザーは削除不可(self, client: TestClient, test_db):
+    def test_Freeユーザーは削除不可(self, client: TestClient):
         """Freeユーザーは削除できない"""
         app.dependency_overrides[get_current_user] = override_current_user_free
 
@@ -218,7 +249,7 @@ class TestComparisonDeleteAPI:
 class TestComparisonRequestValidation:
     """リクエストバリデーションテスト"""
 
-    def test_期間_最小値(self, client: TestClient, test_db):
+    def test_期間_最小値(self, client: TestClient):
         """期間の最小値バリデーション"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -231,7 +262,7 @@ class TestComparisonRequestValidation:
 
         app.dependency_overrides.clear()
 
-    def test_期間_最大値(self, client: TestClient, test_db):
+    def test_期間_最大値(self, client: TestClient):
         """期間の最大値バリデーション"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 
@@ -244,7 +275,7 @@ class TestComparisonRequestValidation:
 
         app.dependency_overrides.clear()
 
-    def test_有効な期間(self, client: TestClient, test_db):
+    def test_有効な期間(self, client: TestClient):
         """有効な期間でリクエスト"""
         app.dependency_overrides[get_current_user] = override_current_user_business
 

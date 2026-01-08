@@ -3,10 +3,47 @@
 Instagram分析APIのテスト
 """
 
+import os
+
+# 環境変数を設定してテスト用DBを使用（インポート前に設定）
+os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
+from src.api.db.base import Base, get_db
+from src.api.db.models import User, Token, Analysis  # noqa: F401
 from src.api.main import app
+
+# テスト用のSQLiteデータベース（独自エンジン）
+_test_engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
+
+_TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=_test_engine)
+
+
+def _override_get_db():
+    """テスト用データベースセッション"""
+    db = _TestingSessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@pytest.fixture(autouse=True)
+def setup_test_db():
+    """各テスト関数の前にデータベースをセットアップ"""
+    app.dependency_overrides[get_db] = _override_get_db
+    Base.metadata.create_all(bind=_test_engine)
+    yield
+    Base.metadata.drop_all(bind=_test_engine)
 
 
 @pytest.fixture

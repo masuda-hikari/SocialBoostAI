@@ -13,7 +13,14 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from src.api.db.base import Base, get_db
-from src.api.db.models import Analysis, Report, Subscription, Token, User  # noqa: F401
+from src.api.db.models import (  # noqa: F401
+    Analysis,
+    CrossPlatformComparison,
+    Report,
+    Subscription,
+    Token,
+    User,
+)
 from src.api.main import app
 
 # テスト用のSQLiteデータベース（インメモリ、StaticPoolで接続維持）
