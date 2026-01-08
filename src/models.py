@@ -105,3 +105,46 @@ class UserAccount(BaseModel):
     follower_count: int = 0
     following_count: int = 0
     created_at: Optional[datetime] = None
+
+
+# v0.4: サマリー関連モデル
+class PeriodComparison(BaseModel):
+    """期間比較データ"""
+
+    metric_name: str
+    current_value: float
+    previous_value: float
+    change_percent: float
+    trend: str  # "up", "down", "stable"
+
+
+class WeeklySummary(BaseModel):
+    """週次サマリー"""
+
+    week_number: int
+    year: int
+    period_start: datetime
+    period_end: datetime
+    total_posts: int
+    metrics: EngagementMetrics
+    best_performing_day: str  # 曜日名
+    top_post: Optional[Tweet] = None
+    comparison: Optional[list[PeriodComparison]] = None
+    insights: list[str] = []
+
+
+class MonthlySummary(BaseModel):
+    """月次サマリー"""
+
+    month: int
+    year: int
+    period_start: datetime
+    period_end: datetime
+    total_posts: int
+    metrics: EngagementMetrics
+    weekly_summaries: list[WeeklySummary] = []
+    best_performing_week: Optional[int] = None
+    top_posts: list[Tweet] = []
+    comparison: Optional[list[PeriodComparison]] = None
+    insights: list[str] = []
+    growth_rate: Optional[float] = None  # 前月比成長率
