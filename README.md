@@ -190,7 +190,7 @@ SocialBoostAI/
 │   │   └── api/           # API クライアント
 │   └── public/            # 静的ファイル
 ├── migrations/            # Alembicマイグレーション
-├── tests/                 # テストコード（506件）
+├── tests/                 # テストコード（582件）
 ├── docs/                  # ドキュメント
 │   ├── DEPLOY_CHECKLIST.md
 │   └── MARKETING_TEMPLATES.md
@@ -219,6 +219,9 @@ APIドキュメントは以下のURLで確認できます：
 | `GET /api/v1/reports` | レポート一覧 |
 | `GET /api/v1/content/generate` | AIコンテンツ生成 |
 | `GET /api/v1/cross-platform/compare` | プラットフォーム比較 |
+| `POST /api/v1/schedule` | 投稿スケジュール作成 |
+| `GET /api/v1/schedule` | スケジュール一覧取得 |
+| `POST /api/v1/email/send-weekly-report` | 週次レポートメール送信 |
 | `WS /ws/{user_id}` | WebSocket接続 |
 
 ---
@@ -254,6 +257,8 @@ APIドキュメントは以下のURLで確認できます：
 - [x] パフォーマンス最適化
 - [x] SEO最適化
 - [x] アクセシビリティ強化
+- [x] メール通知機能（週次/月次レポート等）
+- [x] 投稿スケジューリング機能（予約投稿）
 - [x] Docker/Docker Compose構成
 - [x] デプロイドキュメント
 
@@ -277,7 +282,7 @@ pytest --cov=src
 pytest tests/test_analysis.py
 ```
 
-**テスト状況**: 506件全合格（2026-01-10確認）
+**テスト状況**: 582件全合格（2026-01-11確認）
 
 ---
 

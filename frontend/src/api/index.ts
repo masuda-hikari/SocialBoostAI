@@ -13,4 +13,5 @@ export * from './content';
 export * from './realtime';
 export * from './websocket';
 export * from './schedule';
+export * from './email';
 export { default as apiClient } from './client';
