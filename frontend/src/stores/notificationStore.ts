@@ -9,7 +9,6 @@ import {
   connectWebSocket,
   disconnectWebSocket,
   type NotificationType,
-  type WebSocketNotification,
   type AnalysisCompletePayload,
   type ReportReadyPayload,
   type SystemNotificationPayload,
@@ -98,23 +97,6 @@ function getTitleForType(type: NotificationType): string {
   }
 }
 
-// 通知タイプから重要度を取得
-function getSeverityForType(type: NotificationType): 'info' | 'success' | 'warning' | 'error' {
-  switch (type) {
-    case 'analysis_complete':
-    case 'report_ready':
-      return 'success';
-    case 'analysis_failed':
-    case 'report_failed':
-    case 'payment_failed':
-      return 'error';
-    case 'subscription_expiring':
-    case 'maintenance_scheduled':
-      return 'warning';
-    default:
-      return 'info';
-  }
-}
 
 // ペイロードからメッセージを生成
 function getMessageFromPayload(type: NotificationType, payload: Record<string, unknown>): string {

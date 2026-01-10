@@ -1,15 +1,15 @@
-﻿﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
 最終更新: 2026-01-10
 
 ## 現在の状況
 
-- 状態: **v1.8 リアルタイムダッシュボード＆WebSocket通知完了**
-- 進捗: MVP完成、5プラットフォーム対応、AIコンテンツ生成、パフォーマンス最適化、リアルタイム機能完了
+- 状態: **v1.9 リアルタイムダッシュボードUI＆通知UI完了**
+- 進捗: MVP完成、5プラットフォーム対応、AIコンテンツ生成、パフォーマンス最適化、リアルタイム機能＆UI完了
 
 ## 実装状況
 
-### 完了（v0.1-v1.6）
+### 完了（v0.1-v1.8）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -58,59 +58,37 @@
 - [x] **マーケティングテンプレート作成**
 - [x] **v1.0-v1.6: 5プラットフォーム対応（Twitter/Instagram/TikTok/YouTube/LinkedIn）**
 - [x] **v1.6: AIコンテンツ生成強化**
+- [x] **v1.7: パフォーマンス最適化（DBインデックス/Redisキャッシュ/ミドルウェア）**
+- [x] **v1.8: WebSocket通知機能（バックエンド）**
 
-### v1.7 パフォーマンス最適化（完了）
-- [x] **データベースインデックス最適化**
-  - users: email, stripe_customer_id, created_at
-  - tokens: token, user_id, expires_at
-  - analyses: user_id, platform, created_at, 複合インデックス
-  - reports: user_id, report_type, platform, created_at, 複合インデックス
-  - subscriptions: user_id, stripe_subscription_id, stripe_customer_id, status, plan
-- [x] **Redisキャッシュサービス**（src/api/cache/）
-  - インメモリフォールバック対応
-  - TTL設定可能
-  - パターンマッチ削除
-  - @cachedデコレーター
-- [x] **APIキャッシュミドルウェア**（CacheMiddleware）
-  - GETリクエストの自動キャッシュ
-  - パス別TTL設定
-  - X-Cacheヘッダー（HIT/MISS）
-- [x] **パフォーマンスモニタリングミドルウェア**（PerformanceMiddleware）
-  - リクエスト処理時間計測
-  - 遅いリクエスト検出（1秒超）
-  - X-Process-Timeヘッダー
-- [x] **バックグラウンドタスクサービス**（src/api/tasks/）
-  - ThreadPoolExecutorベース
-  - 非同期タスク対応
-  - タスクステータス追跡
-  - 自動履歴クリーンアップ
-- [x] **Alembicマイグレーション追加**（004_add_performance_indexes.py）
-- [x] **requirements.txt更新**（redis, types-redis追加）
-- [x] **テスト33件追加**（キャッシュ15件 + タスク18件）
-- [x] **テスト462件全合格**
-- [x] **フロントエンドビルド成功**
-
-### v1.8 リアルタイムダッシュボード＆WebSocket通知（完了）
-- [x] **WebSocket通知機能**（src/api/websocket/）
-  - ConnectionManager: 接続管理（複数接続対応、ユーザー別管理）
-  - NotificationService: 通知送信サービス
-  - 通知タイプ: 分析開始/進捗/完了、レポート完了、サブスク更新、支払い失敗等
-- [x] **リアルタイムダッシュボードAPI**（src/api/routers/realtime.py）
-  - /api/v1/realtime/dashboard: ダッシュボードデータ取得
-  - /api/v1/realtime/live-metrics: ライブメトリクス
-  - /api/v1/realtime/activity: 最近のアクティビティ
-  - /api/v1/realtime/platform-comparison: プラットフォーム比較
-- [x] **WebSocketエンドポイント**（src/api/routers/websocket.py）
-  - /ws: WebSocket接続（トークン認証付き）
-  - /ws/stats: 接続統計
-- [x] **フロントエンドWebSocket統合**
-  - frontend/src/api/websocket.ts: WebSocketクライアント（自動再接続）
-  - frontend/src/api/realtime.ts: リアルタイムダッシュボードAPI
-  - frontend/src/stores/notificationStore.ts: Zustand通知ストア
-- [x] **テスト44件追加**（計506件全合格）
-  - WebSocketテスト: 27件
-  - リアルタイムAPIテスト: 17件
-- [x] **requirements.txt更新**（websockets>=12.0追加）
+### v1.9 リアルタイムダッシュボードUI＆通知UI（完了）
+- [x] **通知ドロップダウンコンポーネント**（NotificationDropdown.tsx）
+  - 通知ベルアイコン（未読バッジ表示）
+  - 接続状態インジケーター（緑/グレー）
+  - 通知リスト（最大50件）
+  - 重要度別カラーリング（info/success/warning/error）
+  - 相対時間表示（〜分前/〜時間前）
+  - 既読/全既読/削除/全削除機能
+  - アクションURL対応（クリックで該当ページに遷移）
+- [x] **進捗バーコンポーネント**（ProgressBar.tsx）
+  - 分析進捗表示
+  - フローティング進捗バー（ActiveProgressBars）
+- [x] **リアルタイムダッシュボードUI**（DashboardPage.tsx更新）
+  - 接続状態表示（リアルタイム接続中/オフライン）
+  - 手動更新ボタン（60秒自動更新）
+  - 進捗中の分析表示
+  - プラットフォーム別パフォーマンスカード
+  - トレンドハッシュタグ表示
+  - 最適投稿時間表示
+  - 最近のアクティビティ表示
+  - 週間比較（エンゲージメント率の変化表示）
+- [x] **Layoutコンポーネント更新**
+  - WebSocket自動接続（ログイン時）
+  - トップバーに通知ドロップダウン配置
+  - 接続状態インジケーター
+  - フローティング進捗バー統合
+- [x] **テスト506件全合格**
+- [x] **フロントエンドビルド成功・ESLint合格**
 
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
@@ -157,6 +135,15 @@ Frontend: Build成功、ESLint合格
 | クロスプラットフォーム比較 | - | ✅ 完了 | Business〜 |
 | AIコンテンツ生成 | OpenAI GPT-4 | ✅ 完了 | Free〜（高度機能はPro〜） |
 
+## リアルタイム機能
+
+| 機能 | 説明 |
+|------|------|
+| WebSocket通知 | 分析完了/レポート完了/サブスク更新等をリアルタイム通知 |
+| 進捗表示 | 分析の進捗をリアルタイムで表示 |
+| ダッシュボード自動更新 | 60秒ごとに自動更新（手動更新も可能） |
+| 接続状態表示 | WebSocket接続状態をUIで表示 |
+
 ## パフォーマンス最適化機能
 
 | 機能 | 説明 |
@@ -194,9 +181,9 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
-- フロントエンドでのリアルタイムダッシュボードUI実装
-- WebSocket通知のUI表示実装
 - デプロイ後のバグ修正
+- 追加機能実装（要リクエスト）
+- テスト追加
 
 ## 技術的課題
 
@@ -204,11 +191,12 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
-- 2026-01-10: **v1.8: リアルタイムダッシュボード＆WebSocket通知完了**
-- 2026-01-10: **WebSocket通知機能実装**
-- 2026-01-10: **リアルタイムダッシュボードAPI追加**
-- 2026-01-10: **フロントエンドWebSocket統合**
-- 2026-01-10: **テスト44件追加（計506件全合格）**
+- 2026-01-10: **v1.9: リアルタイムダッシュボードUI＆通知UI完了**
+- 2026-01-10: **通知ドロップダウンコンポーネント実装**
+- 2026-01-10: **進捗バーコンポーネント実装**
+- 2026-01-10: **ダッシュボードページリアルタイム対応**
+- 2026-01-10: **LayoutコンポーネントにWebSocket接続統合**
+- 2026-01-10: v1.8: リアルタイムダッシュボード＆WebSocket通知完了
 - 2026-01-10: v1.7: パフォーマンス最適化完了
 - 2026-01-10: v1.6: AIコンテンツ生成強化完了
 - 2026-01-10: v1.5: LinkedIn対応完了

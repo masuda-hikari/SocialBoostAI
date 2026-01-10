@@ -1,8 +1,12 @@
 /**
- * レイアウトコンポーネント
+ * レイアウトコンポーネント（WebSocket通知対応）
  */
 import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import { useNotificationStore } from '../stores/notificationStore';
+import NotificationDropdown from './NotificationDropdown';
+import { ActiveProgressBars } from './ProgressBar';
 import {
   LayoutDashboard,
   BarChart3,
@@ -19,10 +23,27 @@ import { useState } from 'react';
 
 export default function Layout() {
   const { user, logout } = useAuthStore();
+  const { connect, disconnect, isConnected } = useNotificationStore();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // WebSocket接続
+  useEffect(() => {
+    // ログイン状態ならWebSocket接続
+    if (user) {
+      connect().catch((error) => {
+        console.error('[Layout] WebSocket接続エラー:', error);
+      });
+    }
+
+    // クリーンアップ時に切断
+    return () => {
+      disconnect();
+    };
+  }, [user, connect, disconnect]);
+
   const handleLogout = async () => {
+    disconnect(); // WebSocket切断
     await logout();
     navigate('/login');
   };
@@ -110,12 +131,37 @@ export default function Layout() {
         />
       )}
 
+      {/* トップバー（通知） */}
+      <header className="lg:ml-64 fixed top-0 right-0 left-0 lg:left-64 h-16 bg-white border-b z-20 flex items-center justify-end px-4 md:px-6">
+        <div className="flex items-center gap-4">
+          {/* 接続状態インジケーター（小さめ） */}
+          <div
+            className={`hidden md:flex items-center gap-1.5 text-xs ${
+              isConnected ? 'text-green-600' : 'text-gray-400'
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isConnected ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+              }`}
+            />
+            {isConnected ? 'リアルタイム' : 'オフライン'}
+          </div>
+
+          {/* 通知ドロップダウン */}
+          <NotificationDropdown />
+        </div>
+      </header>
+
       {/* メインコンテンツ */}
-      <main className="lg:ml-64 min-h-screen">
+      <main className="lg:ml-64 min-h-screen pt-16">
         <div className="p-6">
           <Outlet />
         </div>
       </main>
+
+      {/* アクティブな進捗バー（フローティング） */}
+      <ActiveProgressBars />
     </div>
   );
 }
