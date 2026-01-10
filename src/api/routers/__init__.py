@@ -7,6 +7,7 @@ from .auth import router as auth_router
 from .billing import router as billing_router
 from .content_generation import router as content_generation_router
 from .cross_platform import router as cross_platform_router
+from .email import router as email_router
 from .health import router as health_router
 from .instagram_analysis import router as instagram_analysis_router
 from .linkedin_analysis import router as linkedin_analysis_router
@@ -30,6 +31,7 @@ __all__ = [
     "report_router",
     "user_router",
     "billing_router",
+    "email_router",
     "websocket_router",
     "realtime_router",
 ]

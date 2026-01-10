@@ -117,6 +117,9 @@ def create_app() -> FastAPI:
     app.include_router(
         routers.realtime_router, prefix="/api/v1/realtime", tags=["リアルタイム"]
     )
+    app.include_router(
+        routers.email_router, prefix="/api/v1/email", tags=["メール通知"]
+    )
 
     return app
 

@@ -101,3 +101,38 @@ def get_current_user(
 
 # 型エイリアス
 CurrentUser = Annotated[User, Depends(get_current_user)]
+
+
+# プラン階層定義
+PLAN_HIERARCHY = {
+    "free": 0,
+    "pro": 1,
+    "business": 2,
+    "enterprise": 3,
+}
+
+
+def require_plan(required_plan: str):
+    """
+    特定のプラン以上を要求する依存性
+
+    Args:
+        required_plan: 必要なプラン（free, pro, business, enterprise）
+
+    Returns:
+        依存性関数
+    """
+    required_level = PLAN_HIERARCHY.get(required_plan.lower(), 0)
+
+    def check_plan(current_user: User = Depends(get_current_user)) -> User:
+        user_plan = getattr(current_user, "plan", "free") or "free"
+        user_level = PLAN_HIERARCHY.get(user_plan.lower(), 0)
+
+        if user_level < required_level:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"この機能には{required_plan}プラン以上が必要です",
+            )
+        return current_user
+
+    return check_plan
