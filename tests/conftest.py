@@ -6,6 +6,8 @@ import os
 
 # 環境変数を設定してテスト用DBを使用（インポート前に設定）
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
+# テスト環境ではレート制限を無効化
+os.environ["RATE_LIMIT_ENABLED"] = "false"
 
 import pytest
 from sqlalchemy import create_engine, event

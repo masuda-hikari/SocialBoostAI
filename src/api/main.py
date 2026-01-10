@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import routers
 from .db import init_db
-from .middleware import CacheMiddleware, PerformanceMiddleware
+from .middleware import CacheMiddleware, PerformanceMiddleware, RateLimitMiddleware
 from .tasks import get_task_service
 
 logger = logging.getLogger(__name__)
@@ -35,11 +35,15 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.3.0",  # スケジュール投稿機能追加
+        version="2.4.0",  # レート制限ミドルウェア追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
     )
+
+    # レート制限ミドルウェア（DDoS/API濫用防止）
+    app.add_middleware(RateLimitMiddleware)
+    logger.info("レート制限ミドルウェア有効化")
 
     # パフォーマンスモニタリングミドルウェア
     app.add_middleware(PerformanceMiddleware)
