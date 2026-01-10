@@ -155,9 +155,17 @@ const testimonials = [
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
+      {/* スキップリンク */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[60] focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg"
+      >
+        メインコンテンツへスキップ
+      </a>
+
       {/* ヘッダー */}
-      <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100" role="banner">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="メインナビゲーション">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <span className="text-2xl font-bold text-primary-600">
@@ -204,10 +212,11 @@ export default function LandingPage() {
       </header>
 
       {/* ヒーローセクション */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-primary-50 via-white to-primary-50">
+      <main id="main-content">
+      <section className="pt-32 pb-20 bg-gradient-to-br from-primary-50 via-white to-primary-50" aria-labelledby="hero-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+            <h1 id="hero-heading" className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
               AIの力で
               <span className="text-primary-600">ソーシャルメディア</span>を
               <br />
@@ -265,37 +274,37 @@ export default function LandingPage() {
       </section>
 
       {/* 機能セクション */}
-      <section id="features" className="py-20">
+      <section id="features" className="py-20" aria-labelledby="features-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 id="features-heading" className="text-3xl font-bold text-gray-900">
               成功を加速する機能
             </h2>
             <p className="mt-4 text-lg text-gray-600">
               AIとデータ分析の力で、あなたのソーシャルメディア運用を支援
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8" role="list">
             {features.map((feature, index) => (
-              <div key={index} className="card hover:shadow-lg transition-shadow">
+              <article key={index} className="card hover:shadow-lg transition-shadow" role="listitem">
                 <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-4">
-                  <feature.icon className="text-primary-600" size={24} />
+                  <feature.icon className="text-primary-600" size={24} aria-hidden="true" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
                   {feature.title}
                 </h3>
                 <p className="text-gray-600">{feature.description}</p>
-              </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
       {/* 料金セクション */}
-      <section id="pricing" className="py-20 bg-gray-50">
+      <section id="pricing" className="py-20 bg-gray-50" aria-labelledby="pricing-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 id="pricing-heading" className="text-3xl font-bold text-gray-900">
               シンプルな料金体系
             </h2>
             <p className="mt-4 text-lg text-gray-600">
@@ -380,10 +389,10 @@ export default function LandingPage() {
       </section>
 
       {/* お客様の声 */}
-      <section id="testimonials" className="py-20">
+      <section id="testimonials" className="py-20" aria-labelledby="testimonials-heading">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">お客様の声</h2>
+            <h2 id="testimonials-heading" className="text-3xl font-bold text-gray-900">お客様の声</h2>
             <p className="mt-4 text-lg text-gray-600">
               SocialBoostAIをご利用いただいている皆様から
             </p>
@@ -420,10 +429,12 @@ export default function LandingPage() {
         </div>
       </section>
 
+      </main>
+
       {/* CTA セクション */}
-      <section className="py-20 bg-primary-600">
+      <section className="py-20 bg-primary-600" aria-labelledby="cta-heading">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white">
+          <h2 id="cta-heading" className="text-3xl font-bold text-white">
             今すぐ始めましょう
           </h2>
           <p className="mt-4 text-lg text-primary-100">
@@ -443,7 +454,7 @@ export default function LandingPage() {
       </section>
 
       {/* フッター */}
-      <footer className="py-12 bg-gray-900 text-white">
+      <footer className="py-12 bg-gray-900 text-white" role="contentinfo">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div>

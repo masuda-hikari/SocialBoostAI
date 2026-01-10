@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <!-- 背景 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EFF6FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#DBEAFE;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+
+  <!-- ロゴマーク -->
+  <g transform="translate(500, 150)">
+    <!-- 円形背景 -->
+    <circle cx="100" cy="100" r="90" fill="url(#logoGradient)"/>
+    <!-- S字 -->
+    <text x="100" y="130" font-family="Arial, sans-serif" font-size="100" font-weight="bold" fill="white" text-anchor="middle">S</text>
+    <!-- 上昇矢印 -->
+    <path d="M140 60 L160 80 L150 80 L150 100 L130 100 L130 80 L120 80 Z" fill="white"/>
+  </g>
+
+  <!-- タイトル -->
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="64" font-weight="bold" fill="#1F2937" text-anchor="middle">SocialBoostAI</text>
+
+  <!-- サブタイトル -->
+  <text x="600" y="420" font-family="Arial, sans-serif" font-size="32" fill="#6B7280" text-anchor="middle">AIでソーシャルメディアを成功に導く</text>
+
+  <!-- 特徴タグ -->
+  <g transform="translate(300, 480)">
+    <rect x="0" y="0" width="180" height="40" rx="20" fill="#3B82F6" fill-opacity="0.1"/>
+    <text x="90" y="27" font-family="Arial, sans-serif" font-size="18" fill="#3B82F6" text-anchor="middle">エンゲージメント分析</text>
+  </g>
+  <g transform="translate(510, 480)">
+    <rect x="0" y="0" width="180" height="40" rx="20" fill="#3B82F6" fill-opacity="0.1"/>
+    <text x="90" y="27" font-family="Arial, sans-serif" font-size="18" fill="#3B82F6" text-anchor="middle">最適投稿時間提案</text>
+  </g>
+  <g transform="translate(720, 480)">
+    <rect x="0" y="0" width="180" height="40" rx="20" fill="#3B82F6" fill-opacity="0.1"/>
+    <text x="90" y="27" font-family="Arial, sans-serif" font-size="18" fill="#3B82F6" text-anchor="middle">5プラットフォーム対応</text>
+  </g>
+
+  <!-- 装飾的な要素 -->
+  <circle cx="100" cy="100" r="50" fill="#3B82F6" fill-opacity="0.1"/>
+  <circle cx="1100" cy="530" r="80" fill="#3B82F6" fill-opacity="0.1"/>
+</svg>

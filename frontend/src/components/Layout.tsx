@@ -60,13 +60,23 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* スキップリンク（キーボードナビゲーション用） */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-600 focus:text-white focus:rounded-lg"
+      >
+        メインコンテンツへスキップ
+      </a>
+
       {/* モバイルメニューボタン */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="p-2 rounded-lg bg-white shadow-md"
+          aria-label={sidebarOpen ? 'メニューを閉じる' : 'メニューを開く'}
+          aria-expanded={sidebarOpen}
         >
-          {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
+          {sidebarOpen ? <X size={24} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
         </button>
       </div>
 
@@ -75,6 +85,8 @@ export default function Layout() {
         className={`fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        role="navigation"
+        aria-label="メインナビゲーション"
       >
         <div className="flex flex-col h-full">
           {/* ロゴ */}
@@ -85,15 +97,16 @@ export default function Layout() {
           </div>
 
           {/* ナビゲーション */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          <nav className="flex-1 px-4 py-6 space-y-2" aria-label="サイドバーナビゲーション">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
                 onClick={() => setSidebarOpen(false)}
                 className="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                aria-label={item.label}
               >
-                <item.icon size={20} className="mr-3" />
+                <item.icon size={20} className="mr-3" aria-hidden="true" />
                 {item.label}
               </Link>
             ))}
@@ -115,8 +128,9 @@ export default function Layout() {
             <button
               onClick={handleLogout}
               className="flex items-center w-full px-4 py-2 text-gray-700 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+              aria-label="ログアウト"
             >
-              <LogOut size={20} className="mr-3" />
+              <LogOut size={20} className="mr-3" aria-hidden="true" />
               ログアウト
             </button>
           </div>
@@ -154,7 +168,7 @@ export default function Layout() {
       </header>
 
       {/* メインコンテンツ */}
-      <main className="lg:ml-64 min-h-screen pt-16">
+      <main id="main-content" className="lg:ml-64 min-h-screen pt-16" role="main">
         <div className="p-6">
           <Outlet />
         </div>

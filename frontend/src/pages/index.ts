@@ -14,3 +14,4 @@ export { default as SettingsPage } from './SettingsPage';
 export { default as TermsPage } from './TermsPage';
 export { default as PrivacyPage } from './PrivacyPage';
 export { default as TokushohoPage } from './TokushohoPage';
+export { default as NotFoundPage } from './NotFoundPage';
