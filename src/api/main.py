@@ -35,7 +35,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.1.0",  # アクセシビリティ・UX強化、本番リリース準備完了
+        version="2.3.0",  # スケジュール投稿機能追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -119,6 +119,9 @@ def create_app() -> FastAPI:
     )
     app.include_router(
         routers.email_router, prefix="/api/v1/email", tags=["メール通知"]
+    )
+    app.include_router(
+        routers.schedule_router, prefix="/api/v1/schedule", tags=["スケジュール投稿"]
     )
 
     return app

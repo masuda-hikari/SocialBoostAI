@@ -125,7 +125,8 @@ def require_plan(required_plan: str):
     required_level = PLAN_HIERARCHY.get(required_plan.lower(), 0)
 
     def check_plan(current_user: User = Depends(get_current_user)) -> User:
-        user_plan = getattr(current_user, "plan", "free") or "free"
+        # Userモデルでは role フィールドにプラン情報を格納
+        user_plan = getattr(current_user, "role", "free") or "free"
         user_level = PLAN_HIERARCHY.get(user_plan.lower(), 0)
 
         if user_level < required_level:

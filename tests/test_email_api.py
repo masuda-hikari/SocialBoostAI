@@ -20,7 +20,7 @@ def mock_current_user():
     user.id = 1
     user.username = "testuser"
     user.email = "test@example.com"
-    user.plan = "pro"
+    user.role = "pro"  # Userモデルはroleフィールドを使用
     user.is_active = True
     return user
 
@@ -171,7 +171,7 @@ class TestWeeklyReportEndpoint:
         free_user.id = 1
         free_user.username = "freeuser"
         free_user.email = "free@example.com"
-        free_user.plan = "free"
+        free_user.role = "free"  # Userモデルはroleフィールドを使用
         free_user.is_active = True
 
         app.dependency_overrides[get_current_user] = lambda: free_user

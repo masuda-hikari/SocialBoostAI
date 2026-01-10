@@ -780,3 +780,146 @@ class ContentGenerationSummary(BaseModel):
     content_type: str
     preview: str
     created_at: datetime
+
+
+# =============================================================================
+# スケジュール投稿関連（v2.3）
+# =============================================================================
+
+
+class ScheduledPostStatus(str, Enum):
+    """スケジュール投稿ステータス"""
+
+    PENDING = "pending"
+    PUBLISHED = "published"
+    FAILED = "failed"
+    CANCELLED = "cancelled"
+
+
+class ScheduledPostMediaType(str, Enum):
+    """メディアタイプ"""
+
+    IMAGE = "image"
+    VIDEO = "video"
+    NONE = "none"
+
+
+class ScheduledPostCreate(BaseModel):
+    """スケジュール投稿作成リクエスト"""
+
+    platform: ContentPlatformType
+    content: str = Field(min_length=1, max_length=10000)
+    hashtags: list[str] = []
+    media_urls: list[str] = []
+    media_type: Optional[ScheduledPostMediaType] = None
+    scheduled_at: datetime
+    timezone: str = "Asia/Tokyo"
+    metadata: Optional[dict] = None
+
+
+class ScheduledPostUpdate(BaseModel):
+    """スケジュール投稿更新リクエスト"""
+
+    content: Optional[str] = Field(None, min_length=1, max_length=10000)
+    hashtags: Optional[list[str]] = None
+    media_urls: Optional[list[str]] = None
+    media_type: Optional[ScheduledPostMediaType] = None
+    scheduled_at: Optional[datetime] = None
+    timezone: Optional[str] = None
+    metadata: Optional[dict] = None
+
+
+class ScheduledPostResponse(BaseModel):
+    """スケジュール投稿レスポンス"""
+
+    id: str
+    user_id: str
+    platform: ContentPlatformType
+    content: str
+    hashtags: list[str]
+    media_urls: list[str]
+    media_type: Optional[ScheduledPostMediaType]
+    scheduled_at: datetime
+    timezone: str
+    status: ScheduledPostStatus
+    published_at: Optional[datetime] = None
+    error_message: Optional[str] = None
+    retry_count: int
+    external_post_id: Optional[str] = None
+    metadata: Optional[dict] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class ScheduledPostSummary(BaseModel):
+    """スケジュール投稿サマリー（一覧用）"""
+
+    id: str
+    platform: ContentPlatformType
+    content_preview: str
+    scheduled_at: datetime
+    status: ScheduledPostStatus
+    created_at: datetime
+
+
+class ScheduledPostListResponse(BaseModel):
+    """スケジュール投稿一覧レスポンス"""
+
+    items: list[ScheduledPostSummary]
+    total: int
+    page: int
+    per_page: int
+    pages: int
+
+
+class SchedulePostFromContentRequest(BaseModel):
+    """コンテンツからスケジュール投稿を作成するリクエスト"""
+
+    content_id: str
+    scheduled_at: datetime
+    timezone: str = "Asia/Tokyo"
+
+
+class BulkScheduleRequest(BaseModel):
+    """一括スケジュールリクエスト"""
+
+    posts: list[ScheduledPostCreate] = Field(min_length=1, max_length=20)
+
+
+class BulkScheduleResponse(BaseModel):
+    """一括スケジュールレスポンス"""
+
+    created: int
+    failed: int
+    scheduled_posts: list[ScheduledPostResponse]
+    errors: list[str] = []
+
+
+class ScheduleStatsResponse(BaseModel):
+    """スケジュール統計レスポンス"""
+
+    total_scheduled: int
+    pending: int
+    published: int
+    failed: int
+    cancelled: int
+    upcoming_24h: int
+    by_platform: dict[str, int]
+    by_status: dict[str, int]
+
+
+class OptimalTimeSlot(BaseModel):
+    """最適時間帯"""
+
+    hour: int
+    day_of_week: int
+    score: float
+    reason: str
+
+
+class OptimalTimesResponse(BaseModel):
+    """最適投稿時間レスポンス"""
+
+    platform: ContentPlatformType
+    slots: list[OptimalTimeSlot]
+    based_on_analyses: int

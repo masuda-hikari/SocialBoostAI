@@ -86,6 +86,11 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    scheduled_posts: Mapped[list["ScheduledPost"]] = relationship(
+        "ScheduledPost",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
 
 class Token(Base):
@@ -256,6 +261,75 @@ class Subscription(Base):
 
     # リレーション
     user: Mapped["User"] = relationship("User", back_populates="subscriptions")
+
+
+class ScheduledPost(Base):
+    """スケジュール投稿テーブル"""
+
+    __tablename__ = "scheduled_posts"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("sched_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # プラットフォーム情報
+    platform: Mapped[str] = mapped_column(String(20), nullable=False)
+
+    # 投稿内容
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    hashtags: Mapped[str] = mapped_column(Text, default="[]", nullable=False)  # JSON配列
+    media_urls: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    media_type: Mapped[str | None] = mapped_column(
+        String(20), nullable=True
+    )  # image, video, none
+
+    # スケジュール設定
+    scheduled_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    timezone: Mapped[str] = mapped_column(
+        String(50), default="Asia/Tokyo", nullable=False
+    )
+
+    # ステータス
+    status: Mapped[str] = mapped_column(
+        String(20), default="pending", nullable=False
+    )  # pending, published, failed, cancelled
+    published_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    retry_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    # メタデータ
+    external_post_id: Mapped[str | None] = mapped_column(
+        String(255), nullable=True
+    )  # 投稿後のID
+    post_metadata: Mapped[str] = mapped_column(Text, default="{}", nullable=False)  # JSON
+
+    # タイムスタンプ
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        onupdate=_now_utc,
+        nullable=False,
+    )
+
+    # リレーション
+    user: Mapped["User"] = relationship("User", back_populates="scheduled_posts")
 
 
 class CrossPlatformComparison(Base):

@@ -17,6 +17,7 @@ from src.api.db.models import (  # noqa: F401
     Analysis,
     CrossPlatformComparison,
     Report,
+    ScheduledPost,
     Subscription,
     Token,
     User,
@@ -90,3 +91,154 @@ def db_session():
         yield db
     finally:
         db.close()
+
+
+@pytest.fixture
+def test_user(db_session):
+    """テスト用ユーザー"""
+    from datetime import datetime, timezone
+    import secrets
+    import bcrypt
+
+    password_hash = bcrypt.hashpw("testpassword123".encode(), bcrypt.gensalt()).decode()
+    user = User(
+        id=f"user_{secrets.token_hex(8)}",
+        email="test@example.com",
+        username="testuser",
+        password_hash=password_hash,
+        role="free",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def test_user_pro(db_session):
+    """Pro版テスト用ユーザー"""
+    from datetime import datetime, timezone
+    import secrets
+    import bcrypt
+
+    password_hash = bcrypt.hashpw("testpassword123".encode(), bcrypt.gensalt()).decode()
+    user = User(
+        id=f"user_{secrets.token_hex(8)}",
+        email="pro@example.com",
+        username="prouser",
+        password_hash=password_hash,
+        role="pro",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def test_user_business(db_session):
+    """Business版テスト用ユーザー"""
+    from datetime import datetime, timezone
+    import secrets
+    import bcrypt
+
+    password_hash = bcrypt.hashpw("testpassword123".encode(), bcrypt.gensalt()).decode()
+    user = User(
+        id=f"user_{secrets.token_hex(8)}",
+        email="business@example.com",
+        username="businessuser",
+        password_hash=password_hash,
+        role="business",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def client():
+    """テストクライアント"""
+    from fastapi.testclient import TestClient
+    return TestClient(app)
+
+
+@pytest.fixture
+def auth_token(db_session, test_user):
+    """認証トークン（Free版）"""
+    from datetime import datetime, timedelta, timezone
+    import secrets
+
+    token_str = secrets.token_hex(32)
+    token = Token(
+        token=token_str,
+        user_id=test_user.id,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+        created_at=datetime.now(timezone.utc),
+    )
+    db_session.add(token)
+    db_session.commit()
+    return token_str
+
+
+@pytest.fixture
+def auth_headers_free(auth_token):
+    """認証ヘッダー（Free版）"""
+    return {"Authorization": f"Bearer {auth_token}"}
+
+
+@pytest.fixture
+def auth_token_pro(db_session, test_user_pro):
+    """認証トークン（Pro版）"""
+    from datetime import datetime, timedelta, timezone
+    import secrets
+
+    token_str = secrets.token_hex(32)
+    token = Token(
+        token=token_str,
+        user_id=test_user_pro.id,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+        created_at=datetime.now(timezone.utc),
+    )
+    db_session.add(token)
+    db_session.commit()
+    return token_str
+
+
+@pytest.fixture
+def auth_headers_pro(auth_token_pro):
+    """認証ヘッダー（Pro版）"""
+    return {"Authorization": f"Bearer {auth_token_pro}"}
+
+
+@pytest.fixture
+def auth_token_business(db_session, test_user_business):
+    """認証トークン（Business版）"""
+    from datetime import datetime, timedelta, timezone
+    import secrets
+
+    token_str = secrets.token_hex(32)
+    token = Token(
+        token=token_str,
+        user_id=test_user_business.id,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+        created_at=datetime.now(timezone.utc),
+    )
+    db_session.add(token)
+    db_session.commit()
+    return token_str
+
+
+@pytest.fixture
+def auth_headers_business(auth_token_business):
+    """認証ヘッダー（Business版）"""
+    return {"Authorization": f"Bearer {auth_token_business}"}

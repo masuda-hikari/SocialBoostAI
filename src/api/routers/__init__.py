@@ -17,6 +17,7 @@ from .tiktok_analysis import router as tiktok_analysis_router
 from .users import router as user_router
 from .websocket import router as websocket_router
 from .youtube_analysis import router as youtube_analysis_router
+from .schedule import router as schedule_router
 
 __all__ = [
     "health_router",
@@ -34,4 +35,5 @@ __all__ = [
     "email_router",
     "websocket_router",
     "realtime_router",
+    "schedule_router",
 ]
