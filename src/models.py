@@ -383,6 +383,29 @@ class UnifiedPost(BaseModel):
             author_id=video.channel_id,
         )
 
+    @classmethod
+    def from_linkedin_post(cls, post: "LinkedInPost") -> "UnifiedPost":
+        """LinkedInPostからUnifiedPostに変換"""
+        total_engagement = post.likes + post.comments + post.shares + (post.clicks or 0)
+        engagement_rate = 0.0
+        if post.impressions and post.impressions > 0:
+            engagement_rate = (total_engagement / post.impressions) * 100
+
+        return cls(
+            id=post.id,
+            platform=PlatformType.LINKEDIN,
+            content=post.text,
+            media_type=post.media_type.lower() if post.media_type else "text",
+            created_at=post.created_at,
+            likes=post.likes,
+            comments=post.comments,
+            shares=post.shares,
+            impressions=post.impressions,
+            reach=post.unique_impressions,
+            engagement_rate=engagement_rate,
+            author_id=post.author_id,
+        )
+
 
 class CrossPlatformMetrics(BaseModel):
     """クロスプラットフォーム統合指標"""
@@ -707,3 +730,150 @@ class YouTubeAnalysisResult(BaseModel):
     best_duration_range: Optional[str] = None  # "0-5min", "5-10min", "10-20min", "20min+"
     shorts_vs_video_performance: Optional[dict] = None  # Shorts vs 通常動画の比較
     live_performance: Optional[float] = None  # ライブ配信の平均パフォーマンス
+
+
+# =============================================================================
+# v1.5: LinkedIn対応モデル
+# =============================================================================
+
+
+class LinkedInPost(BaseModel):
+    """LinkedIn投稿データモデル"""
+
+    id: str
+    text: Optional[str] = None
+    created_at: datetime
+    visibility: str = "PUBLIC"  # "PUBLIC", "CONNECTIONS", "LOGGED_IN"
+    # メディア情報
+    media_type: Optional[str] = None  # "NONE", "IMAGE", "VIDEO", "DOCUMENT", "ARTICLE"
+    media_url: Optional[str] = None
+    article_url: Optional[str] = None  # 外部リンク記事
+    # エンゲージメント指標
+    likes: int = Field(ge=0, default=0)
+    comments: int = Field(ge=0, default=0)
+    shares: int = Field(ge=0, default=0)  # リポスト
+    clicks: Optional[int] = Field(ge=0, default=None)  # リンククリック
+    impressions: Optional[int] = Field(ge=0, default=None)
+    unique_impressions: Optional[int] = Field(ge=0, default=None)
+    engagement: Optional[int] = Field(ge=0, default=None)  # 総エンゲージメント
+    # メンション・ハッシュタグ
+    hashtags: list[str] = []
+    mentions: list[str] = []
+    # 投稿者情報
+    author_id: Optional[str] = None
+    is_sponsored: bool = False  # 広告投稿かどうか
+
+
+class LinkedInArticle(BaseModel):
+    """LinkedIn記事（長文投稿）データモデル"""
+
+    id: str
+    title: str
+    content: Optional[str] = None  # 記事本文
+    published_at: datetime
+    thumbnail_url: Optional[str] = None
+    # エンゲージメント指標
+    views: int = Field(ge=0, default=0)
+    likes: int = Field(ge=0, default=0)
+    comments: int = Field(ge=0, default=0)
+    shares: int = Field(ge=0, default=0)
+    # 読者分析
+    avg_read_time_seconds: Optional[float] = None
+    completion_rate: Optional[float] = None  # 記事完読率
+    # 投稿者情報
+    author_id: Optional[str] = None
+    article_url: Optional[str] = None
+
+
+class LinkedInProfile(BaseModel):
+    """LinkedInプロフィール情報"""
+
+    id: str
+    vanity_name: Optional[str] = None  # カスタムURL名
+    first_name: str
+    last_name: str
+    headline: Optional[str] = None  # 肩書き
+    summary: Optional[str] = None  # 自己紹介
+    profile_picture_url: Optional[str] = None
+    background_image_url: Optional[str] = None
+    industry: Optional[str] = None
+    location: Optional[str] = None
+    # 統計情報
+    connections_count: int = 0
+    followers_count: int = 0
+    # ステータス
+    is_influencer: bool = False
+    is_premium: bool = False
+    is_company_page: bool = False
+
+
+class LinkedInCompanyPage(BaseModel):
+    """LinkedIn企業ページ情報"""
+
+    id: str
+    name: str
+    vanity_name: Optional[str] = None  # カスタムURL名
+    description: Optional[str] = None
+    website_url: Optional[str] = None
+    logo_url: Optional[str] = None
+    cover_image_url: Optional[str] = None
+    industry: Optional[str] = None
+    company_size: Optional[str] = None  # "1-10", "11-50", etc.
+    headquarters: Optional[str] = None
+    founded_year: Optional[int] = None
+    # 統計情報
+    followers_count: int = 0
+    employees_on_linkedin: int = 0
+
+
+class LinkedInEngagementMetrics(BaseModel):
+    """LinkedInエンゲージメント指標"""
+
+    total_impressions: int = 0
+    total_unique_impressions: int = 0
+    total_likes: int = 0
+    total_comments: int = 0
+    total_shares: int = 0
+    total_clicks: int = 0
+    engagement_rate: float = 0.0  # (likes + comments + shares + clicks) / impressions * 100
+    avg_likes_per_post: float = 0.0
+    avg_comments_per_post: float = 0.0
+    avg_shares_per_post: float = 0.0
+    avg_clicks_per_post: float = 0.0
+    # LinkedIn固有指標
+    click_through_rate: float = 0.0  # clicks / impressions * 100
+    virality_rate: float = 0.0  # shares / impressions * 100
+    follower_conversion_rate: float = 0.0  # 新規フォロワー / impressions * 100
+
+
+class LinkedInDemographics(BaseModel):
+    """LinkedInオーディエンス属性"""
+
+    by_industry: dict[str, float] = {}  # 業種別割合
+    by_job_function: dict[str, float] = {}  # 職種別割合
+    by_seniority: dict[str, float] = {}  # 役職レベル別割合
+    by_company_size: dict[str, float] = {}  # 企業規模別割合
+    by_location: dict[str, float] = {}  # 地域別割合
+
+
+class LinkedInAnalysisResult(BaseModel):
+    """LinkedIn分析結果"""
+
+    period_start: datetime
+    period_end: datetime
+    total_posts: int
+    total_articles: int = 0
+    metrics: LinkedInEngagementMetrics
+    hourly_breakdown: list[HourlyEngagement] = []
+    daily_breakdown: list[dict] = []  # 曜日別パフォーマンス（B2Bでは重要）
+    top_performing_posts: list[LinkedInPost] = []
+    top_performing_articles: list[LinkedInArticle] = []
+    recommendations: Optional[PostRecommendation] = None
+    hashtag_analysis: list[HashtagAnalysis] = []
+    content_patterns: list[ContentPattern] = []
+    # LinkedIn固有の分析
+    audience_demographics: Optional[LinkedInDemographics] = None
+    best_posting_days: list[str] = []  # B2Bでは曜日が重要
+    avg_post_length: float = 0.0  # 平均投稿文字数
+    media_type_performance: dict[str, float] = {}  # メディアタイプ別パフォーマンス
+    article_vs_post_performance: Optional[dict] = None  # 記事 vs 投稿の比較

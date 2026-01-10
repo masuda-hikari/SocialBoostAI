@@ -15,10 +15,35 @@
 - [ ] パフォーマンス最適化
 - [x] TikTok対応（v1.3） ← 完了
 - [x] YouTube対応（v1.4） ← 完了
-- [ ] LinkedIn対応（v1.5）
+- [x] LinkedIn対応（v1.5） ← 完了
 - [ ] AIコンテンツ生成強化（v1.6）
 
 ## 完了タスク
+
+### 2026-01-10（v1.5 LinkedIn対応）
+- [x] v1.5 LinkedIn対応
+  - [x] LinkedInデータモデル追加（LinkedInPost/LinkedInArticle/LinkedInProfile/LinkedInCompanyPage/LinkedInEngagementMetrics/LinkedInDemographics/LinkedInAnalysisResult）
+  - [x] LinkedIn APIクライアント作成（linkedin_client.py - LinkedIn Marketing API対応）
+  - [x] LinkedIn分析モジュール作成（linkedin_analysis.py）
+    - 時間帯分析
+    - 曜日別分析（B2B特化 - 火〜木曜日推奨）
+    - ハッシュタグ分析
+    - コンテンツパターン分析（thought_leadership/career/industry_news/tips/achievement/networking/question/listicle/personal_story/engagement_bait）
+    - メディアタイプ別パフォーマンス分析
+    - 投稿文字数分析
+    - LinkedIn固有指標（CTR/バイラリティ率）
+  - [x] LinkedIn分析API実装（POST/GET/DELETE）
+  - [x] APIスキーマ追加（LinkedInAnalysisRequest/Response/Summary/Detail/DailyBreakdown等）
+  - [x] プラン別アクセス制御（Proプラン以上で利用可能）
+  - [x] フロントエンド対応
+    - LinkedIn APIクライアント（frontend/src/api/linkedin.ts）
+    - LinkedIn型定義追加
+    - 分析ページ更新（Twitter/Instagram/TikTok/YouTube/LinkedInタブ切り替え）
+    - LinkedIn専用UIデザイン（ブルー/ダークブルーグラデーション）
+    - 曜日別パフォーマンスカード（B2B特化UI）
+  - [x] テスト37件追加（LinkedIn分析28件 + API9件）
+  - [x] テスト370件全合格
+  - [x] フロントエンドビルド成功・ESLint合格
 
 ### 2026-01-09（v1.4 YouTube対応）
 - [x] v1.4 YouTube対応
@@ -198,4 +223,4 @@
 - [x] テストデータ修正（BOM/文字化け解消）
 
 ---
-最終更新: 2026-01-09（v1.4 YouTube対応完了）
+最終更新: 2026-01-10（v1.5 LinkedIn対応完了）

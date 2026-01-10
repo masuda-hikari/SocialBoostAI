@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.4.0",  # YouTube対応追加
+        version="1.5.0",  # LinkedIn対応追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -60,6 +60,11 @@ def create_app() -> FastAPI:
         routers.youtube_analysis_router,
         prefix="/api/v1/youtube/analysis",
         tags=["YouTube分析"],
+    )
+    app.include_router(
+        routers.linkedin_analysis_router,
+        prefix="/api/v1/linkedin/analysis",
+        tags=["LinkedIn分析"],
     )
     app.include_router(
         routers.cross_platform_router,

@@ -509,3 +509,92 @@ class YouTubeAnalysisDetail(BaseModel):
     avg_video_duration: float = 0.0
     shorts_vs_video: Optional[YouTubeShortsVsVideoComparison] = None
     created_at: datetime
+
+
+# =============================================================================
+# LinkedIn分析関連（v1.5）
+# =============================================================================
+
+
+class LinkedInAnalysisRequest(BaseModel):
+    """LinkedIn分析リクエスト"""
+
+    period_days: int = Field(default=7, ge=1, le=90)
+
+
+class LinkedInAnalysisSummary(BaseModel):
+    """LinkedIn分析サマリー"""
+
+    total_posts: int
+    total_articles: int = 0
+    total_impressions: int = 0
+    total_likes: int = 0
+    total_comments: int = 0
+    total_shares: int = 0
+    total_clicks: int = 0
+    engagement_rate: float = 0.0
+    click_through_rate: float = 0.0
+    virality_rate: float = 0.0
+    avg_likes_per_post: float = 0.0
+    best_hour: Optional[int] = None
+    best_days: list[str] = []
+    top_hashtags: list[str] = []
+
+
+class LinkedInAnalysisResponse(BaseModel):
+    """LinkedIn分析レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "linkedin"
+    period_start: datetime
+    period_end: datetime
+    summary: LinkedInAnalysisSummary
+    created_at: datetime
+
+
+class LinkedInContentPattern(BaseModel):
+    """LinkedInコンテンツパターン"""
+
+    pattern_type: str
+    count: int
+    avg_engagement: float
+
+
+class LinkedInDailyBreakdown(BaseModel):
+    """曜日別パフォーマンス"""
+
+    weekday: int
+    weekday_name: str
+    avg_likes: float
+    avg_shares: float
+    avg_comments: float
+    avg_clicks: float
+    avg_impressions: float
+    post_count: int
+    total_engagement: float
+
+
+class LinkedInMediaTypePerformance(BaseModel):
+    """メディアタイプ別パフォーマンス"""
+
+    media_type: str
+    avg_engagement: float
+
+
+class LinkedInAnalysisDetail(BaseModel):
+    """LinkedIn分析詳細レスポンス"""
+
+    id: str
+    user_id: str
+    platform: str = "linkedin"
+    period_start: datetime
+    period_end: datetime
+    summary: LinkedInAnalysisSummary
+    hourly_breakdown: list[dict] = []
+    daily_breakdown: list[LinkedInDailyBreakdown] = []
+    content_patterns: list[LinkedInContentPattern] = []
+    recommendations: Optional[dict] = None
+    avg_post_length: float = 0.0
+    media_type_performance: list[LinkedInMediaTypePerformance] = []
+    created_at: datetime

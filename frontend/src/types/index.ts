@@ -388,3 +388,80 @@ export interface YouTubeAnalysis {
 export interface YouTubeAnalysisRequest {
   period_days?: number;
 }
+
+// =============================================================================
+// LinkedIn分析関連（v1.5）
+// =============================================================================
+
+export interface LinkedInAnalysisSummary {
+  total_posts: number;
+  total_articles: number;
+  total_impressions: number;
+  total_likes: number;
+  total_comments: number;
+  total_shares: number;
+  total_clicks: number;
+  engagement_rate: number;
+  click_through_rate: number;
+  virality_rate: number;
+  avg_likes_per_post: number;
+  best_hour: number | null;
+  best_days: string[];
+  top_hashtags: string[];
+}
+
+export interface LinkedInContentPattern {
+  pattern_type: string;
+  count: number;
+  avg_engagement: number;
+}
+
+export interface LinkedInDailyBreakdown {
+  weekday: number;
+  weekday_name: string;
+  avg_likes: number;
+  avg_shares: number;
+  avg_comments: number;
+  avg_clicks: number;
+  avg_impressions: number;
+  post_count: number;
+  total_engagement: number;
+}
+
+export interface LinkedInMediaTypePerformance {
+  media_type: string;
+  avg_engagement: number;
+}
+
+export interface LinkedInAnalysis {
+  id: string;
+  user_id: string;
+  platform: 'linkedin';
+  period_start: string;
+  period_end: string;
+  summary: LinkedInAnalysisSummary;
+  created_at: string;
+  // 詳細情報（詳細取得時のみ）
+  hourly_breakdown?: Array<{
+    hour: number;
+    avg_likes: number;
+    avg_shares: number;
+    post_count: number;
+  }>;
+  daily_breakdown?: LinkedInDailyBreakdown[];
+  content_patterns?: LinkedInContentPattern[];
+  recommendations?: {
+    best_hours: number[];
+    best_days: string[];
+    suggested_hashtags: string[];
+    best_media_type: string;
+    best_post_length: string;
+    reasoning: string;
+  };
+  avg_post_length?: number;
+  media_type_performance?: LinkedInMediaTypePerformance[];
+}
+
+export interface LinkedInAnalysisRequest {
+  period_days?: number;
+}

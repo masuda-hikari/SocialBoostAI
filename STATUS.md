@@ -1,15 +1,15 @@
 ﻿﻿# SocialBoostAI - ステータス
 
-最終更新: 2026-01-09
+最終更新: 2026-01-10
 
 ## 現在の状況
 
-- 状態: **v1.4 YouTube対応完了**
-- 進捗: MVP完成、Instagram対応完了、クロスプラットフォーム比較実装完了、TikTok対応完了、YouTube対応完了
+- 状態: **v1.5 LinkedIn対応完了**
+- 進捗: MVP完成、Instagram対応完了、クロスプラットフォーム比較実装完了、TikTok対応完了、YouTube対応完了、LinkedIn対応完了
 
 ## 実装状況
 
-### 完了（v0.1-v1.4）
+### 完了（v0.1-v1.5）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -132,21 +132,45 @@
 - [x] **テスト333件全合格**
 - [x] **フロントエンドビルド成功・ESLint合格**
 
+### v1.5 LinkedIn対応（完了）
+- [x] **LinkedInデータモデル**（LinkedInPost/LinkedInArticle/LinkedInProfile/LinkedInCompanyPage/LinkedInEngagementMetrics/LinkedInDemographics/LinkedInAnalysisResult）
+- [x] **LinkedIn APIクライアント**（linkedin_client.py - LinkedIn Marketing API対応）
+- [x] **LinkedIn分析モジュール**（linkedin_analysis.py）
+  - 時間帯分析
+  - **曜日別分析（B2B特化 - 火〜木曜日推奨）**
+  - ハッシュタグ分析
+  - コンテンツパターン分析（thought_leadership/career/industry_news/tips/achievement/networking/question/listicle/personal_story/engagement_bait）
+  - **メディアタイプ別パフォーマンス分析**
+  - **投稿文字数分析**
+  - **LinkedIn固有指標（CTR/バイラリティ率）**
+- [x] **LinkedIn分析API**（POST/GET/DELETE /api/v1/linkedin/analysis）
+- [x] **プラン別アクセス制御**（Proプラン以上でLinkedIn利用可能）
+- [x] **APIスキーマ追加**（LinkedInAnalysisRequest/Response/Summary/Detail/DailyBreakdown等）
+- [x] **フロントエンド対応**
+  - LinkedIn APIクライアント（frontend/src/api/linkedin.ts）
+  - LinkedIn型定義（LinkedInAnalysis/LinkedInAnalysisSummary/LinkedInDailyBreakdown等）
+  - 分析ページ更新（Twitter/Instagram/TikTok/YouTube/LinkedInタブ切り替え）
+  - **LinkedIn専用UIデザイン（ブルー/ダークブルーグラデーション）**
+  - **曜日別パフォーマンスカード（B2B特化UI）**
+- [x] **テスト37件追加**（LinkedIn分析28件 + API9件）
+- [x] **テスト370件全合格**
+- [x] **フロントエンドビルド成功・ESLint合格**
+
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
 - [ ] Stripeダッシュボード設定（本番用Price ID設定）
 - [ ] 本番デプロイ実行
 
 ### 未実装（将来対応予定）
-- [ ] LinkedIn対応（v1.5）
 - [ ] AIコンテンツ生成強化（v1.6）
+- [ ] パフォーマンス最適化
 
 ## テスト状態
 
 ```
-Backend: 333件合格
+Backend: 370件合格
 Frontend: Build成功、ESLint合格
-最終確認: 2026-01-09
+最終確認: 2026-01-10
 ```
 
 ## 収益化までの残タスク
@@ -163,6 +187,17 @@ Frontend: Build成功、ESLint合格
 | 3 | SNS告知 | 30分 | - |
 
 **合計推定: 約4時間の人間作業で収益化開始可能**
+
+## 対応プラットフォーム
+
+| プラットフォーム | API | 状況 | プラン要件 |
+|-----------------|-----|------|-----------|
+| Twitter/X | Twitter API v2 | ✅ 完了 | Free〜 |
+| Instagram | Graph API | ✅ 完了 | Pro〜 |
+| TikTok | TikTok API for Business | ✅ 完了 | Pro〜 |
+| YouTube | YouTube Data API v3 | ✅ 完了 | Pro〜 |
+| LinkedIn | LinkedIn Marketing API | ✅ 完了 | Pro〜 |
+| クロスプラットフォーム比較 | - | ✅ 完了 | Business〜 |
 
 ## 作成済みドキュメント
 
@@ -192,7 +227,6 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
-- LinkedIn対応（v1.5）
 - AIコンテンツ生成強化（v1.6）
 - パフォーマンス最適化
 - デプロイ後のバグ修正
@@ -203,13 +237,13 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
-- 2026-01-09: **v1.4: YouTube対応完了**
-- 2026-01-09: **YouTubeデータモデル/APIクライアント/分析モジュール追加**
-- 2026-01-09: **YouTube分析API実装（POST/GET/DELETE）**
-- 2026-01-09: **フロントエンドYouTube対応（タブ切り替え/UI追加）**
-- 2026-01-09: **テスト31件追加（計333件全合格）**
-- 2026-01-09: **v1.3: TikTok対応完了**
-- 2026-01-09: テスト用DBセットアップ修正（269件全合格）
+- 2026-01-10: **v1.5: LinkedIn対応完了**
+- 2026-01-10: **LinkedInデータモデル/APIクライアント/分析モジュール追加**
+- 2026-01-10: **LinkedIn分析API実装（POST/GET/DELETE）**
+- 2026-01-10: **フロントエンドLinkedIn対応（タブ切り替え/曜日別UI追加）**
+- 2026-01-10: **テスト37件追加（計370件全合格）**
+- 2026-01-09: v1.4: YouTube対応完了
+- 2026-01-09: v1.3: TikTok対応完了
 - 2026-01-09: v1.2: クロスプラットフォーム比較機能完了
 - 2026-01-09: v1.1: フロントエンドInstagram対応完了
 - 2026-01-08: v1.0: Instagram分析機能実装完了
