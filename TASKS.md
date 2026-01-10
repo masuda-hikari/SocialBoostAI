@@ -12,13 +12,43 @@
 - [ ] 初期ユーザー獲得施策（SNS告知/ベータ募集）
 
 ### 優先度3: 収益基盤（AIが実行可能）
-- [ ] パフォーマンス最適化
+- [x] パフォーマンス最適化（v1.7） ← 完了
 - [x] TikTok対応（v1.3） ← 完了
 - [x] YouTube対応（v1.4） ← 完了
 - [x] LinkedIn対応（v1.5） ← 完了
 - [x] AIコンテンツ生成強化（v1.6） ← 完了
 
 ## 完了タスク
+
+### 2026-01-10（v1.7 パフォーマンス最適化）
+- [x] v1.7 パフォーマンス最適化
+  - [x] データベースインデックス最適化
+    - users: email, stripe_customer_id, created_at
+    - tokens: token, user_id, expires_at
+    - analyses: user_id, platform, created_at, 複合インデックス
+    - reports: user_id, report_type, platform, created_at, 複合インデックス
+    - subscriptions: user_id, stripe_subscription_id, stripe_customer_id, status, plan
+  - [x] Redisキャッシュサービス追加（src/api/cache/）
+    - CacheService（Redis/インメモリフォールバック）
+    - @cachedデコレーター
+    - キャッシュキービルダー
+  - [x] APIキャッシュミドルウェア追加（CacheMiddleware）
+    - GETリクエスト自動キャッシュ
+    - パス別TTL設定
+    - X-Cacheヘッダー
+  - [x] パフォーマンスモニタリングミドルウェア追加（PerformanceMiddleware）
+    - リクエスト処理時間計測
+    - 遅いリクエスト検出
+    - X-Process-Timeヘッダー
+  - [x] バックグラウンドタスクサービス追加（src/api/tasks/）
+    - ThreadPoolExecutorベース
+    - 非同期タスク対応
+    - タスクステータス追跡
+  - [x] Alembicマイグレーション追加（004_add_performance_indexes.py）
+  - [x] requirements.txt更新（redis, types-redis追加）
+  - [x] テスト33件追加（キャッシュ15件 + タスク18件）
+  - [x] テスト462件全合格
+  - [x] フロントエンドビルド成功
 
 ### 2026-01-10（v1.6 AIコンテンツ生成強化）
 - [x] v1.6 AIコンテンツ生成強化
@@ -255,4 +285,4 @@
 - [x] テストデータ修正（BOM/文字化け解消）
 
 ---
-最終更新: 2026-01-10（v1.6 AIコンテンツ生成強化完了）
+最終更新: 2026-01-10（v1.7 パフォーマンス最適化完了）

@@ -2,6 +2,8 @@
 FastAPI メインアプリケーション
 """
 
+import logging
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -9,6 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import routers
 from .db import init_db
+from .middleware import CacheMiddleware, PerformanceMiddleware
+from .tasks import get_task_service
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -16,8 +22,12 @@ async def lifespan(app: FastAPI):
     """アプリケーションライフサイクル管理"""
     # 起動時: データベース初期化
     init_db()
+    logger.info("SocialBoostAI API起動完了")
     yield
-    # シャットダウン時: クリーンアップ処理（必要に応じて）
+    # シャットダウン時: バックグラウンドタスクサービス停止
+    task_service = get_task_service()
+    task_service.shutdown(wait=True)
+    logger.info("SocialBoostAI APIシャットダウン完了")
 
 
 def create_app() -> FastAPI:
@@ -25,11 +35,19 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.6.0",  # AIコンテンツ生成強化
+        version="1.7.0",  # パフォーマンス最適化
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
     )
+
+    # パフォーマンスモニタリングミドルウェア
+    app.add_middleware(PerformanceMiddleware)
+
+    # キャッシュミドルウェア（Redis利用可能時のみ有効）
+    if os.getenv("REDIS_URL"):
+        app.add_middleware(CacheMiddleware)
+        logger.info("Redisキャッシュミドルウェア有効化")
 
     # CORS設定
     app.add_middleware(

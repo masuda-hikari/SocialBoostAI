@@ -1,15 +1,15 @@
-﻿# SocialBoostAI - ステータス
+# SocialBoostAI - ステータス
 
 最終更新: 2026-01-10
 
 ## 現在の状況
 
-- 状態: **v1.6 AIコンテンツ生成強化完了**
-- 進捗: MVP完成、5プラットフォーム対応、クロスプラットフォーム比較、AIコンテンツ生成機能完了
+- 状態: **v1.7 パフォーマンス最適化完了**
+- 進捗: MVP完成、5プラットフォーム対応、AIコンテンツ生成、パフォーマンス最適化完了
 
 ## 実装状況
 
-### 完了（v0.1-v1.5）
+### 完了（v0.1-v1.6）
 - [x] プロジェクト構造設計
 - [x] データモデル定義（Tweet, AnalysisResult等）
 - [x] Twitter APIクライアント（tweepy連携）
@@ -56,131 +56,39 @@
 - [x] **v0.10: 特定商取引法に基づく表記ページ**
 - [x] **デプロイチェックリスト作成**
 - [x] **マーケティングテンプレート作成**
+- [x] **v1.0-v1.6: 5プラットフォーム対応（Twitter/Instagram/TikTok/YouTube/LinkedIn）**
+- [x] **v1.6: AIコンテンツ生成強化**
 
-### v1.0 Instagram対応（完了）
-- [x] **Instagramデータモデル**（InstagramPost/Reel/Story/Account）
-- [x] **Instagram APIクライアント**（Graph API対応）
-- [x] **統一投稿モデル**（UnifiedPost - クロスプラットフォーム対応）
-- [x] **クロスプラットフォーム指標モデル**（CrossPlatformMetrics）
-- [x] **Instagram分析機能**（時間帯分析/ハッシュタグ分析/パターン分析）
-- [x] **Instagram分析API**（POST/GET/DELETE）
-- [x] **プラン別アクセス制御**（Proプラン以上でInstagram利用可能）
-- [x] **テスト237件全合格**（Instagram 35件追加）
-
-### v1.1 フロントエンドInstagram対応（完了）
-- [x] **Instagram分析APIクライアント**（frontend/src/api/instagram.ts）
-- [x] **Instagram型定義追加**（InstagramAnalysis/InstagramAnalysisSummary等）
-- [x] **分析ページ更新**（Twitter/Instagramタブ切り替え）
-- [x] **プラン別UI制御**（Freeプランはロック表示、アップグレード促進）
-- [x] **Instagram専用UIデザイン**（ピンク/パープルグラデーション）
-- [x] **ビルド成功・ESLint合格**
-
-### v1.2 クロスプラットフォーム比較機能（完了）
-- [x] **比較モデル定義**（CrossPlatformComparison/PlatformPerformance等）
-- [x] **比較分析ロジック**（compare_platforms関数）
-- [x] **戦略レコメンデーション生成**
-- [x] **シナジー機会分析**
-- [x] **比較API**（POST/GET/DELETE /api/v1/cross-platform/comparisons）
-- [x] **プラン別アクセス制御**（Businessプラン以上で利用可能）
-- [x] **比較ページUI**（frontend/src/pages/ComparisonPage.tsx）
-- [x] **ナビゲーション追加**
-- [x] **DBマイグレーション追加**（003_add_cross_platform_comparisons.py）
-- [x] **テスト32件追加**（クロスプラットフォーム20件 + API12件）
-- [x] **フロントエンドビルド成功・ESLint合格**
-
-### v1.3 TikTok対応（完了）
-- [x] **TikTokデータモデル**（TikTokVideo/TikTokAccount/TikTokEngagementMetrics/TikTokSoundAnalysis/TikTokAnalysisResult）
-- [x] **TikTok APIクライアント**（tiktok_client.py - TikTok API for Business対応）
-- [x] **TikTok分析モジュール**（tiktok_analysis.py）
-  - 時間帯分析
-  - ハッシュタグ分析
-  - サウンド分析（トレンドサウンド検出）
-  - コンテンツパターン分析（tutorial/challenge/transformation/pov/storytime/duet_stitch）
-  - 動画長分析（最適な動画長の特定）
-  - 動画タイプ別パフォーマンス（duet/stitch）
-- [x] **TikTok分析API**（POST/GET/DELETE /api/v1/tiktok/analysis）
-- [x] **プラン別アクセス制御**（Proプラン以上でTikTok利用可能）
-- [x] **APIスキーマ追加**（TikTokAnalysisRequest/Response/Summary/Detail等）
-- [x] **フロントエンド対応**
-  - TikTok APIクライアント（frontend/src/api/tiktok.ts）
-  - TikTok型定義（TikTokAnalysis/TikTokAnalysisSummary/TikTokSoundInfo等）
-  - 分析ページ更新（Twitter/Instagram/TikTokタブ切り替え）
-  - TikTok専用UIデザイン（シアン/ブラックグラデーション）
-- [x] **テスト33件追加**（TikTok分析23件 + API10件）
-- [x] **テスト302件全合格**
-- [x] **フロントエンドビルド成功・ESLint合格**
-
-### v1.4 YouTube対応（完了）
-- [x] **YouTubeデータモデル**（YouTubeVideo/YouTubeShort/YouTubeChannel/YouTubeEngagementMetrics/YouTubeAnalysisResult等）
-- [x] **YouTube APIクライアント**（youtube_client.py - YouTube Data API v3対応）
-- [x] **YouTube分析モジュール**（youtube_analysis.py）
-  - 時間帯分析
-  - タグ分析（効果的なタグの特定）
-  - カテゴリ分析（カテゴリ別パフォーマンス）
-  - コンテンツパターン分析（tutorial/vlog/review/challenge/ranking/live/shorts）
-  - 動画長分析（最適な動画長の特定）
-  - Shorts vs 通常動画比較
-- [x] **YouTube分析API**（POST/GET/DELETE /api/v1/youtube/analysis）
-- [x] **プラン別アクセス制御**（Proプラン以上でYouTube利用可能）
-- [x] **APIスキーマ追加**（YouTubeAnalysisRequest/Response/Summary/Detail等）
-- [x] **フロントエンド対応**
-  - YouTube APIクライアント（frontend/src/api/youtube.ts）
-  - YouTube型定義（YouTubeAnalysis/YouTubeAnalysisSummary等）
-  - 分析ページ更新（Twitter/Instagram/TikTok/YouTubeタブ切り替え）
-  - YouTube専用UIデザイン（レッド/グレーグラデーション）
-- [x] **テスト31件追加**（YouTube分析22件 + API9件）
-- [x] **テスト333件全合格**
-- [x] **フロントエンドビルド成功・ESLint合格**
-
-### v1.5 LinkedIn対応（完了）
-- [x] **LinkedInデータモデル**（LinkedInPost/LinkedInArticle/LinkedInProfile/LinkedInCompanyPage/LinkedInEngagementMetrics/LinkedInDemographics/LinkedInAnalysisResult）
-- [x] **LinkedIn APIクライアント**（linkedin_client.py - LinkedIn Marketing API対応）
-- [x] **LinkedIn分析モジュール**（linkedin_analysis.py）
-  - 時間帯分析
-  - **曜日別分析（B2B特化 - 火〜木曜日推奨）**
-  - ハッシュタグ分析
-  - コンテンツパターン分析（thought_leadership/career/industry_news/tips/achievement/networking/question/listicle/personal_story/engagement_bait）
-  - **メディアタイプ別パフォーマンス分析**
-  - **投稿文字数分析**
-  - **LinkedIn固有指標（CTR/バイラリティ率）**
-- [x] **LinkedIn分析API**（POST/GET/DELETE /api/v1/linkedin/analysis）
-- [x] **プラン別アクセス制御**（Proプラン以上でLinkedIn利用可能）
-- [x] **APIスキーマ追加**（LinkedInAnalysisRequest/Response/Summary/Detail/DailyBreakdown等）
-- [x] **フロントエンド対応**
-  - LinkedIn APIクライアント（frontend/src/api/linkedin.ts）
-  - LinkedIn型定義（LinkedInAnalysis/LinkedInAnalysisSummary/LinkedInDailyBreakdown等）
-  - 分析ページ更新（Twitter/Instagram/TikTok/YouTube/LinkedInタブ切り替え）
-  - **LinkedIn専用UIデザイン（ブルー/ダークブルーグラデーション）**
-  - **曜日別パフォーマンスカード（B2B特化UI）**
-- [x] **テスト37件追加**（LinkedIn分析28件 + API9件）
-- [x] **テスト370件全合格**
-- [x] **フロントエンドビルド成功・ESLint合格**
-
-### v1.6 AIコンテンツ生成強化（完了）
-- [x] **AIコンテンツ生成モジュール**（ai_content_generator.py）
-  - **コンテンツ生成**: プラットフォーム最適化されたテキスト生成
-  - **リライト機能**: 別プラットフォーム向けに最適化
-  - **A/Bテスト生成**: 同一トピックで複数バリエーション（Proプラン以上）
-  - **コンテンツカレンダー**: 指定期間の投稿計画自動生成（Proプラン以上）
-  - **トレンド活用生成**: トレンドキーワードを組み込んだ投稿（Proプラン以上）
-- [x] **プラットフォーム別最適化**
-  - Twitter: 280文字/ハッシュタグ3-5個/会話調
-  - Instagram: 2200文字/ハッシュタグ5-30個/ビジュアル重視
-  - TikTok: 150文字/ハッシュタグ3-5個/トレンド音楽参照
-  - YouTube: 5000文字/タグ最適化/SEO考慮
-  - LinkedIn: 3000文字/プロフェッショナル/B2B特化
-- [x] **AI生成API実装**（POST /api/v1/content/generate, /rewrite, /ab-test, /calendar, /trending）
-- [x] **履歴機能**（GET /history, DELETE /history/{id}）
-- [x] **APIスキーマ追加**（ContentGenerationRequest/GeneratedContentResponse/ABTestResponse等）
-- [x] **フロントエンド対応**
-  - AIコンテンツ生成ページ（ContentPage.tsx）
-  - タブUI（生成/リライト/A/Bテスト/カレンダー/トレンド/履歴）
-  - プラン別機能制限表示
-  - APIクライアント（content.ts）
-  - ナビゲーション追加（Sparklesアイコン）
-- [x] **テスト59件追加**（モジュール37件 + API22件）
-- [x] **テスト429件全合格**
-- [x] **フロントエンドビルド成功・ESLint合格**
+### v1.7 パフォーマンス最適化（完了）
+- [x] **データベースインデックス最適化**
+  - users: email, stripe_customer_id, created_at
+  - tokens: token, user_id, expires_at
+  - analyses: user_id, platform, created_at, 複合インデックス
+  - reports: user_id, report_type, platform, created_at, 複合インデックス
+  - subscriptions: user_id, stripe_subscription_id, stripe_customer_id, status, plan
+- [x] **Redisキャッシュサービス**（src/api/cache/）
+  - インメモリフォールバック対応
+  - TTL設定可能
+  - パターンマッチ削除
+  - @cachedデコレーター
+- [x] **APIキャッシュミドルウェア**（CacheMiddleware）
+  - GETリクエストの自動キャッシュ
+  - パス別TTL設定
+  - X-Cacheヘッダー（HIT/MISS）
+- [x] **パフォーマンスモニタリングミドルウェア**（PerformanceMiddleware）
+  - リクエスト処理時間計測
+  - 遅いリクエスト検出（1秒超）
+  - X-Process-Timeヘッダー
+- [x] **バックグラウンドタスクサービス**（src/api/tasks/）
+  - ThreadPoolExecutorベース
+  - 非同期タスク対応
+  - タスクステータス追跡
+  - 自動履歴クリーンアップ
+- [x] **Alembicマイグレーション追加**（004_add_performance_indexes.py）
+- [x] **requirements.txt更新**（redis, types-redis追加）
+- [x] **テスト33件追加**（キャッシュ15件 + タスク18件）
+- [x] **テスト462件全合格**
+- [x] **フロントエンドビルド成功**
 
 ### 未実装（人間作業が必要）
 - [ ] VPS/クラウド契約・ドメイン取得
@@ -188,13 +96,13 @@
 - [ ] 本番デプロイ実行
 
 ### 未実装（将来対応予定）
-- [ ] パフォーマンス最適化
 - [ ] リアルタイム分析ダッシュボード
+- [ ] WebSocket通知
 
 ## テスト状態
 
 ```
-Backend: 429件合格
+Backend: 462件合格
 Frontend: Build成功、ESLint合格
 最終確認: 2026-01-10
 ```
@@ -224,7 +132,16 @@ Frontend: Build成功、ESLint合格
 | YouTube | YouTube Data API v3 | ✅ 完了 | Pro〜 |
 | LinkedIn | LinkedIn Marketing API | ✅ 完了 | Pro〜 |
 | クロスプラットフォーム比較 | - | ✅ 完了 | Business〜 |
-| **AIコンテンツ生成** | OpenAI GPT-4 | ✅ 完了 | Free〜（高度機能はPro〜） |
+| AIコンテンツ生成 | OpenAI GPT-4 | ✅ 完了 | Free〜（高度機能はPro〜） |
+
+## パフォーマンス最適化機能
+
+| 機能 | 説明 |
+|------|------|
+| DBインデックス | クエリ高速化（複合インデックス含む） |
+| Redisキャッシュ | APIレスポンスキャッシュ（5分〜1時間） |
+| パフォーマンス監視 | 遅いリクエスト検出・ログ出力 |
+| バックグラウンドタスク | 重い処理の非同期実行 |
 
 ## 作成済みドキュメント
 
@@ -254,8 +171,8 @@ Frontend: Build成功、ESLint合格
    - 手順: `DEPLOY.md` + `docs/DEPLOY_CHECKLIST.md`
 
 **★ AIが次回実行可能な作業 ★**
-- パフォーマンス最適化
 - リアルタイム分析ダッシュボード
+- WebSocket通知機能
 - デプロイ後のバグ修正
 
 ## 技術的課題
@@ -264,11 +181,13 @@ Frontend: Build成功、ESLint合格
 
 ## 最近の変更
 
-- 2026-01-10: **v1.6: AIコンテンツ生成強化完了**
-- 2026-01-10: **AIコンテンツ生成モジュール追加（5プラットフォーム対応）**
-- 2026-01-10: **AI生成API実装（generate/rewrite/ab-test/calendar/trending）**
-- 2026-01-10: **フロントエンドAI生成ページ追加**
-- 2026-01-10: **テスト59件追加（計429件全合格）**
+- 2026-01-10: **v1.7: パフォーマンス最適化完了**
+- 2026-01-10: **DBインデックス最適化（004マイグレーション）**
+- 2026-01-10: **Redisキャッシュサービス追加**
+- 2026-01-10: **パフォーマンスモニタリングミドルウェア追加**
+- 2026-01-10: **バックグラウンドタスクサービス追加**
+- 2026-01-10: **テスト33件追加（計462件全合格）**
+- 2026-01-10: v1.6: AIコンテンツ生成強化完了
 - 2026-01-10: v1.5: LinkedIn対応完了
 - 2026-01-09: v1.4: YouTube対応完了
 - 2026-01-09: v1.3: TikTok対応完了
