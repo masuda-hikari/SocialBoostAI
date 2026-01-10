@@ -25,6 +25,7 @@ const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TokushohoPage = lazy(() => import('./pages/TokushohoPage'));
+const SchedulePage = lazy(() => import('./pages/SchedulePage'));
 
 // React Query クライアント
 const queryClient = new QueryClient({
@@ -68,6 +69,7 @@ function App() {
               <Route path="/reports" element={<ReportsPage />} />
               <Route path="/billing" element={<BillingPage />} />
               <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/schedule" element={<SchedulePage />} />
             </Route>
 
             {/* 404ページ */}

@@ -18,6 +18,7 @@ import {
   Menu,
   X,
   Sparkles,
+  Calendar,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -53,6 +54,7 @@ export default function Layout() {
     { path: '/analysis', label: '分析', icon: BarChart3 },
     { path: '/comparison', label: 'プラットフォーム比較', icon: GitCompare },
     { path: '/content', label: 'AI生成', icon: Sparkles },
+    { path: '/schedule', label: 'スケジュール', icon: Calendar },
     { path: '/reports', label: 'レポート', icon: FileText },
     { path: '/billing', label: '課金', icon: CreditCard },
     { path: '/settings', label: '設定', icon: Settings },

@@ -12,4 +12,5 @@ export * from './comparison';
 export * from './content';
 export * from './realtime';
 export * from './websocket';
+export * from './schedule';
 export { default as apiClient } from './client';

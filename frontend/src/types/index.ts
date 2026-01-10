@@ -584,3 +584,90 @@ export interface ContentGenerationSummary {
   preview: string;
   created_at: string;
 }
+
+// =============================================================================
+// スケジュール投稿関連（v2.3）
+// =============================================================================
+
+export type ScheduledPostStatus = 'pending' | 'published' | 'failed' | 'cancelled';
+export type ScheduledPostMediaType = 'image' | 'video' | 'none';
+
+export interface ScheduledPostCreate {
+  platform: ContentPlatform;
+  content: string;
+  hashtags?: string[];
+  media_urls?: string[];
+  media_type?: ScheduledPostMediaType;
+  scheduled_at: string;
+  timezone?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ScheduledPostUpdate {
+  content?: string;
+  hashtags?: string[];
+  media_urls?: string[];
+  media_type?: ScheduledPostMediaType;
+  scheduled_at?: string;
+  timezone?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ScheduledPost {
+  id: string;
+  user_id: string;
+  platform: ContentPlatform;
+  content: string;
+  hashtags: string[];
+  media_urls: string[];
+  media_type: ScheduledPostMediaType | null;
+  scheduled_at: string;
+  timezone: string;
+  status: ScheduledPostStatus;
+  published_at: string | null;
+  error_message: string | null;
+  retry_count: number;
+  external_post_id: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ScheduledPostSummary {
+  id: string;
+  platform: ContentPlatform;
+  content_preview: string;
+  scheduled_at: string;
+  status: ScheduledPostStatus;
+  created_at: string;
+}
+
+export interface ScheduledPostListResponse {
+  items: ScheduledPostSummary[];
+  total: number;
+  page: number;
+  per_page: number;
+  pages: number;
+}
+
+export interface BulkScheduleRequest {
+  posts: ScheduledPostCreate[];
+}
+
+export interface BulkScheduleResponse {
+  created: number;
+  failed: number;
+  scheduled_posts: ScheduledPost[];
+  errors: string[];
+}
+
+export interface ScheduleStats {
+  total_scheduled: number;
+  pending: number;
+  published: number;
+  failed: number;
+  cancelled: number;
+  upcoming_24h: number;
+  by_platform: Record<string, number>;
+  by_status: Record<string, number>;
+}
