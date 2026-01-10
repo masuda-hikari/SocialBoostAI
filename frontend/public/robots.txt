@@ -1,0 +1,15 @@
+# SocialBoostAI - robots.txt
+# https://socialboostai.com/
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /settings/
+Disallow: /billing/
+
+# サイトマップ
+Sitemap: https://socialboostai.com/sitemap.xml
+
+# クロール頻度の制限（サーバー負荷軽減）
+Crawl-delay: 1

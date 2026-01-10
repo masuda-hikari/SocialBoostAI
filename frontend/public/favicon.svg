@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- 背景円 -->
+  <circle cx="50" cy="50" r="48" fill="url(#grad)" />
+  <!-- Sの文字（上昇矢印風にアレンジ） -->
+  <path d="M35 62 Q35 72 50 72 Q65 72 65 62 Q65 55 50 52 Q35 49 35 42 Q35 32 50 32 Q62 32 65 40"
+        stroke="white" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- 上昇矢印 -->
+  <path d="M68 28 L68 20 L60 28" stroke="white" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

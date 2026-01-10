@@ -126,7 +126,7 @@ SocialBoostAI/
 
 - **言語**: Python 3.11+
 - **API連携**: tweepy (Twitter), instagrapi (Instagram)
-- **AI**: OpenAI GPT-4
+- **AI**: AI
 - **分析**: pandas, matplotlib
 - **データベース**: SQLite / PostgreSQL
 
