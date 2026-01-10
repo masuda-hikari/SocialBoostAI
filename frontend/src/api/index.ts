@@ -9,4 +9,5 @@ export * from './tiktok';
 export * from './youtube';
 export * from './linkedin';
 export * from './comparison';
+export * from './content';
 export { default as apiClient } from './client';

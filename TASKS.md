@@ -16,9 +16,41 @@
 - [x] TikTok対応（v1.3） ← 完了
 - [x] YouTube対応（v1.4） ← 完了
 - [x] LinkedIn対応（v1.5） ← 完了
-- [ ] AIコンテンツ生成強化（v1.6）
+- [x] AIコンテンツ生成強化（v1.6） ← 完了
 
 ## 完了タスク
+
+### 2026-01-10（v1.6 AIコンテンツ生成強化）
+- [x] v1.6 AIコンテンツ生成強化
+  - [x] AIコンテンツ生成モジュール作成（ai_content_generator.py）
+    - コンテンツ生成（プラットフォーム最適化）
+    - リライト機能（別プラットフォーム向け最適化）
+    - A/Bテスト生成（複数バリエーション）
+    - コンテンツカレンダー生成
+    - トレンド活用コンテンツ生成
+  - [x] プラットフォーム別最適化
+    - Twitter: 280文字/ハッシュタグ3-5個
+    - Instagram: 2200文字/ハッシュタグ5-30個
+    - TikTok: 150文字/トレンド音楽参照
+    - YouTube: 5000文字/SEO最適化
+    - LinkedIn: 3000文字/B2B特化
+  - [x] AI生成API実装（POST/GET/DELETE）
+    - /api/v1/content/generate
+    - /api/v1/content/rewrite
+    - /api/v1/content/ab-test（Proプラン以上）
+    - /api/v1/content/calendar（Proプラン以上）
+    - /api/v1/content/trending（Proプラン以上）
+    - /api/v1/content/history
+  - [x] APIスキーマ追加（ContentGenerationRequest/GeneratedContentResponse等）
+  - [x] プラン別アクセス制御（高度機能はProプラン以上）
+  - [x] フロントエンド対応
+    - AIコンテンツ生成ページ（ContentPage.tsx）
+    - タブUI（生成/リライト/A/Bテスト/カレンダー/トレンド/履歴）
+    - APIクライアント（content.ts）
+    - ナビゲーション追加
+  - [x] テスト59件追加（モジュール37件 + API22件）
+  - [x] テスト429件全合格
+  - [x] フロントエンドビルド成功・ESLint合格
 
 ### 2026-01-10（v1.5 LinkedIn対応）
 - [x] v1.5 LinkedIn対応
@@ -223,4 +255,4 @@
 - [x] テストデータ修正（BOM/文字化け解消）
 
 ---
-最終更新: 2026-01-10（v1.5 LinkedIn対応完了）
+最終更新: 2026-01-10（v1.6 AIコンテンツ生成強化完了）

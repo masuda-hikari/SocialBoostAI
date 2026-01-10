@@ -465,3 +465,122 @@ export interface LinkedInAnalysis {
 export interface LinkedInAnalysisRequest {
   period_days?: number;
 }
+
+// =============================================================================
+// AIコンテンツ生成関連（v1.6）
+// =============================================================================
+
+export type ContentPlatform = 'twitter' | 'instagram' | 'tiktok' | 'youtube' | 'linkedin';
+export type ContentType = 'post' | 'thread' | 'story' | 'reel' | 'video' | 'article' | 'caption';
+export type ContentTone = 'professional' | 'casual' | 'humorous' | 'educational' | 'inspirational' | 'promotional';
+export type ContentGoal = 'engagement' | 'awareness' | 'conversion' | 'traffic' | 'community';
+
+export interface ContentGenerationRequest {
+  platform: ContentPlatform;
+  content_type?: ContentType;
+  topic?: string;
+  keywords?: string[];
+  tone?: ContentTone;
+  goal?: ContentGoal;
+  reference_content?: string;
+  target_audience?: string;
+  include_hashtags?: boolean;
+  include_cta?: boolean;
+  max_length?: number;
+}
+
+export interface GeneratedContent {
+  id: string;
+  platform: ContentPlatform;
+  content_type: ContentType;
+  main_text: string;
+  hashtags: string[];
+  call_to_action: string | null;
+  media_suggestion: string | null;
+  estimated_engagement: string | null;
+  created_at: string;
+}
+
+export interface ContentRewriteRequest {
+  original_content: string;
+  source_platform: ContentPlatform;
+  target_platform: ContentPlatform;
+  preserve_hashtags?: boolean;
+  tone?: ContentTone;
+}
+
+export interface ABTestVariationRequest {
+  base_topic: string;
+  platform: ContentPlatform;
+  variation_count?: number;
+  tone?: ContentTone;
+}
+
+export interface ContentVariation {
+  version: string;
+  text: string;
+  hashtags: string[];
+  focus: string;
+}
+
+export interface ABTestResponse {
+  id: string;
+  topic: string;
+  platform: ContentPlatform;
+  variations: ContentVariation[];
+  created_at: string;
+}
+
+export interface ContentCalendarRequest {
+  platforms: ContentPlatform[];
+  days?: number;
+  posts_per_day?: number;
+  topics?: string[];
+  tone?: ContentTone;
+  goal?: ContentGoal;
+}
+
+export interface ContentCalendarItem {
+  scheduled_date: string;
+  platform: ContentPlatform;
+  content_type: ContentType;
+  topic: string;
+  draft_content: string;
+  hashtags: string[];
+  optimal_time: string;
+  rationale: string;
+}
+
+export interface ContentCalendarResponse {
+  id: string;
+  user_id: string;
+  period_start: string;
+  period_end: string;
+  total_items: number;
+  items: ContentCalendarItem[];
+  created_at: string;
+}
+
+export interface TrendingContentRequest {
+  platform: ContentPlatform;
+  trend_keywords: string[];
+  brand_context?: string;
+  tone?: ContentTone;
+}
+
+export interface TrendingContentResponse {
+  id: string;
+  platform: ContentPlatform;
+  trend_keywords: string[];
+  contents: GeneratedContent[];
+  created_at: string;
+}
+
+export interface ContentGenerationSummary {
+  id: string;
+  user_id: string;
+  platform: ContentPlatform;
+  content_type: string;
+  preview: string;
+  created_at: string;
+}

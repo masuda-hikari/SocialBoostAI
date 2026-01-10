@@ -25,7 +25,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.5.0",  # LinkedIn対応追加
+        version="1.6.0",  # AIコンテンツ生成強化
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -70,6 +70,11 @@ def create_app() -> FastAPI:
         routers.cross_platform_router,
         prefix="/api/v1/cross-platform",
         tags=["クロスプラットフォーム比較"],
+    )
+    app.include_router(
+        routers.content_generation_router,
+        prefix="/api/v1/content",
+        tags=["AIコンテンツ生成"],
     )
     app.include_router(
         routers.report_router, prefix="/api/v1/reports", tags=["レポート"]

@@ -18,6 +18,7 @@ import {
   PrivacyPage,
   TokushohoPage,
   ComparisonPage,
+  ContentPage,
 } from './pages';
 
 // React Query クライアント
@@ -56,6 +57,7 @@ function App() {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/analysis" element={<AnalysisPage />} />
             <Route path="/comparison" element={<ComparisonPage />} />
+            <Route path="/content" element={<ContentPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/billing" element={<BillingPage />} />
             <Route path="/settings" element={<SettingsPage />} />

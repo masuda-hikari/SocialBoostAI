@@ -598,3 +598,185 @@ class LinkedInAnalysisDetail(BaseModel):
     avg_post_length: float = 0.0
     media_type_performance: list[LinkedInMediaTypePerformance] = []
     created_at: datetime
+
+
+# =============================================================================
+# AIコンテンツ生成関連（v1.6）
+# =============================================================================
+
+
+class ContentPlatformType(str, Enum):
+    """コンテンツプラットフォーム"""
+
+    TWITTER = "twitter"
+    INSTAGRAM = "instagram"
+    TIKTOK = "tiktok"
+    YOUTUBE = "youtube"
+    LINKEDIN = "linkedin"
+
+
+class ContentTypeEnum(str, Enum):
+    """コンテンツタイプ"""
+
+    POST = "post"
+    THREAD = "thread"
+    STORY = "story"
+    REEL = "reel"
+    VIDEO = "video"
+    ARTICLE = "article"
+    CAPTION = "caption"
+
+
+class ContentToneEnum(str, Enum):
+    """コンテンツトーン"""
+
+    PROFESSIONAL = "professional"
+    CASUAL = "casual"
+    HUMOROUS = "humorous"
+    EDUCATIONAL = "educational"
+    INSPIRATIONAL = "inspirational"
+    PROMOTIONAL = "promotional"
+
+
+class ContentGoalEnum(str, Enum):
+    """コンテンツ目標"""
+
+    ENGAGEMENT = "engagement"
+    AWARENESS = "awareness"
+    CONVERSION = "conversion"
+    TRAFFIC = "traffic"
+    COMMUNITY = "community"
+
+
+class ContentGenerationRequest(BaseModel):
+    """コンテンツ生成リクエスト"""
+
+    platform: ContentPlatformType
+    content_type: ContentTypeEnum = ContentTypeEnum.POST
+    topic: Optional[str] = None
+    keywords: list[str] = []
+    tone: ContentToneEnum = ContentToneEnum.CASUAL
+    goal: ContentGoalEnum = ContentGoalEnum.ENGAGEMENT
+    reference_content: Optional[str] = None
+    target_audience: Optional[str] = None
+    include_hashtags: bool = True
+    include_cta: bool = False
+    max_length: Optional[int] = None
+
+
+class GeneratedContentResponse(BaseModel):
+    """生成コンテンツレスポンス"""
+
+    id: str
+    platform: ContentPlatformType
+    content_type: ContentTypeEnum
+    main_text: str
+    hashtags: list[str] = []
+    call_to_action: Optional[str] = None
+    media_suggestion: Optional[str] = None
+    estimated_engagement: Optional[str] = None
+    created_at: datetime
+
+
+class ContentRewriteRequest(BaseModel):
+    """コンテンツリライトリクエスト"""
+
+    original_content: str
+    source_platform: ContentPlatformType
+    target_platform: ContentPlatformType
+    preserve_hashtags: bool = False
+    tone: Optional[ContentToneEnum] = None
+
+
+class ABTestVariationRequest(BaseModel):
+    """A/Bテストバリエーション生成リクエスト"""
+
+    base_topic: str
+    platform: ContentPlatformType
+    variation_count: int = Field(default=3, ge=2, le=5)
+    tone: ContentToneEnum = ContentToneEnum.CASUAL
+
+
+class ContentVariationResponse(BaseModel):
+    """コンテンツバリエーションレスポンス"""
+
+    version: str
+    text: str
+    hashtags: list[str] = []
+    focus: str
+
+
+class ABTestResponse(BaseModel):
+    """A/Bテストレスポンス"""
+
+    id: str
+    topic: str
+    platform: ContentPlatformType
+    variations: list[ContentVariationResponse]
+    created_at: datetime
+
+
+class ContentCalendarRequest(BaseModel):
+    """コンテンツカレンダー生成リクエスト"""
+
+    platforms: list[ContentPlatformType]
+    days: int = Field(default=7, ge=1, le=30)
+    posts_per_day: int = Field(default=2, ge=1, le=5)
+    topics: list[str] = []
+    tone: ContentToneEnum = ContentToneEnum.CASUAL
+    goal: ContentGoalEnum = ContentGoalEnum.ENGAGEMENT
+
+
+class ContentCalendarItemResponse(BaseModel):
+    """カレンダーアイテムレスポンス"""
+
+    scheduled_date: datetime
+    platform: ContentPlatformType
+    content_type: ContentTypeEnum
+    topic: str
+    draft_content: str
+    hashtags: list[str] = []
+    optimal_time: str
+    rationale: str
+
+
+class ContentCalendarResponse(BaseModel):
+    """コンテンツカレンダーレスポンス"""
+
+    id: str
+    user_id: str
+    period_start: datetime
+    period_end: datetime
+    total_items: int
+    items: list[ContentCalendarItemResponse]
+    created_at: datetime
+
+
+class TrendingContentRequest(BaseModel):
+    """トレンドコンテンツ生成リクエスト"""
+
+    platform: ContentPlatformType
+    trend_keywords: list[str] = Field(min_length=1)
+    brand_context: Optional[str] = None
+    tone: ContentToneEnum = ContentToneEnum.CASUAL
+
+
+class TrendingContentResponse(BaseModel):
+    """トレンドコンテンツレスポンス"""
+
+    id: str
+    platform: ContentPlatformType
+    trend_keywords: list[str]
+    contents: list[GeneratedContentResponse]
+    created_at: datetime
+
+
+class ContentGenerationSummary(BaseModel):
+    """コンテンツ生成履歴サマリー"""
+
+    id: str
+    user_id: str
+    platform: ContentPlatformType
+    content_type: str
+    preview: str
+    created_at: datetime
