@@ -133,7 +133,7 @@ Frontend: Build成功、ESLint合格
 | YouTube | YouTube Data API v3 | ✅ 完了 | Pro〜 |
 | LinkedIn | LinkedIn Marketing API | ✅ 完了 | Pro〜 |
 | クロスプラットフォーム比較 | - | ✅ 完了 | Business〜 |
-| AIコンテンツ生成 | OpenAI GPT-4 | ✅ 完了 | Free〜（高度機能はPro〜） |
+| AIコンテンツ生成 | AI | ✅ 完了 | Free〜（高度機能はPro〜） |
 
 ## リアルタイム機能
 
