@@ -10,4 +10,6 @@ export * from './youtube';
 export * from './linkedin';
 export * from './comparison';
 export * from './content';
+export * from './realtime';
+export * from './websocket';
 export { default as apiClient } from './client';

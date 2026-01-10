@@ -35,7 +35,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.7.0",  # パフォーマンス最適化
+        version="1.8.0",  # WebSocket通知・リアルタイムダッシュボード
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -100,6 +100,12 @@ def create_app() -> FastAPI:
     app.include_router(routers.user_router, prefix="/api/v1/users", tags=["ユーザー"])
     app.include_router(
         routers.billing_router, prefix="/api/v1", tags=["課金"]
+    )
+    app.include_router(
+        routers.websocket_router, tags=["WebSocket"]
+    )
+    app.include_router(
+        routers.realtime_router, prefix="/api/v1/realtime", tags=["リアルタイム"]
     )
 
     return app
