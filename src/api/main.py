@@ -35,7 +35,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="1.8.0",  # WebSocket通知・リアルタイムダッシュボード
+        version="2.1.0",  # アクセシビリティ・UX強化、本番リリース準備完了
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -50,9 +50,19 @@ def create_app() -> FastAPI:
         logger.info("Redisキャッシュミドルウェア有効化")
 
     # CORS設定
+    # 本番環境では ALLOWED_ORIGINS 環境変数で制限する
+    allowed_origins = os.getenv("ALLOWED_ORIGINS", "*")
+    if allowed_origins == "*":
+        # 開発環境: 全オリジン許可
+        origins = ["*"]
+    else:
+        # 本番環境: 指定オリジンのみ許可
+        origins = [origin.strip() for origin in allowed_origins.split(",")]
+        logger.info(f"CORS許可オリジン: {origins}")
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # 本番環境では制限する
+        allow_origins=origins,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
