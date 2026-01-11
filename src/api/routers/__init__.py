@@ -5,6 +5,7 @@ APIルーター
 from .admin import router as admin_router
 from .analysis import router as analysis_router
 from .auth import router as auth_router
+from .backup import router as backup_router
 from .billing import router as billing_router
 from .content_generation import router as content_generation_router
 from .cross_platform import router as cross_platform_router
@@ -24,6 +25,7 @@ from .youtube_analysis import router as youtube_analysis_router
 
 __all__ = [
     "admin_router",
+    "backup_router",
     "health_router",
     "auth_router",
     "analysis_router",

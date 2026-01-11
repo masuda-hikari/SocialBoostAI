@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.11.0",  # プッシュ通知フロントエンドUI追加
+        version="2.12.0",  # データベースバックアップ機能追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -148,6 +148,9 @@ def create_app() -> FastAPI:
     )
     app.include_router(
         routers.push_router, prefix="/api/v1/push", tags=["プッシュ通知"]
+    )
+    app.include_router(
+        routers.backup_router, prefix="/api/v1", tags=["バックアップ"]
     )
 
     return app
