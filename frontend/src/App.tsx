@@ -15,6 +15,7 @@ import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // その他のページは遅延読み込み
+const AdminPage = lazy(() => import('./pages/AdminPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AnalysisPage = lazy(() => import('./pages/AnalysisPage'));
 const ComparisonPage = lazy(() => import('./pages/ComparisonPage'));
@@ -70,6 +71,7 @@ function App() {
               <Route path="/billing" element={<BillingPage />} />
               <Route path="/settings" element={<SettingsPage />} />
               <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Route>
 
             {/* 404ページ */}

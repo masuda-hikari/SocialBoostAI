@@ -137,3 +137,31 @@ def require_plan(required_plan: str):
         return current_user
 
     return check_plan
+
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    """
+    管理者権限を要求する依存性
+
+    Args:
+        current_user: 現在のユーザー
+
+    Returns:
+        管理者ユーザー
+
+    Raises:
+        HTTPException: 管理者権限がない場合
+    """
+    user_role = getattr(current_user, "role", "free") or "free"
+
+    # admin または enterprise を管理者として扱う
+    if user_role.lower() not in ("admin", "enterprise"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="管理者権限が必要です",
+        )
+    return current_user
+
+
+# 型エイリアス
+AdminUser = Annotated[User, Depends(require_admin)]

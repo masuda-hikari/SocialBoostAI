@@ -3,7 +3,7 @@
  */
 
 // 認証関連
-export type UserRole = 'free' | 'pro' | 'business' | 'enterprise';
+export type UserRole = 'free' | 'pro' | 'business' | 'enterprise' | 'admin';
 
 export interface User {
   id: string;
@@ -670,4 +670,90 @@ export interface ScheduleStats {
   upcoming_24h: number;
   by_platform: Record<string, number>;
   by_status: Record<string, number>;
+}
+
+// =============================================================================
+// 管理者機能関連（v2.5）
+// =============================================================================
+
+export type AdminUserRole = 'free' | 'pro' | 'business' | 'enterprise' | 'admin';
+
+export interface AdminUserSummary {
+  id: string;
+  email: string;
+  username: string;
+  role: AdminUserRole;
+  is_active: boolean;
+  created_at: string;
+  analysis_count: number;
+  report_count: number;
+  scheduled_post_count: number;
+}
+
+export interface AdminUserListResponse {
+  users: AdminUserSummary[];
+  total: number;
+  page: number;
+  per_page: number;
+}
+
+export interface AdminUserDetail {
+  id: string;
+  email: string;
+  username: string;
+  role: AdminUserRole;
+  is_active: boolean;
+  stripe_customer_id: string | null;
+  created_at: string;
+  updated_at: string;
+  analysis_count: number;
+  report_count: number;
+  scheduled_post_count: number;
+  subscription: {
+    id: string;
+    plan: string;
+    status: string;
+    current_period_start: string;
+    current_period_end: string;
+    cancel_at_period_end: boolean;
+  } | null;
+}
+
+export interface AdminUserUpdateRequest {
+  username?: string;
+  role?: AdminUserRole;
+  is_active?: boolean;
+}
+
+export interface SystemStats {
+  total_users: number;
+  active_users: number;
+  inactive_users: number;
+  users_by_plan: Record<string, number>;
+  total_analyses: number;
+  total_reports: number;
+  total_scheduled_posts: number;
+  new_users_today: number;
+  new_users_this_week: number;
+  new_users_this_month: number;
+}
+
+export interface RevenueStats {
+  active_subscriptions: number;
+  subscriptions_by_plan: Record<string, number>;
+  monthly_recurring_revenue_jpy: number;
+  churn_rate: number;
+}
+
+export interface ActivityLogEntry {
+  type: string;
+  user_id: string;
+  username: string;
+  description: string;
+  timestamp: string;
+}
+
+export interface ActivityLogResponse {
+  entries: ActivityLogEntry[];
+  total: number;
 }

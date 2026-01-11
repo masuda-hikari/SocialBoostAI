@@ -2,6 +2,7 @@
 APIルーター
 """
 
+from .admin import router as admin_router
 from .analysis import router as analysis_router
 from .auth import router as auth_router
 from .billing import router as billing_router
@@ -13,13 +14,14 @@ from .instagram_analysis import router as instagram_analysis_router
 from .linkedin_analysis import router as linkedin_analysis_router
 from .realtime import router as realtime_router
 from .reports import router as report_router
+from .schedule import router as schedule_router
 from .tiktok_analysis import router as tiktok_analysis_router
 from .users import router as user_router
 from .websocket import router as websocket_router
 from .youtube_analysis import router as youtube_analysis_router
-from .schedule import router as schedule_router
 
 __all__ = [
+    "admin_router",
     "health_router",
     "auth_router",
     "analysis_router",

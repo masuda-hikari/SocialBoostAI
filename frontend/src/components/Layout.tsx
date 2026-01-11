@@ -19,6 +19,7 @@ import {
   X,
   Sparkles,
   Calendar,
+  Shield,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -49,6 +50,9 @@ export default function Layout() {
     navigate('/login');
   };
 
+  // 管理者判定
+  const isAdmin = user?.role === 'admin' || user?.role === 'enterprise';
+
   const navItems = [
     { path: '/dashboard', label: 'ダッシュボード', icon: LayoutDashboard },
     { path: '/analysis', label: '分析', icon: BarChart3 },
@@ -58,6 +62,10 @@ export default function Layout() {
     { path: '/reports', label: 'レポート', icon: FileText },
     { path: '/billing', label: '課金', icon: CreditCard },
     { path: '/settings', label: '設定', icon: Settings },
+    // 管理者のみ表示
+    ...(isAdmin
+      ? [{ path: '/admin', label: '管理者', icon: Shield }]
+      : []),
   ];
 
   return (

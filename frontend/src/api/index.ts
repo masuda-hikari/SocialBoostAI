@@ -1,6 +1,7 @@
 /**
  * API エクスポート
  */
+export * from './admin';
 export * from './auth';
 export * from './analysis';
 export * from './billing';
