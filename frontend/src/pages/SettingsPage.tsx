@@ -12,14 +12,18 @@ import {
   type EmailPreferences,
   type EmailPreferencesUpdate
 } from '../api/email';
-import { User, Lock, Bell, AlertCircle, Check, Mail, Loader2, Info } from 'lucide-react';
+import { User, Lock, AlertCircle, Check, Mail, Loader2, Info, Smartphone } from 'lucide-react';
+import PushNotificationSettings from '../components/PushNotificationSettings';
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications'>(
+  const [activeTab, setActiveTab] = useState<'profile' | 'security' | 'notifications' | 'push'>(
     'profile'
   );
+
+  // プッシュ通知用メッセージ
+  const [pushMessage, setPushMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // プロフィール状態
   const [username, setUsername] = useState(user?.username || '');
@@ -138,7 +142,8 @@ export default function SettingsPage() {
   const tabs = [
     { id: 'profile', label: 'プロフィール', icon: User },
     { id: 'security', label: 'セキュリティ', icon: Lock },
-    { id: 'notifications', label: '通知設定', icon: Bell },
+    { id: 'notifications', label: 'メール通知', icon: Mail },
+    { id: 'push', label: 'プッシュ通知', icon: Smartphone },
   ] as const;
 
   return (
@@ -290,7 +295,7 @@ export default function SettingsPage() {
             </div>
           )}
 
-          {/* 通知設定 */}
+          {/* メール通知設定 */}
           {activeTab === 'notifications' && (
             <div className="space-y-6">
               {/* メールステータス */}
@@ -346,9 +351,9 @@ export default function SettingsPage() {
                 )}
               </div>
 
-              {/* 通知設定 */}
+              {/* メール通知設定 */}
               <div className="card">
-                <h3 className="text-lg font-medium text-gray-900 mb-4">通知設定</h3>
+                <h3 className="text-lg font-medium text-gray-900 mb-4">メール通知設定</h3>
 
                 {isLoadingPrefs ? (
                   <div className="flex items-center justify-center py-8">
@@ -401,6 +406,46 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
+            </div>
+          )}
+
+          {/* プッシュ通知設定 */}
+          {activeTab === 'push' && (
+            <div className="card">
+              {pushMessage && (
+                <div
+                  className={`mb-4 p-4 rounded-lg flex items-center ${
+                    pushMessage.type === 'success'
+                      ? 'bg-green-50 text-green-700'
+                      : 'bg-red-50 text-red-700'
+                  }`}
+                  role="alert"
+                >
+                  {pushMessage.type === 'success' ? (
+                    <Check size={20} className="mr-2" aria-hidden="true" />
+                  ) : (
+                    <AlertCircle size={20} className="mr-2" aria-hidden="true" />
+                  )}
+                  {pushMessage.text}
+                  <button
+                    onClick={() => setPushMessage(null)}
+                    className="ml-auto p-1 hover:opacity-70"
+                    aria-label="閉じる"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              <PushNotificationSettings
+                onSuccess={(message) => {
+                  setPushMessage({ type: 'success', text: message });
+                  setTimeout(() => setPushMessage(null), 5000);
+                }}
+                onError={(message) => {
+                  setPushMessage({ type: 'error', text: message });
+                  setTimeout(() => setPushMessage(null), 5000);
+                }}
+              />
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 // SocialBoostAI Service Worker
 // バージョン管理でキャッシュ更新を制御
-const CACHE_VERSION = 'v2.9.0';
+const CACHE_VERSION = 'v2.11.0';
 const STATIC_CACHE_NAME = `socialboostai-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE_NAME = `socialboostai-dynamic-${CACHE_VERSION}`;
 const API_CACHE_NAME = `socialboostai-api-${CACHE_VERSION}`;
@@ -213,36 +213,146 @@ function shouldCacheApi(url) {
   return CACHEABLE_API_PATTERNS.some((pattern) => pattern.test(url));
 }
 
+// 通知タイプ別のアイコンとデフォルト設定
+const NOTIFICATION_TYPES = {
+  analysis_complete: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-analysis',
+    defaultTitle: '分析が完了しました',
+    defaultBody: 'ソーシャルメディア分析の結果をご確認ください',
+    defaultUrl: '/dashboard'
+  },
+  report_ready: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-report',
+    defaultTitle: 'レポートが完成しました',
+    defaultBody: '最新のレポートをダウンロードできます',
+    defaultUrl: '/reports'
+  },
+  scheduled_post_published: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-schedule',
+    defaultTitle: '投稿が公開されました',
+    defaultBody: 'スケジュールされた投稿が正常に公開されました',
+    defaultUrl: '/schedule'
+  },
+  scheduled_post_failed: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-schedule-error',
+    defaultTitle: '投稿の公開に失敗しました',
+    defaultBody: '投稿の公開中にエラーが発生しました',
+    defaultUrl: '/schedule',
+    requireInteraction: true
+  },
+  weekly_summary: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-weekly',
+    defaultTitle: '週次サマリー',
+    defaultBody: '今週のソーシャルメディアパフォーマンスをご確認ください',
+    defaultUrl: '/dashboard'
+  },
+  engagement_alert: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-engagement',
+    defaultTitle: 'エンゲージメントアラート',
+    defaultBody: '投稿が注目を集めています！',
+    defaultUrl: '/dashboard'
+  },
+  subscription_update: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-subscription',
+    defaultTitle: 'サブスクリプション更新',
+    defaultBody: 'プランに関するお知らせがあります',
+    defaultUrl: '/billing'
+  },
+  system: {
+    icon: '/icons/icon-192x192.svg',
+    badge: '/icons/icon-72x72.svg',
+    tag: 'socialboostai-system',
+    defaultTitle: 'SocialBoostAI',
+    defaultBody: 'システムからのお知らせ',
+    defaultUrl: '/dashboard'
+  }
+};
+
 // プッシュ通知受信
 self.addEventListener('push', (event) => {
   console.log('[SW] Push notification received');
 
-  let data = {
+  let notificationData = {
     title: 'SocialBoostAI',
     body: '新しい通知があります',
     icon: '/icons/icon-192x192.svg',
     badge: '/icons/icon-72x72.svg',
-    tag: 'socialboostai-notification'
+    tag: 'socialboostai-notification',
+    url: '/dashboard',
+    notification_type: 'system',
+    log_id: null,
+    requireInteraction: false,
+    actions: []
   };
 
   if (event.data) {
     try {
-      data = { ...data, ...event.data.json() };
+      const payload = event.data.json();
+
+      // 通知タイプに応じたデフォルト設定を適用
+      const typeConfig = NOTIFICATION_TYPES[payload.notification_type] || NOTIFICATION_TYPES.system;
+
+      notificationData = {
+        ...notificationData,
+        icon: typeConfig.icon,
+        badge: typeConfig.badge,
+        tag: typeConfig.tag,
+        title: payload.title || typeConfig.defaultTitle,
+        body: payload.body || typeConfig.defaultBody,
+        url: payload.url || typeConfig.defaultUrl,
+        notification_type: payload.notification_type || 'system',
+        log_id: payload.log_id || null,
+        requireInteraction: payload.requireInteraction || typeConfig.requireInteraction || false,
+        data: payload.data || {}
+      };
+
+      // アクションボタンがあれば追加
+      if (payload.actions && Array.isArray(payload.actions)) {
+        notificationData.actions = payload.actions;
+      }
     } catch (e) {
-      data.body = event.data.text();
+      console.error('[SW] Failed to parse push data:', e);
+      notificationData.body = event.data.text();
     }
   }
 
+  const options = {
+    body: notificationData.body,
+    icon: notificationData.icon,
+    badge: notificationData.badge,
+    tag: notificationData.tag,
+    data: {
+      url: notificationData.url,
+      notification_type: notificationData.notification_type,
+      log_id: notificationData.log_id,
+      ...notificationData.data
+    },
+    requireInteraction: notificationData.requireInteraction,
+    vibrate: [200, 100, 200],
+    timestamp: Date.now()
+  };
+
+  // アクションがあれば追加（Chromeでサポート）
+  if (notificationData.actions.length > 0) {
+    options.actions = notificationData.actions;
+  }
+
   event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: data.icon,
-      badge: data.badge,
-      tag: data.tag,
-      data: data.url || '/',
-      requireInteraction: data.requireInteraction || false,
-      actions: data.actions || []
-    })
+    self.registration.showNotification(notificationData.title, options)
   );
 });
 
@@ -251,7 +361,16 @@ self.addEventListener('notificationclick', (event) => {
   console.log('[SW] Notification clicked');
   event.notification.close();
 
-  const urlToOpen = event.notification.data || '/';
+  const notificationData = event.notification.data || {};
+  const urlToOpen = notificationData.url || '/';
+  const logId = notificationData.log_id;
+
+  // クリック追跡
+  if (logId) {
+    trackNotificationClick(logId).catch((error) => {
+      console.error('[SW] Failed to track notification click:', error);
+    });
+  }
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true })
@@ -270,6 +389,29 @@ self.addEventListener('notificationclick', (event) => {
       })
   );
 });
+
+// 通知閉じる
+self.addEventListener('notificationclose', (event) => {
+  console.log('[SW] Notification closed');
+  // 必要に応じて閉じたことを記録
+});
+
+// 通知クリックをサーバーに記録
+async function trackNotificationClick(logId) {
+  try {
+    const response = await fetch(`/api/v1/push/logs/${logId}/clicked`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    if (!response.ok) {
+      console.warn('[SW] Click tracking failed:', response.status);
+    }
+  } catch (error) {
+    console.error('[SW] Click tracking error:', error);
+  }
+}
 
 // バックグラウンド同期
 self.addEventListener('sync', (event) => {

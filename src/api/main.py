@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.10.0",  # プッシュ通知バックエンド追加
+        version="2.11.0",  # プッシュ通知フロントエンドUI追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,

@@ -758,3 +758,106 @@ export interface ActivityLogResponse {
   entries: ActivityLogEntry[];
   total: number;
 }
+
+// =============================================================================
+// プッシュ通知関連（v2.10）
+// =============================================================================
+
+export type PushNotificationType =
+  | 'analysis_complete'
+  | 'report_ready'
+  | 'scheduled_post_published'
+  | 'scheduled_post_failed'
+  | 'weekly_summary'
+  | 'engagement_alert'
+  | 'subscription_update'
+  | 'system';
+
+export interface PushSubscriptionKeys {
+  p256dh: string;
+  auth: string;
+}
+
+export interface PushSubscriptionCreate {
+  endpoint: string;
+  keys: PushSubscriptionKeys;
+  device_type?: string;
+  browser?: string;
+  os?: string;
+  device_name?: string;
+  notification_types?: PushNotificationType[];
+}
+
+export interface PushSubscriptionUpdate {
+  enabled?: boolean;
+  device_name?: string;
+  notification_types?: PushNotificationType[];
+}
+
+export interface PushSubscription {
+  id: string;
+  endpoint: string;
+  device_type: string | null;
+  browser: string | null;
+  os: string | null;
+  device_name: string | null;
+  enabled: boolean;
+  notification_types: string[];
+  last_used_at: string | null;
+  created_at: string;
+}
+
+export interface PushSubscriptionListResponse {
+  items: PushSubscription[];
+  total: number;
+}
+
+export type PushNotificationLogStatus = 'pending' | 'sent' | 'failed' | 'clicked';
+
+export interface PushNotificationLog {
+  id: string;
+  notification_type: string;
+  title: string;
+  body: string | null;
+  url: string | null;
+  status: PushNotificationLogStatus;
+  error_message: string | null;
+  sent_at: string | null;
+  clicked_at: string | null;
+  created_at: string;
+}
+
+export interface PushNotificationLogsResponse {
+  items: PushNotificationLog[];
+  total: number;
+  page: number;
+  per_page: number;
+  pages: number;
+}
+
+export interface PushNotificationStats {
+  total_subscriptions: number;
+  active_subscriptions: number;
+  total_sent: number;
+  total_clicked: number;
+  total_failed: number;
+  click_rate: number;
+  by_type: Record<string, number>;
+  by_device: Record<string, number>;
+}
+
+export interface VapidPublicKeyResponse {
+  public_key: string;
+}
+
+export interface TestNotificationResponse {
+  status: string;
+  message?: string;
+  sent?: number;
+  failed?: number;
+  details?: Array<{
+    id: string;
+    status: string;
+    error: string | null;
+  }>;
+}
