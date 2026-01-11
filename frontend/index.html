@@ -16,6 +16,9 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.svg" />
 
+    <!-- PWA マニフェスト -->
+    <link rel="manifest" href="/manifest.json" />
+
     <!-- OGP (Open Graph Protocol) -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="SocialBoostAI - AIでソーシャルメディアを成功に導く" />
@@ -36,9 +39,48 @@
     <!-- 追加メタタグ -->
     <meta name="theme-color" content="#3B82F6" />
     <meta name="format-detection" content="telephone=no" />
+
+    <!-- PWA: Apple用メタタグ -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="SocialBoostAI" />
+
+    <!-- PWA: Microsoft用メタタグ -->
+    <meta name="msapplication-TileColor" content="#3B82F6" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Service Worker 登録 -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('[App] Service Worker registered:', registration.scope);
+
+              // 更新チェック
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // 新しいバージョンが利用可能
+                      if (confirm('新しいバージョンが利用可能です。更新しますか？')) {
+                        window.location.reload();
+                      }
+                    }
+                  });
+                }
+              });
+            })
+            .catch((error) => {
+              console.error('[App] Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </body>
 </html>

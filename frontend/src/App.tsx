@@ -1,5 +1,5 @@
 /**
- * メインアプリケーション（Lazy Loading対応）
+ * メインアプリケーション（Lazy Loading対応、PWA対応）
  */
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { PageLoading } from './components/LoadingSpinner';
+import { PWAInstallPrompt, OfflineIndicator, PWAUpdateNotification } from './components/PWAInstallPrompt';
 
 // 重要なページは即時読み込み（LCP最適化）
 import LandingPage from './pages/LandingPage';
@@ -44,6 +45,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        {/* PWA: オフライン状態表示 */}
+        <OfflineIndicator />
+
         <Suspense fallback={<PageLoading />}>
           <Routes>
             {/* 公開ルート - ランディング（即時読み込み） */}
@@ -89,6 +93,12 @@ function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Suspense>
+
+        {/* PWA: インストールプロンプト */}
+        <PWAInstallPrompt />
+
+        {/* PWA: 更新通知 */}
+        <PWAUpdateNotification />
       </BrowserRouter>
     </QueryClientProvider>
   );
