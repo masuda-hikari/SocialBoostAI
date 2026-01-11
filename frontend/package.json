@@ -1,13 +1,19 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.7.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:report": "playwright show-report"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.18",
@@ -21,6 +27,7 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
