@@ -19,7 +19,7 @@ class TestHealthEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["version"] == "0.5.0"
+        assert data["version"] == "2.6.0"
         assert data["service"] == "SocialBoostAI"
 
     def test_root_endpoint(self):

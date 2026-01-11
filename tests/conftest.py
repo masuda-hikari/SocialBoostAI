@@ -8,6 +8,8 @@ import os
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 # テスト環境ではレート制限を無効化
 os.environ["RATE_LIMIT_ENABLED"] = "false"
+# テスト環境ではCSRF保護を無効化
+os.environ["CSRF_ENABLED"] = "false"
 
 import pytest
 from sqlalchemy import create_engine, event

@@ -2,7 +2,6 @@
 FastAPI メインアプリケーション
 """
 
-import logging
 import os
 from contextlib import asynccontextmanager
 
@@ -11,10 +10,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from . import routers
 from .db import init_db
-from .middleware import CacheMiddleware, PerformanceMiddleware, RateLimitMiddleware
+from .logging_config import get_logger, setup_logging
+from .middleware import (
+    CacheMiddleware,
+    CSRFMiddleware,
+    PerformanceMiddleware,
+    RateLimitMiddleware,
+)
 from .tasks import get_task_service
 
-logger = logging.getLogger(__name__)
+# ログ設定初期化
+setup_logging()
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
@@ -35,11 +42,17 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.5.0",  # 管理者ダッシュボードAPI追加
+        version="2.6.0",  # CSRF保護・構造化ログ・ヘルスチェック強化
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
     )
+
+    # CSRF保護ミドルウェア（状態変更リクエスト保護）
+    csrf_enabled = os.getenv("CSRF_ENABLED", "true").lower() in ("true", "1", "yes")
+    if csrf_enabled:
+        app.add_middleware(CSRFMiddleware)
+        logger.info("CSRF保護ミドルウェア有効化")
 
     # レート制限ミドルウェア（DDoS/API濫用防止）
     app.add_middleware(RateLimitMiddleware)
