@@ -15,4 +15,5 @@ export * from './realtime';
 export * from './websocket';
 export * from './schedule';
 export * from './email';
+export * from './onboarding';
 export { default as apiClient } from './client';

@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.7.0",  # E2Eテスト基盤・CI/CD統合
+        version="2.8.0",  # オンボーディング機能追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -142,6 +142,9 @@ def create_app() -> FastAPI:
     )
     app.include_router(
         routers.admin_router, prefix="/api/v1", tags=["管理者"]
+    )
+    app.include_router(
+        routers.onboarding_router, prefix="/api/v1/onboarding", tags=["オンボーディング"]
     )
 
     return app

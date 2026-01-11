@@ -12,6 +12,7 @@ export interface User {
   role: UserRole;
   created_at: string;
   is_active: boolean;
+  onboarding_completed?: boolean;
 }
 
 export interface TokenResponse {

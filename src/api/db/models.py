@@ -53,6 +53,19 @@ class User(Base):
     stripe_customer_id: Mapped[str | None] = mapped_column(
         String(255), unique=True, nullable=True
     )
+    # オンボーディング関連
+    onboarding_completed: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+    onboarding_steps: Mapped[str] = mapped_column(
+        Text, default="{}", nullable=False
+    )  # JSON形式
+    onboarding_started_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    onboarding_completed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         default=_now_utc,

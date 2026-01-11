@@ -36,6 +36,7 @@ class UserResponse(BaseModel):
     role: UserRole
     created_at: datetime
     is_active: bool
+    onboarding_completed: bool = False
 
 
 class TokenResponse(BaseModel):
@@ -923,3 +924,89 @@ class OptimalTimesResponse(BaseModel):
     platform: ContentPlatformType
     slots: list[OptimalTimeSlot]
     based_on_analyses: int
+
+
+# =============================================================================
+# オンボーディング関連（v2.8）
+# =============================================================================
+
+
+class OnboardingStepName(str, Enum):
+    """オンボーディングステップ名"""
+
+    WELCOME = "welcome"
+    CONNECT_PLATFORM = "connect_platform"
+    SELECT_GOALS = "select_goals"
+    SETUP_NOTIFICATIONS = "setup_notifications"
+    FIRST_ANALYSIS = "first_analysis"
+    COMPLETE = "complete"
+
+
+class OnboardingStepStatus(str, Enum):
+    """ステップステータス"""
+
+    NOT_STARTED = "not_started"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    SKIPPED = "skipped"
+
+
+class OnboardingStep(BaseModel):
+    """オンボーディングステップ"""
+
+    name: OnboardingStepName
+    status: OnboardingStepStatus = OnboardingStepStatus.NOT_STARTED
+    completed_at: Optional[datetime] = None
+    data: Optional[dict] = None
+
+
+class OnboardingStatusResponse(BaseModel):
+    """オンボーディング状態レスポンス"""
+
+    is_completed: bool
+    current_step: OnboardingStepName
+    steps: list[OnboardingStep]
+    started_at: Optional[datetime] = None
+    completed_at: Optional[datetime] = None
+    progress_percent: int
+
+
+class OnboardingStartRequest(BaseModel):
+    """オンボーディング開始リクエスト"""
+
+    skip_to_step: Optional[OnboardingStepName] = None
+
+
+class OnboardingCompleteStepRequest(BaseModel):
+    """ステップ完了リクエスト"""
+
+    step_name: OnboardingStepName
+    data: Optional[dict] = None
+
+
+class OnboardingGoalsData(BaseModel):
+    """目標選択データ"""
+
+    goals: list[str]
+    primary_platform: Optional[str] = None
+
+
+class OnboardingPlatformData(BaseModel):
+    """プラットフォーム接続データ"""
+
+    platform: str
+    connected: bool = False
+
+
+class OnboardingNotificationData(BaseModel):
+    """通知設定データ"""
+
+    email_weekly_report: bool = True
+    email_analysis_complete: bool = True
+    email_tips: bool = False
+
+
+class OnboardingSkipRequest(BaseModel):
+    """オンボーディングスキップリクエスト"""
+
+    reason: Optional[str] = None

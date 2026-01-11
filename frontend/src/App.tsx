@@ -27,6 +27,7 @@ const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
 const TokushohoPage = lazy(() => import('./pages/TokushohoPage'));
 const SchedulePage = lazy(() => import('./pages/SchedulePage'));
+const OnboardingPage = lazy(() => import('./pages/OnboardingPage'));
 
 // React Query クライアント
 const queryClient = new QueryClient({
@@ -54,6 +55,16 @@ function App() {
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/legal/tokushoho" element={<TokushohoPage />} />
+
+            {/* オンボーディング（認証必要、Layout不要） */}
+            <Route
+              path="/onboarding"
+              element={
+                <ProtectedRoute>
+                  <OnboardingPage />
+                </ProtectedRoute>
+              }
+            />
 
             {/* 保護されたルート（遅延読み込み） */}
             <Route
