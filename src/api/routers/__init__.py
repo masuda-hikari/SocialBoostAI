@@ -13,6 +13,7 @@ from .health import router as health_router
 from .instagram_analysis import router as instagram_analysis_router
 from .linkedin_analysis import router as linkedin_analysis_router
 from .onboarding import router as onboarding_router
+from .push import router as push_router
 from .realtime import router as realtime_router
 from .reports import router as report_router
 from .schedule import router as schedule_router
@@ -40,4 +41,5 @@ __all__ = [
     "realtime_router",
     "schedule_router",
     "onboarding_router",
+    "push_router",
 ]

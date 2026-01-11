@@ -21,6 +21,9 @@ redis>=5.0.0
 # 課金
 stripe>=7.0.0
 
+# プッシュ通知
+pywebpush>=2.0.0
+
 # データバリデーション
 pydantic>=2.0.0
 pydantic-settings>=2.0.0

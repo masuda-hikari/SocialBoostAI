@@ -1010,3 +1010,141 @@ class OnboardingSkipRequest(BaseModel):
     """オンボーディングスキップリクエスト"""
 
     reason: Optional[str] = None
+
+
+# =============================================================================
+# プッシュ通知関連（v2.10）
+# =============================================================================
+
+
+class PushNotificationType(str, Enum):
+    """プッシュ通知タイプ"""
+
+    ANALYSIS_COMPLETE = "analysis_complete"
+    REPORT_READY = "report_ready"
+    SCHEDULED_POST_PUBLISHED = "scheduled_post_published"
+    SCHEDULED_POST_FAILED = "scheduled_post_failed"
+    WEEKLY_SUMMARY = "weekly_summary"
+    ENGAGEMENT_ALERT = "engagement_alert"
+    SUBSCRIPTION_UPDATE = "subscription_update"
+    SYSTEM = "system"
+
+
+class PushSubscriptionKeys(BaseModel):
+    """Web Push サブスクリプションキー"""
+
+    p256dh: str
+    auth: str
+
+
+class PushSubscriptionCreate(BaseModel):
+    """プッシュ通知サブスクリプション登録リクエスト"""
+
+    endpoint: str
+    keys: PushSubscriptionKeys
+    device_type: Optional[str] = None  # desktop/mobile/tablet
+    browser: Optional[str] = None
+    os: Optional[str] = None
+    device_name: Optional[str] = None
+    notification_types: list[PushNotificationType] = []
+
+
+class PushSubscriptionUpdate(BaseModel):
+    """プッシュ通知サブスクリプション更新リクエスト"""
+
+    enabled: Optional[bool] = None
+    device_name: Optional[str] = None
+    notification_types: Optional[list[PushNotificationType]] = None
+
+
+class PushSubscriptionResponse(BaseModel):
+    """プッシュ通知サブスクリプションレスポンス"""
+
+    id: str
+    endpoint: str
+    device_type: Optional[str] = None
+    browser: Optional[str] = None
+    os: Optional[str] = None
+    device_name: Optional[str] = None
+    enabled: bool
+    notification_types: list[str]
+    last_used_at: Optional[datetime] = None
+    created_at: datetime
+
+
+class PushSubscriptionListResponse(BaseModel):
+    """プッシュ通知サブスクリプション一覧レスポンス"""
+
+    items: list[PushSubscriptionResponse]
+    total: int
+
+
+class PushNotificationSendRequest(BaseModel):
+    """プッシュ通知送信リクエスト（管理者用）"""
+
+    user_id: Optional[str] = None  # None=全ユーザー
+    notification_type: PushNotificationType
+    title: str = Field(max_length=255)
+    body: Optional[str] = None
+    icon: Optional[str] = None
+    url: Optional[str] = None
+    data: Optional[dict] = None
+
+
+class PushNotificationLogStatus(str, Enum):
+    """通知ログステータス"""
+
+    PENDING = "pending"
+    SENT = "sent"
+    FAILED = "failed"
+    CLICKED = "clicked"
+
+
+class PushNotificationLogResponse(BaseModel):
+    """プッシュ通知ログレスポンス"""
+
+    id: str
+    notification_type: str
+    title: str
+    body: Optional[str] = None
+    url: Optional[str] = None
+    status: PushNotificationLogStatus
+    error_message: Optional[str] = None
+    sent_at: Optional[datetime] = None
+    clicked_at: Optional[datetime] = None
+    created_at: datetime
+
+
+class PushNotificationLogsResponse(BaseModel):
+    """プッシュ通知ログ一覧レスポンス"""
+
+    items: list[PushNotificationLogResponse]
+    total: int
+    page: int
+    per_page: int
+    pages: int
+
+
+class PushNotificationStatsResponse(BaseModel):
+    """プッシュ通知統計レスポンス"""
+
+    total_subscriptions: int
+    active_subscriptions: int
+    total_sent: int
+    total_clicked: int
+    total_failed: int
+    click_rate: float
+    by_type: dict[str, int]
+    by_device: dict[str, int]
+
+
+class VapidPublicKeyResponse(BaseModel):
+    """VAPID公開鍵レスポンス"""
+
+    public_key: str
+
+
+class PushNotificationTestRequest(BaseModel):
+    """テスト通知送信リクエスト"""
+
+    subscription_id: Optional[str] = None  # None=全サブスクリプション

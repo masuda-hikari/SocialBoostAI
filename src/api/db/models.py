@@ -104,6 +104,16 @@ class User(Base):
         back_populates="user",
         cascade="all, delete-orphan",
     )
+    push_subscriptions: Mapped[list["PushSubscription"]] = relationship(
+        "PushSubscription",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+    push_notification_logs: Mapped[list["PushNotificationLog"]] = relationship(
+        "PushNotificationLog",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
 
 
 class Token(Base):
@@ -343,6 +353,112 @@ class ScheduledPost(Base):
 
     # リレーション
     user: Mapped["User"] = relationship("User", back_populates="scheduled_posts")
+
+
+class PushSubscription(Base):
+    """プッシュ通知サブスクリプションテーブル"""
+
+    __tablename__ = "push_subscriptions"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("push_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # Web Push サブスクリプション情報
+    endpoint: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
+    p256dh_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    auth_key: Mapped[str] = mapped_column(String(255), nullable=False)
+    # デバイス情報
+    device_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    browser: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    os: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    device_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    # 通知設定
+    enabled: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    notification_types: Mapped[str] = mapped_column(
+        Text, default="[]", nullable=False
+    )  # JSON配列
+    # タイムスタンプ
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        onupdate=_now_utc,
+        nullable=False,
+    )
+
+    # リレーション
+    user: Mapped["User"] = relationship("User", back_populates="push_subscriptions")
+    notification_logs: Mapped[list["PushNotificationLog"]] = relationship(
+        "PushNotificationLog",
+        back_populates="subscription",
+        cascade="all, delete-orphan",
+    )
+
+
+class PushNotificationLog(Base):
+    """プッシュ通知ログテーブル"""
+
+    __tablename__ = "push_notification_logs"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("notif_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    subscription_id: Mapped[str | None] = mapped_column(
+        String(32),
+        ForeignKey("push_subscriptions.id", ondelete="SET NULL"),
+        nullable=True,
+    )
+    # 通知内容
+    notification_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    body: Mapped[str | None] = mapped_column(Text, nullable=True)
+    data: Mapped[str] = mapped_column(Text, default="{}", nullable=False)  # JSON
+    icon: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    # ステータス
+    status: Mapped[str] = mapped_column(
+        String(20), default="pending", nullable=False
+    )  # pending/sent/failed/clicked
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sent_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    clicked_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # タイムスタンプ
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+
+    # リレーション
+    user: Mapped["User"] = relationship("User", back_populates="push_notification_logs")
+    subscription: Mapped["PushSubscription"] = relationship(
+        "PushSubscription", back_populates="notification_logs"
+    )
 
 
 class CrossPlatformComparison(Base):

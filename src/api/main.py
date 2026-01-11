@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="SocialBoostAI API",
         description="AI駆動のソーシャルメディア成長アシスタント",
-        version="2.9.0",  # PWA対応追加
+        version="2.10.0",  # プッシュ通知バックエンド追加
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,
@@ -145,6 +145,9 @@ def create_app() -> FastAPI:
     )
     app.include_router(
         routers.onboarding_router, prefix="/api/v1/onboarding", tags=["オンボーディング"]
+    )
+    app.include_router(
+        routers.push_router, prefix="/api/v1/push", tags=["プッシュ通知"]
     )
 
     return app

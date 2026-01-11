@@ -20,6 +20,8 @@ from src.api.db.base import Base, get_db
 from src.api.db.models import (  # noqa: F401
     Analysis,
     CrossPlatformComparison,
+    PushNotificationLog,
+    PushSubscription,
     Report,
     ScheduledPost,
     Subscription,
@@ -246,3 +248,58 @@ def auth_token_business(db_session, test_user_business):
 def auth_headers_business(auth_token_business):
     """認証ヘッダー（Business版）"""
     return {"Authorization": f"Bearer {auth_token_business}"}
+
+
+# 互換性用エイリアス（一部テストファイルで使用）
+@pytest.fixture
+def auth_headers(auth_token):
+    """認証ヘッダー（Free版のエイリアス）"""
+    return {"Authorization": f"Bearer {auth_token}"}
+
+
+@pytest.fixture
+def admin_user(db_session):
+    """管理者テスト用ユーザー"""
+    from datetime import datetime, timezone
+    import secrets
+    import bcrypt
+
+    password_hash = bcrypt.hashpw("adminpassword123".encode(), bcrypt.gensalt()).decode()
+    user = User(
+        id=f"user_{secrets.token_hex(8)}",
+        email="admin@example.com",
+        username="adminuser",
+        password_hash=password_hash,
+        role="admin",
+        is_active=True,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc),
+    )
+    db_session.add(user)
+    db_session.commit()
+    db_session.refresh(user)
+    return user
+
+
+@pytest.fixture
+def admin_token(db_session, admin_user):
+    """管理者認証トークン"""
+    from datetime import datetime, timedelta, timezone
+    import secrets
+
+    token_str = secrets.token_hex(32)
+    token = Token(
+        token=token_str,
+        user_id=admin_user.id,
+        expires_at=datetime.now(timezone.utc) + timedelta(hours=24),
+        created_at=datetime.now(timezone.utc),
+    )
+    db_session.add(token)
+    db_session.commit()
+    return token_str
+
+
+@pytest.fixture
+def admin_headers(admin_token):
+    """管理者認証ヘッダー"""
+    return {"Authorization": f"Bearer {admin_token}"}
