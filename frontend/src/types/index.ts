@@ -861,3 +861,108 @@ export interface TestNotificationResponse {
     error: string | null;
   }>;
 }
+
+// =============================================================================
+// 使用量モニタリング関連（v2.13）
+// =============================================================================
+
+export interface DailyUsage {
+  date: string;
+  api_calls: number;
+  analyses_run: number;
+  reports_generated: number;
+  scheduled_posts: number;
+  ai_generations: number;
+  platform_usage: Record<string, number>;
+}
+
+export interface MonthlyUsageSummary {
+  year_month: string;
+  total_api_calls: number;
+  total_analyses: number;
+  total_reports: number;
+  total_scheduled_posts: number;
+  total_ai_generations: number;
+  peak_daily_api_calls: number;
+  peak_date: string | null;
+  platform_usage: Record<string, number>;
+}
+
+export interface PlanLimits {
+  api_calls_per_day: number; // -1 = 無制限
+  api_calls_per_minute: number;
+  analyses_per_day: number;
+  reports_per_month: number; // -1 = 無制限
+  scheduled_posts_per_day: number;
+  ai_generations_per_day: number;
+  platforms: number; // -1 = 無制限
+  history_days: number; // -1 = 無制限
+}
+
+export interface UsageWithLimits {
+  today: DailyUsage;
+  limits: PlanLimits;
+  remaining: Record<string, number>;
+  usage_percent: Record<string, number>;
+}
+
+export interface UsageHistoryResponse {
+  period_start: string;
+  period_end: string;
+  daily_usage: DailyUsage[];
+  total: DailyUsage;
+  average: DailyUsage;
+}
+
+export interface ApiCallLog {
+  id: string;
+  endpoint: string;
+  method: string;
+  status_code: number;
+  response_time_ms: number | null;
+  created_at: string;
+}
+
+export interface ApiCallLogsResponse {
+  items: ApiCallLog[];
+  total: number;
+  page: number;
+  per_page: number;
+  pages: number;
+}
+
+export interface UsageTrend {
+  period: string;
+  data: Array<{
+    date: string;
+    api_calls: number;
+    analyses: number;
+    reports: number;
+    scheduled_posts: number;
+    ai_generations: number;
+  }>;
+  trend_percent: Record<string, number>;
+}
+
+export interface UpgradeRecommendation {
+  should_upgrade: boolean;
+  reason: string | null;
+  recommended_plan: PlanTier | null;
+  current_usage_vs_limit: Record<string, number>;
+  projected_savings: number | null;
+}
+
+export interface UsageDashboard {
+  current_plan: PlanTier;
+  usage_with_limits: UsageWithLimits;
+  monthly_summary: MonthlyUsageSummary | null;
+  trend: UsageTrend;
+  upgrade_recommendation: UpgradeRecommendation | null;
+}
+
+export interface UsageLimitCheckResponse {
+  allowed: boolean;
+  message: string;
+  usage_type: string;
+  requested_count: number;
+}

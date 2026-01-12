@@ -19,7 +19,10 @@ from sqlalchemy.pool import StaticPool
 from src.api.db.base import Base, get_db
 from src.api.db.models import (  # noqa: F401
     Analysis,
+    ApiCallLog,
     CrossPlatformComparison,
+    DailyUsage,
+    MonthlyUsageSummary,
     PushNotificationLog,
     PushSubscription,
     Report,
@@ -303,3 +306,10 @@ def admin_token(db_session, admin_user):
 def admin_headers(admin_token):
     """管理者認証ヘッダー"""
     return {"Authorization": f"Bearer {admin_token}"}
+
+
+@pytest.fixture
+def authenticated_client(client, auth_headers):
+    """認証済みテストクライアント"""
+    client.headers.update(auth_headers)
+    return client

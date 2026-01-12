@@ -17,4 +17,5 @@ export * from './schedule';
 export * from './email';
 export * from './onboarding';
 export * from './push';
+export * from './usage';
 export { default as apiClient } from './client';

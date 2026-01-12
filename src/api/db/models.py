@@ -520,3 +520,133 @@ class CrossPlatformComparison(Base):
         default=_now_utc,
         nullable=False,
     )
+
+
+class DailyUsage(Base):
+    """日次使用量テーブル"""
+
+    __tablename__ = "daily_usage"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("usage_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+    )
+    # 使用量カウント
+    api_calls: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    analyses_run: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    reports_generated: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    scheduled_posts: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    ai_generations: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    # プラットフォーム別使用量（JSON形式）
+    platform_usage: Mapped[str] = mapped_column(
+        Text, default="{}", nullable=False
+    )  # JSON
+    # タイムスタンプ
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        onupdate=_now_utc,
+        nullable=False,
+    )
+
+
+class MonthlyUsageSummary(Base):
+    """月次使用量サマリーテーブル"""
+
+    __tablename__ = "monthly_usage_summary"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("musage_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    year_month: Mapped[str] = mapped_column(
+        String(7),
+        nullable=False,
+    )  # YYYY-MM形式
+    # 使用量合計
+    total_api_calls: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    total_analyses: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    total_reports: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    total_scheduled_posts: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False
+    )
+    total_ai_generations: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False
+    )
+    # ピーク使用量
+    peak_daily_api_calls: Mapped[int] = mapped_column(
+        Integer, default=0, nullable=False
+    )
+    peak_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # プラットフォーム別使用量（JSON形式）
+    platform_usage: Mapped[str] = mapped_column(
+        Text, default="{}", nullable=False
+    )  # JSON
+    # タイムスタンプ
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        onupdate=_now_utc,
+        nullable=False,
+    )
+
+
+class ApiCallLog(Base):
+    """API呼び出しログテーブル"""
+
+    __tablename__ = "api_call_logs"
+
+    id: Mapped[str] = mapped_column(
+        String(32),
+        primary_key=True,
+        default=lambda: _generate_id("log_"),
+    )
+    user_id: Mapped[str] = mapped_column(
+        String(32),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    # リクエスト情報
+    endpoint: Mapped[str] = mapped_column(String(255), nullable=False)
+    method: Mapped[str] = mapped_column(String(10), nullable=False)
+    status_code: Mapped[int] = mapped_column(Integer, nullable=False)
+    # パフォーマンス情報
+    response_time_ms: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # メタデータ
+    ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True)
+    user_agent: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    request_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    # タイムスタンプ
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=_now_utc,
+        nullable=False,
+    )

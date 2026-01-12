@@ -20,6 +20,7 @@ import {
   Sparkles,
   Calendar,
   Shield,
+  Activity,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -60,6 +61,7 @@ export default function Layout() {
     { path: '/content', label: 'AI生成', icon: Sparkles },
     { path: '/schedule', label: 'スケジュール', icon: Calendar },
     { path: '/reports', label: 'レポート', icon: FileText },
+    { path: '/usage', label: '使用量', icon: Activity },
     { path: '/billing', label: '課金', icon: CreditCard },
     { path: '/settings', label: '設定', icon: Settings },
     // 管理者のみ表示

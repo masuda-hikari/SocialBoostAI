@@ -19,6 +19,7 @@ from .realtime import router as realtime_router
 from .reports import router as report_router
 from .schedule import router as schedule_router
 from .tiktok_analysis import router as tiktok_analysis_router
+from .usage import router as usage_router
 from .users import router as user_router
 from .websocket import router as websocket_router
 from .youtube_analysis import router as youtube_analysis_router
@@ -44,4 +45,5 @@ __all__ = [
     "schedule_router",
     "onboarding_router",
     "push_router",
+    "usage_router",
 ]

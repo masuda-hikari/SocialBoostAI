@@ -18,3 +18,4 @@ export { default as TokushohoPage } from './TokushohoPage';
 export { default as NotFoundPage } from './NotFoundPage';
 export { default as SchedulePage } from './SchedulePage';
 export { default as OnboardingPage } from './OnboardingPage';
+export { default as UsagePage } from './UsagePage';

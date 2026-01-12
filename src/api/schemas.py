@@ -1148,3 +1148,137 @@ class PushNotificationTestRequest(BaseModel):
     """テスト通知送信リクエスト"""
 
     subscription_id: Optional[str] = None  # None=全サブスクリプション
+
+
+# =============================================================================
+# API使用量モニタリング関連（v2.13）
+# =============================================================================
+
+
+class UsageType(str, Enum):
+    """使用量タイプ"""
+
+    API_CALL = "api_call"
+    ANALYSIS = "analysis"
+    REPORT = "report"
+    SCHEDULED_POST = "scheduled_post"
+    AI_GENERATION = "ai_generation"
+
+
+class DailyUsageResponse(BaseModel):
+    """日次使用量レスポンス"""
+
+    date: datetime
+    api_calls: int
+    analyses_run: int
+    reports_generated: int
+    scheduled_posts: int
+    ai_generations: int
+    platform_usage: dict[str, int]
+
+
+class MonthlyUsageSummaryResponse(BaseModel):
+    """月次使用量サマリーレスポンス"""
+
+    year_month: str
+    total_api_calls: int
+    total_analyses: int
+    total_reports: int
+    total_scheduled_posts: int
+    total_ai_generations: int
+    peak_daily_api_calls: int
+    peak_date: Optional[datetime] = None
+    platform_usage: dict[str, int]
+
+
+class PlanLimits(BaseModel):
+    """プラン制限情報"""
+
+    api_calls_per_day: int  # -1 = 無制限
+    api_calls_per_minute: int
+    analyses_per_day: int
+    reports_per_month: int  # -1 = 無制限
+    scheduled_posts_per_day: int
+    ai_generations_per_day: int
+    platforms: int  # -1 = 無制限
+    history_days: int  # -1 = 無制限
+
+
+class UsageWithLimits(BaseModel):
+    """使用量と制限の統合情報"""
+
+    # 今日の使用量
+    today: DailyUsageResponse
+    # プラン制限
+    limits: PlanLimits
+    # 残り使用量（-1 = 無制限）
+    remaining: dict[str, int]
+    # 使用率（0-100、-1 = 無制限）
+    usage_percent: dict[str, float]
+
+
+class UsageHistoryRequest(BaseModel):
+    """使用量履歴リクエスト"""
+
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    days: int = Field(default=30, ge=1, le=90)
+
+
+class UsageHistoryResponse(BaseModel):
+    """使用量履歴レスポンス"""
+
+    period_start: datetime
+    period_end: datetime
+    daily_usage: list[DailyUsageResponse]
+    total: DailyUsageResponse
+    average: DailyUsageResponse
+
+
+class ApiCallLogResponse(BaseModel):
+    """API呼び出しログレスポンス"""
+
+    id: str
+    endpoint: str
+    method: str
+    status_code: int
+    response_time_ms: Optional[float] = None
+    created_at: datetime
+
+
+class ApiCallLogsResponse(BaseModel):
+    """API呼び出しログ一覧レスポンス"""
+
+    items: list[ApiCallLogResponse]
+    total: int
+    page: int
+    per_page: int
+    pages: int
+
+
+class UsageTrendResponse(BaseModel):
+    """使用量トレンドレスポンス"""
+
+    period: str  # "daily", "weekly", "monthly"
+    data: list[dict]  # [{"date": ..., "api_calls": ..., ...}]
+    trend_percent: dict[str, float]  # 前期比（%）
+
+
+class UpgradeRecommendation(BaseModel):
+    """アップグレード推奨情報"""
+
+    should_upgrade: bool
+    reason: Optional[str] = None
+    recommended_plan: Optional[PlanTier] = None
+    current_usage_vs_limit: dict[str, float]
+    projected_savings: Optional[int] = None  # 円/月
+
+
+class UsageDashboardResponse(BaseModel):
+    """使用量ダッシュボードレスポンス"""
+
+    current_plan: PlanTier
+    usage_with_limits: UsageWithLimits
+    monthly_summary: Optional[MonthlyUsageSummaryResponse] = None
+    trend: UsageTrendResponse
+    upgrade_recommendation: Optional[UpgradeRecommendation] = None
