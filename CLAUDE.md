@@ -221,6 +221,89 @@
 
 ---
 
+## 共有モジュール（_orchestrator）
+
+★★★ 情報収集・コンテンツ生成・セキュリティは共有モジュールを必ず使用 ★★★
+
+### モジュールパス
+```
+O:\Dev\Work\_orchestrator\lib\
+├── info_collector/  # WebFetcher, SNSCollector, MarketDataCollector
+├── content_engine/  # ContentGenerator, PostScheduler
+└── security/        # GDPRCompliance, AuditLogger
+```
+
+### 使用方法
+```python
+import sys
+sys.path.insert(0, r"O:\Dev\Work\_orchestrator")
+
+from lib.info_collector import WebFetcher, SNSCollector
+from lib.content_engine import ContentGenerator
+from lib.security import AuditLogger
+```
+
+### スキル呼び出し
+/info-collector - 情報収集ガイド参照
+
+---
+
+## 情報収集設定（CRITICAL - 必須）
+
+★★★ プロジェクト作業の50%は情報収集にリソースを割くこと ★★★
+
+### 収集対象と頻度
+| カテゴリ | キーワード | 情報源 | 頻度 | 保存先 |
+|---------|-----------|--------|------|--------|
+| 市場データ | SNSマーケティング 市場規模, ソーシャルメディア分析 | 政府統計、Statista | 月1回 | data/collected/market/ |
+| 競合情報 | Hootsuite, Buffer, Sprout Social, Later | 競合サイト、プレスリリース | 週1回 | data/collected/competitor/ |
+| 技術動向 | Twitter API v2, Instagram API, TikTok API | GitHub、公式ドキュメント | 週1回 | data/collected/tech/ |
+| SNSトレンド | #SNSマーケティング, #ソーシャルメディア | X/Twitter、Reddit | 日1回 | data/collected/social/ |
+| 法規制 | 景品表示法, ステマ規制, インフルエンサーマーケティング | 消費者庁、業界団体 | 月1回 | data/collected/legal/ |
+
+### 情報品質チェックリスト
+- [ ] 一次ソース（各SNS公式、政府統計）を優先したか
+- [ ] 出典URLと取得日を記録したか
+- [ ] 市場データは複数ソースでクロスチェックしたか
+
+---
+
+## SNS運営設定（CRITICAL - 必須）
+
+★★★ 開発だけして運営しない状態は失敗扱い ★★★
+
+### アカウント情報
+| プラットフォーム | アカウント | 目的 | 状態 |
+|-----------------|-----------|------|------|
+| X/Twitter | @SocialBoostAI | SNSマーケティングTips | 要開設 |
+| LinkedIn | SocialBoostAI | B2B向け発信 | 要開設 |
+
+### 投稿スケジュール
+| 曜日 | 時間 | コンテンツタイプ |
+|------|------|-----------------|
+| 月-金 | 09:00 | マーケティングTips |
+| 月-金 | 18:00 | 成功事例・データ |
+| 土日 | 12:00 | 業界ニュース解説 |
+
+### コンテンツ戦略
+1. **エンゲージメント向上Tips** - 投稿最適化のノウハウ
+2. **分析事例** - データに基づく改善事例
+3. **ツール活用法** - SocialBoostAIの機能紹介
+4. **業界トレンド** - 最新のSNSマーケティング動向
+
+---
+
+## セキュリティ・法令対策
+
+### 必須対応項目
+| 項目 | 対応状況 |
+|------|---------|
+| プライバシーポリシー | 未 |
+| 各SNS API利用規約遵守 | 要確認 |
+| ステマ規制対応 | 要実装 |
+
+---
+
 ## 対応プラットフォーム
 
 ### Phase 1（初期対応）
@@ -500,6 +583,7 @@ AIは指示待ちではなく、自ら考え、最善を尽くす：
 | 2026-01-05 | O:\Dev\CLAUDE.md継承要件を追加 |
 | 2026-01-06 | AI行動原則・姿勢禁止・継続性観点を追加 |
 | 2026-01-06 | Orchestrator統制要件を追加 |
+| 2026-01-17 | 情報収集設定・SNS運営設定・セキュリティ法令対策を追加 |
 
 <!-- LOCAL:END -->
 
