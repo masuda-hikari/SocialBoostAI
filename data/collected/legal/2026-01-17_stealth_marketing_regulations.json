@@ -1,0 +1,85 @@
+{
+  "collection_date": "2026-01-17",
+  "category": "legal",
+  "topic": "日本の景品表示法・ステルスマーケティング規制（2026年1月時点）",
+  "sources": [
+    {
+      "title": "令和5年10月1日からステルスマーケティングは景品表示法違反となります。 | 消費者庁",
+      "url": "https://www.caa.go.jp/policies/policy/representation/fair_labeling/stealth_marketing/",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "インフルエンサーマーケティングにおけるステマ（ステルスマーケティング）規制のポイントと対応策 | THECOO",
+      "url": "https://bizpartner.thecoo.co.jp/content/stealth-marketing-regulations-in-influencer-marketing",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "ステマ規制とは？ステルスマーケティングの法規制と違法になる場合の罰則",
+      "url": "https://kigyobengo.com/media/useful/3256.html",
+      "accessed_date": "2026-01-17"
+    }
+  ],
+  "regulation_summary": {
+    "effective_date": "2023-10-01",
+    "legal_basis": "景品表示法（不当景品類及び不当表示防止法）",
+    "regulation_name": "一般消費者が事業者の表示であることを判別することが困難である表示（指定告示）",
+    "enforcement_status": "2024年6月6日に初の行政処分、2026年1月現在も厳格に運用中"
+  },
+  "key_points": {
+    "target_of_regulation": "商品・サービスを供給する事業者（広告主）",
+    "not_target": "企業から依頼を受けたインフルエンサー等の第三者（ただし事業者として活動する場合は対象）",
+    "violation_definition": "事業者の表示であることを一般消費者が判別困難な表示を行うこと",
+    "required_disclosure": "広告・宣伝であることを明確に表示（「PR」「広告」「プロモーション」等）"
+  },
+  "enforcement_examples": {
+    "first_case_2024": {
+      "date": "2024-06-06",
+      "description": "初の行政処分が実施された"
+    },
+    "roto_pharmaceutical_2025": {
+      "date": "2025-03-25",
+      "company": "ロート製薬株式会社",
+      "violation": "モニターにInstagram投稿を依頼し、指定画像・文言で投稿させた内容を自社サイトに「PR」表記なしで転載",
+      "penalty": "消費者庁から景品表示法違反による措置命令"
+    },
+    "total_penalties_2024_2025": {
+      "period": "2024-08-01～2025-07-31",
+      "total_amount": 333480000,
+      "unit": "JPY",
+      "description": "課徴金納付が命じられた事例の合計額"
+    }
+  },
+  "compliance_requirements": {
+    "for_businesses": [
+      "インフルエンサーマーケティング実施時は「PR」「広告」等の表記を必須とする",
+      "自社サイト・SNSでのコンテンツ転載時も広告表記を維持する",
+      "モニター・アンバサダー施策でも広告表記を徹底する",
+      "第三者による投稿でも、事業者が関与している場合は広告表記が必要"
+    ],
+    "for_platforms": [
+      "ユーザーが投稿する際に広告表記の必要性を案内する機能",
+      "投稿内容が広告に該当するか判定支援する機能",
+      "広告表記の有無をチェックする機能"
+    ]
+  },
+  "penalties": {
+    "administrative_measures": "措置命令（違反内容の公表、再発防止命令）",
+    "surcharge": "課徴金納付命令（売上の3%を上限）",
+    "criminal_penalties": "措置命令違反の場合、2年以下の懲役または300万円以下の罰金"
+  },
+  "implications_for_socialboostai": [
+    "コンテンツ生成機能で「PR」「広告」等の表記を自動挿入する機能が必要",
+    "ユーザーが広告投稿する際のコンプライアンスチェック機能が差別化ポイント",
+    "分析レポートで「広告表記の有無」をチェック項目に含める",
+    "オンボーディングでステマ規制の説明を含める（法令遵守の啓蒙）",
+    "インフルエンサーマーケティング機能を将来追加する場合は必須対応"
+  ],
+  "recommended_features": [
+    "投稿内容の広告該当性チェック機能（AI判定）",
+    "「#PR」「#広告」等のハッシュタグ自動追加オプション",
+    "広告表記テンプレート提供",
+    "コンプライアンスレポート（広告表記の有無を可視化）",
+    "ユーザー向けステマ規制ガイド提供"
+  ],
+  "next_update_scheduled": "2026-02-17"
+}

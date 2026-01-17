@@ -1,0 +1,93 @@
+{
+  "collection_date": "2026-01-17",
+  "category": "tech",
+  "topic": "Twitter API v2（X API）およびInstagram Graph APIの最新仕様",
+  "sources": [
+    {
+      "title": "【2025年最新版】Twitter API（X API）の初心者向け登録～活用ガイド",
+      "url": "https://koukoku.jp/service/suketto/marketer/sns/【2025年最新版】twitter-api（x-api）の初心者向け登録～活用ガ",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "twitter apiの制限や料金体系を徹底解説！主要エンドポイントと申請方法まで完全ガイド",
+      "url": "https://assist-all.co.jp/column/x/20250529-4670/",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "主要SNSのAPI仕様と費用に関する総合調査",
+      "url": "https://genspark.ai/spark/主要snsのapi仕様と費用に関する総合調査/c4ea8085-37b5-4510-ac16-515115d2ca78",
+      "accessed_date": "2026-01-17"
+    }
+  ],
+  "apis": {
+    "twitter_api_v2": {
+      "current_status": "v2が主流、v1.1は段階的廃止中（2025-2026年）",
+      "major_improvements": [
+        "fieldパラメータ: 取得情報を必要な分だけ選択可能",
+        "expansions: リプライ元・引用元の情報を同時取得可能",
+        "OAuth 2.0対応: セキュアで効率的な認証（従来のOAuth 1.0aも継続サポート）"
+      ],
+      "pricing_plans_2026": {
+        "free": {
+          "price": "$0/月",
+          "tweet_limit": "1,500ツイート/月",
+          "features": "基本的な投稿のみ"
+        },
+        "basic": {
+          "price": "$100〜$200/月（情報源により異なる）",
+          "tweet_limit": "15,000〜50,000ツイート/月",
+          "features": "Filtered Stream、過去7日間の検索"
+        },
+        "pro": {
+          "price": "$5,000/月",
+          "tweet_limit": "300,000ツイート/月",
+          "features": "高度な検索、アーカイブアクセス"
+        },
+        "enterprise": {
+          "price": "要見積",
+          "tweet_limit": "無制限",
+          "features": "カスタムソリューション"
+        }
+      },
+      "key_considerations": [
+        "2023年の大幅な料金体系変更以降、段階的に仕様進化",
+        "v1.1エンドポイントの段階的廃止に注意",
+        "Free/Basicプランは個人・小規模サービス向け、Proプラン以上が商用向け"
+      ]
+    },
+    "instagram_graph_api": {
+      "current_version": "v22.0（2025年）",
+      "available_data": [
+        "プロフィール情報（ビジネスアカウントのみ）",
+        "メディア情報",
+        "フォロワー情報"
+      ],
+      "authentication": "OAuth 2.0",
+      "limitations": [
+        "ビジネスアカウント・クリエイターアカウントのみアクセス可能",
+        "個人アカウントは基本的にAPI利用不可",
+        "アップデートごとに開発者による調整が必要",
+        "Metaによるアクセス制限が厳格化傾向"
+      ],
+      "key_considerations": [
+        "Graph APIはv22.0が最新（2025-2026年）",
+        "Metaは定期的にAPIを更新し、制限を厳格化",
+        "ビジネスアカウント必須のため、ユーザーに事前準備を促す必要"
+      ]
+    }
+  },
+  "implications_for_socialboostai": [
+    "Twitter API v2のBasicプラン（$100〜$200/月）コストを吸収する必要があり、Pro会員2〜4人で収支分岐",
+    "Freeプラン（月1,500ツイート）ではTwitter分析機能に制限があり、有料プラン誘導が必須",
+    "Instagram APIはビジネスアカウント必須のため、ユーザー向けオンボーディングで案内が必要",
+    "両APIとも継続的なアップデートに対応する保守体制が必要",
+    "TikTok/YouTube/LinkedIn APIも同様に料金・制限を確認し、プラン設計に反映"
+  ],
+  "recommended_actions": [
+    "Twitter API Basicプラン契約（月$100〜$200を固定費として計上）",
+    "Instagram APIのビジネスアカウント要件をオンボーディングに明記",
+    "API制限をプラン別に適切に設定（Free: Twitter基本分析のみ、Pro: 全機能）",
+    "API変更に対応する定期的なアップデート体制を確立"
+  ],
+  "next_update_scheduled": "2026-02-17"
+}

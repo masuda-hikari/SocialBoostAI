@@ -1,0 +1,80 @@
+{
+  "collection_date": "2026-01-17",
+  "category": "market",
+  "topic": "SNSマーケティング市場規模",
+  "sources": [
+    {
+      "title": "ソーシャルメディアマーケティングの市場規模、2029年には2兆円を超える予測【サイバー・バズら調査】",
+      "url": "https://markezine.jp/article/detail/47426",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "【市場動向調査】2024年のソーシャルメディアマーケティング市場は1兆2,038億円、前年比113%の見通し。2029年には2024年比約1.8倍、2兆1,313億円に",
+      "url": "https://prtimes.jp/main/html/rd/p/000000119.000013256.html",
+      "accessed_date": "2026-01-17"
+    }
+  ],
+  "key_findings": {
+    "market_size_2024": {
+      "value": 1203800000000,
+      "unit": "JPY",
+      "description": "2024年の国内ソーシャルメディアマーケティング市場規模",
+      "growth_rate": "113%",
+      "year_over_year": true
+    },
+    "market_size_2026_estimate": {
+      "min": 1400000000000,
+      "max": 1600000000000,
+      "unit": "JPY",
+      "description": "2026年の推定市場規模（2024年と2029年の間で線形補完）",
+      "confidence": "medium"
+    },
+    "market_size_2029": {
+      "value": 2131300000000,
+      "unit": "JPY",
+      "description": "2029年の予測市場規模",
+      "growth_from_2024": "177%"
+    },
+    "category_breakdown_2024": {
+      "social_media_advertising": {
+        "value": 1072700000000,
+        "unit": "JPY",
+        "percentage": 89.1
+      },
+      "influencer_marketing": {
+        "value": 86000000000,
+        "unit": "JPY",
+        "percentage": 7.1
+      },
+      "sns_account_management": {
+        "value": 28300000000,
+        "unit": "JPY",
+        "percentage": 2.4
+      },
+      "analytics_tools": {
+        "value": 6600000000,
+        "unit": "JPY",
+        "percentage": 0.5
+      },
+      "campaign_planning_consulting": {
+        "value": 10200000000,
+        "unit": "JPY",
+        "percentage": 0.8
+      }
+    },
+    "global_analytics_market": {
+      "value_2026": 9600000000,
+      "unit": "USD",
+      "description": "グローバルなソーシャルメディア分析ツール市場規模（2026年）",
+      "cagr": "24.0%"
+    }
+  },
+  "implications_for_socialboostai": [
+    "分析ツール市場は全体の0.5%（66億円）だが、年率24%成長の高成長セグメント",
+    "2026年の日本市場は約1.4〜1.6兆円規模と推定され、分析ツールは約70〜80億円市場",
+    "インフルエンサーマーケティング（860億円、7.1%）との連携が収益機会",
+    "グローバル分析ツール市場は96億ドル（約1.4兆円）と大きく、海外展開の可能性",
+    "SNSアカウント運用支援（283億円、2.4%）との統合サービス提供が差別化ポイント"
+  ],
+  "next_update_scheduled": "2026-02-17"
+}

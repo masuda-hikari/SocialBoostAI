@@ -1,0 +1,102 @@
+{
+  "collection_date": "2026-01-17",
+  "category": "competitor",
+  "topic": "主要競合サービス（Hootsuite, Buffer, Sprout Social）の最新機能",
+  "sources": [
+    {
+      "title": "Hootsuite OwlyWriter vs Buffer AI vs Sprout Social AI – A Complete Guide for Marketing Leaders in 2025",
+      "url": "https://genesysgrowth.com/blog/hootsuite-owlywriter-vs-buffer-ai-vs-sprout-social-ai",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "Best Social Media Management Tools for Business in 2026",
+      "url": "https://www.websiteplanet.com/social-media-tools/",
+      "accessed_date": "2026-01-17"
+    },
+    {
+      "title": "Sprout Social vs Hootsuite: Honest comparison to help you decide",
+      "url": "https://planable.io/blog/hootsuite-vs-sprout-social/",
+      "accessed_date": "2026-01-17"
+    }
+  ],
+  "competitors": {
+    "hootsuite": {
+      "key_features_2026": [
+        "AI搭載のハッシュタグおよびキャプション生成機能（OwlyWriter AI）",
+        "Canvaテンプレート統合",
+        "目標に基づく最適投稿時間推奨（リーチ拡大/認知度向上/エンゲージメント増加/トラフィック促進）",
+        "ソーシャル広告キャンペーン管理（全プランに含まれる）",
+        "オーガニックコンテンツと広告キャンペーンの一元管理"
+      ],
+      "strengths": [
+        "全プランで広告管理機能提供",
+        "目標志向の投稿時間最適化",
+        "Canva統合による視覚コンテンツ作成の容易さ"
+      ],
+      "weaknesses": [
+        "UIの複雑性（学習コストが高い）",
+        "料金が比較的高額"
+      ]
+    },
+    "buffer": {
+      "key_features_2026": [
+        "シンプルなUI設計（実行スピード優先）",
+        "基本的なスケジューリング機能",
+        "限定的な分析機能（Instagram, Facebook, X, LinkedInのみ）"
+      ],
+      "strengths": [
+        "シンプルで使いやすいUI",
+        "実行スピード優先の設計",
+        "低い学習コスト"
+      ],
+      "weaknesses": [
+        "分析機能が競合より限定的",
+        "対応プラットフォームが少ない",
+        "高度な機能が不足"
+      ]
+    },
+    "sprout_social": {
+      "key_features_2026": [
+        "AI生成コンテンツのパフォーマンス分析（オーディエンスセンチメント/競合ベンチマーク/クロスプラットフォームエンゲージメント連携）",
+        "Smart Inbox（全ソーシャルインタラクションの統合管理）",
+        "衝突検出機能（重複応答回避）",
+        "Case Management（ニーズ予測型カスタマーサポート）",
+        "高度な分析統合"
+      ],
+      "strengths": [
+        "最も高度な分析機能",
+        "統合受信箱で効率的な顧客対応",
+        "AI分析とクロスプラットフォーム統合",
+        "エンタープライズ向け機能が充実"
+      ],
+      "weaknesses": [
+        "料金が最も高額",
+        "中小企業には過剰機能"
+      ]
+    }
+  },
+  "competitive_analysis": {
+    "socialboostai_differentiation_opportunities": [
+      "価格優位性: 競合より低価格で同等機能提供（Pro ¥1,980 vs 競合$99〜$299/月）",
+      "日本市場特化: 日本語UI/サポート、日本の法規制（ステマ規制）対応",
+      "AI分析の深化: 競合は基本的なAI機能だが、SocialBoostAIは高度な分析＋コンテンツ生成",
+      "TikTok/YouTube対応: Bufferは未対応、競合は限定的",
+      "クロスプラットフォーム比較: Businessプラン以上で提供、競合は別料金または未提供",
+      "スケジューリング＋分析統合: 競合は分離されがちだが統合提供",
+      "リアルタイム通知: WebSocket通知機能で即座のフィードバック"
+    ],
+    "feature_gaps_to_address": [
+      "Canva統合（Hootsuiteにはある）",
+      "広告キャンペーン管理（Hootsuiteは全プランで提供）",
+      "Smart Inbox機能（Sprout Socialの強み）",
+      "衝突検出機能（複数担当者での運用時の重複対応防止）"
+    ],
+    "pricing_comparison": {
+      "hootsuite": "約$99〜$739/月（プランによる）",
+      "buffer": "約$6〜$120/月",
+      "sprout_social": "約$249〜$499/月",
+      "socialboostai": "¥0〜¥4,980/月（最も低価格）"
+    }
+  },
+  "next_update_scheduled": "2026-02-17"
+}
